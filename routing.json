@@ -1,2 +1,35 @@
 [
+	{
+		"path": ["userpanel","ticketing"],
+		"controller": "controllers\\ticketing@index",
+		"method":"get"
+	},
+	{
+		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@view"
+	},
+	{
+		"path": ["userpanel","ticketing", "delete", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@delete"
+	},
+	{
+		"path": ["userpanel","ticketing", "delete", "message", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@message_delete"
+	},
+	{
+		"path": ["userpanel","ticketing", "edit", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@edit"
+	},
+	{
+		"path": ["userpanel","ticketing", "edit", "message", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@message_edit"
+	},
+	{
+		"path": ["userpanel","ticketing", "lock", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@lock"
+	},
+	{
+		"path": ["userpanel","ticketing", "unlock", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@unlock"
+	}
 ]

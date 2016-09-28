@@ -1,40 +1,51 @@
 {
 	"files":[
 		{
-			"classes":["views\\transactions\\listview"],
-			"file":"views/transactions/list.php"
+			"classes":[
+				"view",
+				"viewTrait"
+			],
+			"file":"libraries/mvc/view.php"
 		},
 		{
-			"classes":["views\\transactions\\view"],
-			"file":"views/transactions/view.php"
+			"classes":["listTrait"],
+			"file":"libraries/mvc/views/list.php"
 		},
 		{
-			"classes":["views\\transactions\\pay"],
-			"file":"views/transactions/pay.php"
+			"classes":["formTrait"],
+			"file":"libraries/mvc/views/form.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\credit"],
-			"file":"views/transactions/pay/credit.php"
+			"classes":["views\\ticketing\\listview"],
+			"file":"views/ticketing/list.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\banktransfer"],
-			"file":"views/transactions/pay/banktransfer.php"
+			"classes":["views\\ticketing\\view"],
+			"file":"views/ticketing/view.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\accept"],
-			"file":"views/transactions/pay/accept.php"
+			"classes":["views\\ticketing\\edit"],
+			"file":"views/ticketing/edit.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\reject"],
-			"file":"views/transactions/pay/reject.php"
+			"classes":["views\\ticketing\\lock"],
+			"file":"views/ticketing/lock.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\onlinepay"],
-			"file":"views/transactions/pay/onlinepay.php"
+			"classes":["views\\ticketing\\unlock"],
+			"file":"views/ticketing/unlock.php"
 		},
 		{
-			"classes":["views\\transactions\\pay\\onlinepay\\error"],
-			"file":"views/transactions/pay/onlinepay_error.php"
+			"classes":["views\\ticketing\\delete"],
+			"file":"views/ticketing/delete.php"
+		},
+		{
+			"classes":["views\\ticketing\\message_delete"],
+			"file":"views/ticketing/message.delete.php"
+		},
+		{
+			"classes":["views\\ticketing\\message_edit"],
+			"file":"views/ticketing/message.edit.php"
 		}
 	]
 }
