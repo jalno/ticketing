@@ -1,6 +1,6 @@
 <?php
-namespace packages\financial;
-use \packages\userpanel\authentication as UserPanelAuthentication;
-class authentication extends UserPanelAuthentication{
+namespace packages\ticketing;
+use \packages\ticketing\authentication as userPanelAuthentication;
+class authentication extends userPanelAuthentication{
 
 }
