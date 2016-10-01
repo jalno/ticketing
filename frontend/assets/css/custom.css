@@ -66,11 +66,10 @@
 .btn-file2{
     position: relative;
     overflow: hidden;
-    background: #3498db !important;
-    color: #fff;
+    background: #569099 !important;
+	border-color: #4d8189 !important;
+	color: #ffffff !important;
     cursor: pointer;
-    margin: 5px 2px 9px 2px;
-    width: 99%;
 }
 .btn-file2 input[type="file"] {
     position: absolute;

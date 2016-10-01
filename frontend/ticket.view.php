@@ -48,7 +48,18 @@ $this->the_header();
 					    <div class="comment-wraper text">
 					        <a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><h5 class="h-comment m-right-1"><?php echo $message->user->name." ".$message->user->lastname; ?></h5></a>
 					        <div class="space black m-right-1">
-					            <?php echo $message->content; ?>
+					            <?php echo $message->content;
+								if($message->files){?>
+								<br><hr>
+								<p class="smal">
+									<?php echo translator::trans("attachment.files"); ?>
+								</p>
+								<p>
+									<?php foreach($message->files as $file){ ?>
+										<a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>"><?php echo $file->name; ?></a>
+									<?php } ?>
+								</p>
+								<?php } ?>
 					        </div>
 					        <div class="panel-heading">
 								<i class="fa fa-clock-o"></i>
@@ -67,7 +78,7 @@ $this->the_header();
 				<?php } ?>
 				<div class="replaycontianer">
 					<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
-					<form action="<?php echo userpanel\url('ticketing/view/'.$this->getTicketData()->id); ?>" method="post">
+					<form action="<?php echo userpanel\url('ticketing/view/'.$this->getTicketData()->id); ?>" method="post" enctype="multipart/form-data">
 						<div class="row">
 							<div class="col-md-12">
 								<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
@@ -79,7 +90,13 @@ $this->the_header();
 								<p><?php echo translator::trans('markdown.description'); ?></p>
 							</div>
 							<div class="col-md-4">
-								<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-block" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+								<div class="col-md-12 btn-group btn-group-lg" role="group">
+									<span class="btn btn-file2 btn-default">
+										<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+										<input type="file" name="file">
+									</span>
+									<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+								</div>
 							</div>
 						</div>
 					</form>

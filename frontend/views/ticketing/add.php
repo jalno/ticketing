@@ -4,33 +4,29 @@ use \packages\base;
 use \packages\base\frontend\theme;
 use \packages\base\translator;
 
-use \packages\ticketing\views\edit as ticketEdit;
+use \packages\ticketing\views\add as ticketadd;
 use \packages\ticketing\ticket;
 
 use \packages\userpanel;
 
-use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
+use \themes\clipone\views\formTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
 
 
-class edit extends ticketEdit{
+class add extends ticketadd{
 	use viewTrait,formTrait;
 	protected $department;
 	protected $user;
 	function __beforeLoad(){
 		$this->setTitle(array(
-			translator::trans('ticketing.edit'),
-			translator::trans('ticket'),
-			"#".$this->getTicketData()->id
+			translator::trans('ticketing.add')
 		));
-		$this->setShortDescription(translator::trans('ticketing.edit').' '.translator::trans('ticket'));
+		$this->setShortDescription(translator::trans('newticket'));
 		$this->setNavigation();
 		$this->SetDataValue();
-		$this->getStatusForSelect();
-		$this->getpriortyForSelect();
 		$this->addAssets();
 	}
 	private function setNavigation(){
@@ -40,13 +36,14 @@ class edit extends ticketEdit{
 		$item->setIcon('clip-paperplane');
 		breadcrumb::addItem($item);
 
-		$item = new menuItem("ticketing.edit");
-		$item->setTitle(translator::trans('ticketing.edit'));
-		$item->setIcon('fa fa-edit tip tooltips');
+		$item = new menuItem("ticketing.add");
+		$item->setTitle(translator::trans('ticketing.add'));
+		$item->setIcon('fa fa-add tip');
 		breadcrumb::addItem($item);
 		navigation::active("ticketing/list");
 	}
-	protected function addAssets(){
+	private function addAssets(){
+		$this->addCSSFile(theme::url('assets/css/custom.css'));
 		$this->addJSFile(theme::url('assets/js/pages/ticket.add.js'));
 	}
 	protected function SetDataValue(){
@@ -57,29 +54,15 @@ class edit extends ticketEdit{
 			);
 		}
 	}
-	protected function getStatusForSelect(){
-		return array(
-			array(
-	            'title' => translator::trans('unread'),
-	            'value' => ticket::unread
-        	),
-			array(
-	            'title' => translator::trans('read'),
-	            'value' => ticket::read
-        	),
-			array(
-	            'title' => translator::trans('answered'),
-	            'value' => ticket::answered
-        	),
-			array(
-	            'title' => translator::trans('in_progress'),
-	            'value' => ticket::in_progress
-        	),
-			array(
-	            'title' => translator::trans('closed'),
-	            'value' => ticket::closed
-        	)
-		);
+	protected function getProductsForSelect(){
+		$products = array();
+		foreach($this->getProducts() as $product){
+			$products[] = array(
+				'title' => $product->getTitle(),
+				'value' => $product->getName()
+			);
+		}
+		return $products;
 	}
 	protected function getpriortyForSelect(){
 		return array(
@@ -96,5 +79,13 @@ class edit extends ticketEdit{
 	            'value' => ticket::ordinary
         	)
 		);
+	}
+	protected function products(){
+		$none = array(
+			array(
+				'title' => translator::trans('none'),
+				'value' => ''
+		));
+		return array_merge($none, $this->getProductsForSelect());
 	}
 }

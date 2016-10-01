@@ -35,10 +35,23 @@ class ticket extends dbObject{
 		if(!isset($data['reply_at'])){
 			$data['reply_at'] = time();
 		}
-		if(!isset($data['status'])){
-			$data['status'] = 0;
-		}
 		return $data;
+	}
+
+	protected $tmpmessages = array();
+	protected function addMessage($messagedata){
+		$message = new ticket_message($messagedata);
+		if ($this->isNew){
+			$this->tmpmessages[] = $message;
+			return true;
+		}else{
+			$message->ticket = $this->id;
+			$return = $message->save();
+			if(!$return){
+				return false;
+			}
+			return $return;
+		}
 	}
 	public function param($name){
 		if(!$this->id){
@@ -75,5 +88,15 @@ class ticket extends dbObject{
 			$param->ticket = $this->id;
 			return $param->save();
 		}
+	}
+	public function save($data = null){
+		if(($return = parent::save($data))){
+			foreach($this->tmpmessages as $message){
+				$message->ticket = $this->id;
+				$message->save();
+			}
+			$this->tmpmessages = array();
+		}
+		return $return;
 	}
 }

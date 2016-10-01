@@ -60,8 +60,16 @@
 			"file":"libraries/ticketing/tickets.params.php"
 		},
 		{
+			"classes":["ticket_file"],
+			"file":"libraries/ticketing/tickets.files.php"
+		},
+		{
 			"classes":["views\\ticketlist"],
 			"file":"views/ticketing/list.php"
+		},
+		{
+			"classes":["views\\add"],
+			"file":"views/ticketing/add.php"
 		},
 		{
 			"classes":["views\\view"],

@@ -15,7 +15,7 @@ $this->the_header();
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <form action="<?php echo userpanel\url('ticketing/edit/'.$this->getTicketData()->id) ?>" method="post">
+                    <form class="create_form" action="<?php echo userpanel\url('ticketing/edit/'.$this->getTicketData()->id) ?>" method="post">
                         <div class="col-md-6">
                             <?php
 						$fields = array(
@@ -45,12 +45,13 @@ $this->the_header();
 							?>
                         </div>
                         <div class="col-md-6">
+							<input type="hidden" name="client" value="<?php echo $this->getTicketData()->client->id; ?>">
                             <?php
 							$fields = array(
 								array(
-									'name' => 'client',
+									'name' => 'user_name',
 									'label' => translator::trans("ticket.client"),
-									'value' => $this->getTicketData()->client->id,
+									'placeholder' => $this->getTicketData()->client->name. ' '.$this->getTicketData()->client->lastname,
 									'error' => array(
 										'data_validation' => 'ticket.client.data_validation'
 									)

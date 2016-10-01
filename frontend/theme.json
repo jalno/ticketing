@@ -19,6 +19,11 @@
 			"file":"ticket.list.php"
 		},
 		{
+			"name":"\\themes\\clipone\\views\\ticketing\\add",
+			"parent":"\\packages\\ticketing\\views\\add",
+			"file":"ticket.add.php"
+		},
+		{
 			"name":"\\themes\\clipone\\views\\ticketing\\view",
 			"parent":"\\packages\\ticketing\\views\\view",
 			"file":"ticket.view.php"

@@ -13,6 +13,7 @@ class view extends \packages\ticketing\views\form{
 		$this->canDel = authorization::is_accessed('delete');
 		$this->canEditMessage = authorization::is_accessed('message_edit');
 		$this->canDelMessage = authorization::is_accessed('message_delete');
+		$this->canViewDec = authorization::is_accessed('view_description');
 	}
 	public function setTicketData($data){
 		$this->setData($data, 'ticket');

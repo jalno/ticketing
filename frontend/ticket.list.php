@@ -46,11 +46,19 @@ $this->the_header();
 						<tbody>
 							<?php
 							foreach($this->dataList as $row){
+								$messageread = true;
+								foreach($row->message as $status){
+									if($status->status == 0){
+										$messageread = false;
+										break;
+									}
+								}
+
 								$this->setButtonParam('view', 'link', userpanel\url("ticketing/view/".$row->id));
 								$this->setButtonParam('delete', 'link', userpanel\url("ticketing/delete/".$row->id));
 								$statusClass = utility::switchcase($row->status, array(
-									'label label-info' => ticket::unread,
-									'label label label-info' => ticket::read,
+									'label label-primary' => ticket::unread,
+									'label label-info' => ticket::read,
 									'label label-success' => ticket::answered,
 									'label label-warning' => ticket::in_progress,
 									'label label-inverse' => ticket::closed
@@ -64,7 +72,7 @@ $this->the_header();
 								));
 								$priorityClass = utility::switchcase($row->priority, array(
 									'label label-warning' => ticket::instantaneous,
-									'label label-inverse' => ticket::important,
+									'label label-primary' => ticket::important,
 									'label label-info' => ticket::ordinary
 								));
 								$priorityTxt = utility::switchcase($row->priority, array(
@@ -72,11 +80,13 @@ $this->the_header();
 									'important' => ticket::important,
 									'ordinary' => ticket::ordinary
 								));
+
+								$title = ($messageread ? $row->title : "<b>".$row->title."</b>");
 							?>
 							<tr>
 								<td class="center"><?php echo $row->id; ?></td>
-								<td><?php echo $row->title; ?></td>
-								<td><a href="<?php echo userpanel\url('users/view/'.$row->client->id); ?>"><?php echo $row->client->name.' '.$row->client->lastname; ?></a></td>
+								<td><?php echo $title; ?></td>
+								<td><a href="<?php echo userpanel\url('users/view/'.$row->client->id); ?>"><?php echo($row->client->name.' '.$row->client->lastname); ?></a></td>
 								<td><?php echo $row->department->title; ?></td>
 								<td><?php echo date::format('Y/m/d H:i', $row->craete_at); ?></td>
 								<td><?php echo date::format('Y/m/d H:i', $row->reply_at); ?></td>

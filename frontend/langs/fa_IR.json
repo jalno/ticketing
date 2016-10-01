@@ -32,7 +32,7 @@
 		"message.edit.notice.title":"ویرایش پیام",
 		"ticket.delete.warning.title":"حذف تیکت",
 		"message.delete.warning.title":"حذف پیام",
-		"ticket.delete.warning":"آیا شما از حذف پیام به شناسه #{message.id} اطمینان داید؟ این عملیات بدون بازگشت است.",
+		"message.delete.warning":"آیا شما از حذف پیام به شناسه #{message.id} اطمینان داید؟ این عملیات بدون بازگشت است.",
 		"update":"بروزرسانی",
 		"return":"بازگشت",
 		"markdown.description":"میتوانید با فعال کردن <b><i>markdown</i></b> در تنظیمات به جای <code>Html</code> از <code>Markdown</code> استفاده کنید",
@@ -61,16 +61,13 @@
 		"newticket.title":"عنوان درخواست:",
 		"newticket.typeservice":"نوع سرویس مربوط:",
 		"none":"هیچکدام",
-		"typeservice.host":"هاست های اشتراکی",
-		"typeservice.domain":"دامنه",
-		"typeservice.vps":"سرور های مجازی",
-		"typeservice.dedicated":"سرور های اختصاصی",
-		"typeservice.monitoring":"سرویس های مانیتوریگ",
 		"typeservice.chatroom":"چتروم ها",
 		"newticket.department":"بخش مربوط:",
 		"newticket.service":"سرویس مربوط:",
 		"newticket.priority":"الویت تیکت:",
-		"newticket.service":"سرویس مربوطه:"
+		"newticket.service":"سرویس مربوطه:",
+		"upload":"بارگذاری فایل",
+		"attachment.files":"فایل های پیوست :"
 
 	}
 }

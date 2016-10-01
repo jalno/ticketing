@@ -12,6 +12,10 @@
 			"file":"libraries/mvc/views/list.php"
 		},
 		{
+			"classes":["views\\ticketing\\add"],
+			"file":"views/ticketing/add.php"
+		},
+		{
 			"classes":["formTrait"],
 			"file":"libraries/mvc/views/form.php"
 		},

@@ -5,6 +5,10 @@
 		"method":"get"
 	},
 	{
+		"path": ["userpanel","ticketing", "new"],
+		"controller": "controllers\\ticketing@add"
+	},
+	{
 		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@view"
 	},
@@ -31,5 +35,9 @@
 	{
 		"path": ["userpanel","ticketing", "unlock", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@unlock"
+	},
+	{
+		"path": ["userpanel","ticketing", "download", {"type":"dynamic","name":"file", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@download"
 	}
 ]

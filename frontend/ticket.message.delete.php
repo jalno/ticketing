@@ -23,7 +23,7 @@ $this->the_header();
 			<div class="alert alert-block alert-warning fade in">
 				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo translator::trans('message.delete.warning.title'); ?>!</h4>
 				<p>
-					<?php echo translator::trans("ticket.delete.warning", array('message.id' => $this->getMessageData()->id)); ?>
+					<?php echo translator::trans("message.delete.warning", array('message.id' => $this->getMessageData()->id)); ?>
 				</p>
 				<p>
 					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getMessageData()->ticket); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
