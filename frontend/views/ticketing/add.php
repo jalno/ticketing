@@ -8,6 +8,7 @@ use \packages\ticketing\views\add as ticketadd;
 use \packages\ticketing\ticket;
 
 use \packages\userpanel;
+use \packages\userpanel\user;
 
 use \themes\clipone\viewTrait;
 use \themes\clipone\views\formTrait;
@@ -24,10 +25,12 @@ class add extends ticketadd{
 		$this->setTitle(array(
 			translator::trans('ticketing.add')
 		));
-		$this->setShortDescription(translator::trans('newticket'));
 		$this->setNavigation();
 		$this->SetDataValue();
 		$this->addAssets();
+		$this->setUserInput();
+
+
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
@@ -87,5 +90,15 @@ class add extends ticketadd{
 				'value' => ''
 		));
 		return array_merge($none, $this->getProductsForSelect());
+	}
+	private function setUserInput(){
+		if($error = $this->getFromErrorsByInput('client')){
+			$error->setInput('user_name');
+			$this->setFormError($error);
+		}
+		$user = $this->getDataForm('client');
+		if($user and $user = user::byId($user)){
+			$this->setDataForm($user->name, 'user_name');
+		}
 	}
 }

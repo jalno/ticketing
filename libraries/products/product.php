@@ -14,4 +14,12 @@ abstract class product{
 		return $this->title;
 	}
 	abstract public function getServices(user $client);
+	public function getServiceById(user $client, $id){
+		foreach($this->getServices($client) as $service){
+			if($service->getId() == $id){
+				return $service;
+			}
+		}
+		return null;
+	}
 }
