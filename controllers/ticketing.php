@@ -84,49 +84,48 @@ class ticketing extends controller{
 	public function add(){
 		$view = view::byName("\\packages\\ticketing\\views\\add");
 		authorization::haveOrFail('add');
-
+		$children = authorization::childrenTypes();
 		$view->setDepartmentData(department::get());
-
 		$view->setProducts(products::get());
-		$inputsRules = array(
-			'title' => array(
-				'type' => 'string',
-			),
-			'product' => array(
-				'type' => 'string',
-				'optional' =>true,
-				'empty' => true
-			),
-			'service' => array(
-				'type' => 'number',
-				'value' => array(1, 2, 3, 4, 5)
-			),
-			'priority' => array(
-				'type' => 'number',
-				'value' => array(1, 2, 3)
-			),
-			'department' => array(
-				'type' => 'number',
-			),
-			'text' => array(
-				'type' => 'string'
-			),
-			'file' => array(
-				'type' => 'file',
-				'optional' =>true,
-				'empty' => true
-			)
-		);
-		if(authorization::childrenTypes()){
-			$this->response->setStatus(false);
-			$inputsRules['client'] = array(
-				'type' => 'number'
-			);
-		}else{
-			$this->response->setStatus(true);
+		if($children){
+			$view->setData(true, 'selectclient');
 		}
 
 		if(http::is_post()){
+			$inputsRules = array(
+				'title' => array(
+					'type' => 'string',
+				),
+				'product' => array(
+					'type' => 'string',
+					'optional' =>true,
+					'empty' => true
+				),
+				'service' => array(
+					'type' => 'number',
+					'value' => array(1, 2, 3, 4, 5)
+				),
+				'priority' => array(
+					'type' => 'number',
+					'value' => array(1, 2, 3)
+				),
+				'department' => array(
+					'type' => 'number',
+				),
+				'text' => array(
+					'type' => 'string'
+				),
+				'file' => array(
+					'type' => 'file',
+					'optional' =>true,
+					'empty' => true
+				)
+			);
+			if($children){
+				$inputsRules['client'] = array(
+					'type' => 'number'
+				);
+			}
 			try {
 
 				$inputs = $this->checkinputs($inputsRules);

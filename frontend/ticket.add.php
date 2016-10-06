@@ -17,9 +17,11 @@ $this->the_header();
                 <form class="create_form " action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
                     <div class="col-md-6">
                     <?php
-					if($this->getData('status') == true){ ?>
+					if($this->getData('selectclient')){
+					?>
 						<input type="hidden" name="client" value="">
-					<?php $this->createField(array(
+					<?php
+						$this->createField(array(
 							'name' => 'user_name',
 							'label' => translator::trans("newticket.client"),
 							'error' => array(
