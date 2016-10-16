@@ -183,9 +183,8 @@ class ticketing extends controller{
 							}else{
 								throw new inputValidation("file");
 							}
-						}else{
-							throw new \Exception("file_status");
-
+						}elseif($inputs['file']['error'] != 4){
+							throw new inputValidation("file_status");
 						}
 					}
 					$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
@@ -245,9 +244,8 @@ class ticketing extends controller{
 							}else{
 								throw new inputValidation("file");
 							}
-						}else{
-							throw new \Exception("file_status");
-
+						}elseif($inputs['file']['error'] != 4){
+							throw new inputValidation("file_status");
 						}
 					}
 
