@@ -10,10 +10,11 @@
 		"message":"پیام",
 		"ticketing":"پشتیبانی",
 		"list":"لیست",
+		"ticket.id":"شناسه",
 		"ticket.title":"موضوع",
 		"ticket.client":"مشتری",
 		"ticket.department":"دپارتمان",
-		"ticket.craete_at":"زمان ارسال",
+		"ticket.create_at":"زمان ارسال",
 		"ticket.reply_at":"آخرین پاسخ",
 		"ticket.status":"وضعیت",
 		"ticket.priority":"الویت",
@@ -67,7 +68,9 @@
 		"newticket.priority":"الویت تیکت:",
 		"newticket.service":"سرویس مربوطه:",
 		"upload":"بارگذاری فایل",
-		"attachment.files":"فایل های پیوست :"
+		"attachment.files":"فایل های پیوست :",
+		"search":"جستجو",
+		"choose":"انتخاب کنید..."
 
 	}
 }

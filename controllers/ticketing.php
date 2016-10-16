@@ -70,14 +70,87 @@ class ticketing extends controller{
 		}
 		db::orderBy('id', ' DESC');
 		db::pageLimit($this->items_per_page);
-		$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-		$tickets = array();
-		foreach($tickeetData as $ticket){
-			$tickets[] = new ticket($ticket);
+		$inputsRules = array(
+			'id' => array(
+				'type' => 'number',
+				'optional' => true,
+				'empty' => true
+			),
+			'title' => array(
+				'type' => 'string',
+				'optional' =>true,
+				'empty' => true
+			),
+			'client' => array(
+				'type' => 'email',
+				'optional' => true,
+				'empty' => true
+			),
+			'status' => array(
+				'type' => 'number',
+				'values' => array(ticket::unread, ticket::read, ticket::in_progress, ticket::closed, ticket::answered),
+				'optional' => true,
+				'empty' => true
+			),
+			'priority' => array(
+				'type' => 'number',
+				'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary),
+				'optional' => true,
+				'empty' => true
+			),
+			'department' => array(
+				'type' => 'number',
+				'optional' => true,
+				'empty' => true
+			)
+		);
+		$this->response->setStatus(false);
+		if(http::is_post()){
+			try{
+				$inputs = $this->checkinputs($inputsRules);
+				if(empty($inputs)){
+					throw new inputValidation("search");
+				}
+				if(isset($inputs['id']) and $inputs['id']){
+					db::where('ticketing_tickets.id', $inputs['id']);
+				}
+				if(isset($inputs['title']) and $inputs['title']){
+					db::where('ticketing_tickets.title', $inputs['title'], "%");
+				}
+				if(isset($inputs['client']) and $inputs['client']){
+					db::where('userpanel_users.email', $inputs['client']);
+				}
+				if(isset($inputs['status']) and $inputs['status']){
+					db::where('ticketing_tickets.status', $inputs['status']);
+				}
+				if(isset($inputs['priority']) and $inputs['priority']){
+					db::where('ticketing_tickets.priority', $inputs['priority']);
+				}
+				if(isset($inputs['department']) and $inputs['department']){
+					db::where('ticketing_tickets.department', $inputs['department']);
+				}
+				$this->response->setStatus(true);
+			}catch(inputValidation $error){
+				$view->setFormError(FormError::fromException($error));
+			}
+			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
+
+			$tickets = array();
+			foreach($tickeetData as $ticket){
+				$tickets[] = new ticket($ticket);
+			}
+			$view->setTickets($tickets);
+		}else{
+			$this->response->setStatus(true);
+			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
+
+			$tickets = array();
+			foreach($tickeetData as $ticket){
+				$tickets[] = new ticket($ticket);
+			}
+			$view->setTickets($tickets);
 		}
-		$view->setDataList($tickets);
-		$view->setPaginate($this->page, $this->total_pages, $this->items_per_page);
-		$this->response->setStatus(true);
+		$view->setDepartment(department::get());
 		$this->response->setView($view);
 		return $this->response;
 	}

@@ -14,7 +14,7 @@ class ticket extends dbObject{
 	protected $dbTable = "ticketing_tickets";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
-        'craete_at' => array('type' => 'int', 'required' => true),
+        'create_at' => array('type' => 'int', 'required' => true),
         'reply_at' => array('type' => 'int', 'required' => true),
         'title' => array('type' => 'text', 'required' => true),
 		'priority' => array('type' => 'int', 'required' => true),
@@ -29,8 +29,8 @@ class ticket extends dbObject{
 		'department' => array('hasOne', 'packages\\ticketing\\department', 'department')
 	);
 	protected function preLoad($data){
-		if(!isset($data['craete_at'])){
-			$data['craete_at'] = time();
+		if(!isset($data['create_at'])){
+			$data['create_at'] = time();
 		}
 		if(!isset($data['reply_at'])){
 			$data['reply_at'] = time();

@@ -1,8 +1,7 @@
 [
 	{
 		"path": ["userpanel","ticketing"],
-		"controller": "controllers\\ticketing@index",
-		"method":"get"
+		"controller": "controllers\\ticketing@index"
 	},
 	{
 		"path": ["userpanel","ticketing", "new"],
