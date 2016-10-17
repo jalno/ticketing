@@ -71,11 +71,21 @@ var TicketAdd = function () {
 			}
 		});
 	};
-
+	var initElements = function(){
+		hiddenServices();
+	};
+	var hiddenServices = function(){
+		var $service = $('select[name=service]',form);
+		if($('option', $service).length == 0){
+			$service.parents('.form-group').first().hide();
+		}
+	}
 	return {
 		init: function() {
+			initElements();
 			runUserListener();
 			getServices();
+
 		}
 	}
 }();

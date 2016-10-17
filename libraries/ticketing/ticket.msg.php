@@ -6,6 +6,9 @@ use \packages\userpanel\date;
 use \packages\userpanel\user_option;
 use \packages\userpanel\usertype_option;
 class ticket_message extends dbObject{
+	const unread = 0;
+	const read = 1;
+	const html = 'html';
 	protected $dbTable = "ticketing_tickets_msgs";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
@@ -24,6 +27,9 @@ class ticket_message extends dbObject{
 		if(!isset($data['format'])){
 			$user = user::where('id', $data['user'])->getOne();
 			$data['format'] = $user->option('ticketing_editor');
+			if(!$data['format']){
+				$data['format'] = self::html;
+			}
 		}
 		if(!isset($data['date'])){
 			$data['date'] = date::time();

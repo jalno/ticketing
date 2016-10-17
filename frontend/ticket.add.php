@@ -14,12 +14,14 @@ $this->the_header();
                 <span><?php echo translator::trans("newticket")?></span>
             </div>
             <div class="panel-body">
-                <form class="create_form " action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
+                <form class="create_form" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
                     <div class="col-md-6">
                     <?php
-					if($this->getData('status') == true){ ?>
-						<input type="hidden" name="client" value="">
-					<?php $this->createField(array(
+					if($this->getData('selectclient')){
+					?>
+						<input type="hidden" name="client" value="<?php echo $this->getDataForm('client'); ?>">
+					<?php
+						$this->createField(array(
 							'name' => 'user_name',
 							'label' => translator::trans("newticket.client"),
 							'error' => array(
@@ -59,20 +61,28 @@ $this->the_header();
 							'type' => 'select',
 							'label' => translator::trans("newticket.department"),
 							'options' => $this->department
+						),
+						array(
+							'name' => 'service',
+							'type' => 'select',
+							'label' => translator::trans("newticket.service"),
+							'options' => array()
 						)
 					);
 					foreach($fields as $field){
 						$this->createField($field);
 					}
 					?>
-						<div class="form-group service_name" style="display: none;">
-							<label class="control-label"><?php echo translator::trans("newticket.service"); ?></label>
-							<select name="service" class="form-control"></select>
-						</div>
                     </div>
 					<div class="row">
 						<div class="col-md-12">
-							<textarea name="text" rows="4" class="autosize form-control text-send"></textarea>
+							<?php
+							$this->createField(array(
+								'name' => 'text',
+								'type' => 'textarea',
+								'rows' => 4
+							));
+							?>
 							<hr>
 						</div>
 					</div>

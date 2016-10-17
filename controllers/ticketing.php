@@ -5,6 +5,7 @@ use \packages\base\frontend\theme;
 use \packages\base\NotFound;
 use \packages\base\http;
 use \packages\base\db;
+use \packages\base\IO;
 use \packages\base\views\FormError;
 use \packages\base\inputValidation;
 use \packages\base\response\file as responsefile;
@@ -157,114 +158,128 @@ class ticketing extends controller{
 	public function add(){
 		$view = view::byName("\\packages\\ticketing\\views\\add");
 		authorization::haveOrFail('add');
-
+		$children = authorization::childrenTypes();
 		$view->setDepartmentData(department::get());
-
 		$view->setProducts(products::get());
-		$inputsRules = array(
-			'title' => array(
-				'type' => 'string',
-			),
-			'product' => array(
-				'type' => 'string',
-				'optional' =>true,
-				'empty' => true
-			),
-			'service' => array(
-				'type' => 'number',
-				'value' => array(1, 2, 3, 4, 5)
-			),
-			'priority' => array(
-				'type' => 'number',
-				'value' => array(1, 2, 3)
-			),
-			'department' => array(
-				'type' => 'number',
-			),
-			'text' => array(
-				'type' => 'string'
-			),
-			'file' => array(
-				'type' => 'file',
-				'optional' =>true,
-				'empty' => true
-			)
-		);
-		if(authorization::childrenTypes()){
-			$this->response->setStatus(false);
-			$inputsRules['client'] = array(
-				'type' => 'number'
-			);
-		}else{
-			$this->response->setStatus(true);
+		if($children){
+			$view->setData(true, 'selectclient');
 		}
-
+		$this->response->setStatus(false);
 		if(http::is_post()){
+			$inputsRules = array(
+				'title' => array(
+					'type' => 'string',
+				),
+				'product' => array(
+					'type' => 'string',
+					'optional' =>true,
+					'empty' => true
+				),
+				'service' => array(
+					'type' => 'number',
+					'optional' =>true,
+					'empty' => true
+				),
+				'priority' => array(
+					'type' => 'number',
+					'value' => array(
+						ticket::instantaneous,
+						ticket::important,
+						ticket::ordinary
+					)
+				),
+				'department' => array(
+					'type' => 'number',
+				),
+				'text' => array(
+					'type' => 'string'
+				),
+				'file' => array(
+					'type' => 'file',
+					'optional' =>true,
+					'empty' => true
+				)
+			);
+			if($children){
+				$inputsRules['client'] = array(
+					'type' => 'number'
+				);
+			}
 			try {
-
 				$inputs = $this->checkinputs($inputsRules);
-				if(isset($inputs['client'])){
-					if($user = user::byId($inputs['client'])){
-						$client = $user->id;
-					}else{
-						throw new inputValidation("client");
+				$inputs['department'] = department::byId($inputs['department']);
+				$inputs['client'] = isset($inputs['client']) ? user::byId($inputs['client']) : authentication::getUser();
 
+
+				if(!$inputs['department']){
+					throw new inputValidation("department");
+				}
+				if(!$inputs['client']){
+					throw new inputValidation("client");
+				}
+				if(isset($inputs['product']) and $inputs['product']){
+					$inputs['product'] = products::getOne($inputs['product']);
+					if(!$inputs['product']){
+						throw new inputValidation("product");
 					}
 				}else{
-					$client = authentication::getID();
+					$intputs['product'] = null;
+				}
+				if($intputs['product'] and isset($inputs['service']) and $inputs['service']){
+					$inputs['service'] = $inputs['product']->getServiceById($inputs['service']);
+					if(!$inputs['service']){
+						throw new inputValidation("service");
+					}
+				}
+				$ticket = new ticket();
+				$ticket->title	= $inputs['title'];
+				$ticket->priority = $inputs['priority'];
+				$ticket->client = $inputs['client']->id;
+				$ticket->department = $inputs['department']->id;
+				$ticket->status = ticket::unread;
+				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
+					$ticket->setParam('product', $inputs['product']->getName());
+					$ticket->setParam('service', $inputs['service']->getId());
 				}
 
-					$ticket = new ticket();
+				$ticket->save();
 
-					$ticket->title = $inputs['title'];
-					$ticket->priority = $inputs['priority'];
-					$ticket->client = $client;
-					$ticket->status = ticket::unread;
+				$message = new ticket_message();
 
+				$message->ticket = $ticket->id;
+				$message->text = $inputs['text'];
+				$message->user = authentication::getID();
+				$message->status = ticket::unread;
 
-					if($department = department::byId($inputs['department'])){
-						$ticket->department = $department->id;
-					}else{
-						throw new inputValidation("department");
-					}
-
-
-					$ticket->save();
-
-					$message = new ticket_message();
-
-					$message->ticket = $ticket->id;
-					$message->text = $inputs['text'];
-					$message->user = authentication::getID();
-					$message->status = 0;
-
-					$message->save();
-					if(isset($inputs['product'])){
-						$ticket->setParam('product', $inputs['product']);
-						$ticket->setParam('service', $inputs['service']);
-					}
-					if(isset($inputs['file'])){
-						if($inputs['file']['error'] == 0){
-							$name = md5_file($inputs['file']['tmp_name']);
-							$directory = __DIR__.'/../storage/'.$name;
-							if(move_uploaded_file($inputs['file']['tmp_name'], $directory)){
-								$message->addFile(array(
-									'name' => $inputs['file']['name'],
-									'size' => $inputs['file']['size'],
-									'path' => $directory,
-								));
-							}else{
-								throw new inputValidation("file");
-							}
-						}elseif($inputs['file']['error'] != 4){
-							throw new inputValidation("file_status");
+				$message->save();
+				if(isset($inputs['product'])){
+					$ticket->setParam('product', $inputs['product']);
+					$ticket->setParam('service', $inputs['service']);
+				}
+				if(isset($inputs['file'])){
+					if($inputs['file']['error'] == 0){
+						$name = md5_file($inputs['file']['tmp_name']);
+						$directory = __DIR__.'/../storage/'.$name;
+						if(move_uploaded_file($inputs['file']['tmp_name'], $directory)){
+							$message->addFile(array(
+								'name' => $inputs['file']['name'],
+								'size' => $inputs['file']['size'],
+								'path' => $directory,
+							));
+						}else{
+							throw new inputValidation("file");
 						}
+					}elseif($inputs['file']['error'] != 4){
+						throw new inputValidation("file_status");
 					}
-					$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
+				}
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
+			$view->setDataForm($this->inputsvalue($inputsRules));
 		}else{
 			$this->response->setStatus(true);
 		}
@@ -273,9 +288,7 @@ class ticketing extends controller{
 	}
 	public function view($data){
 		$view = view::byName("\\packages\\ticketing\\views\\view");
-
 		authorization::haveOrFail('view');
-
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setTicketData($ticket);
 		if(http::is_post()){
@@ -292,7 +305,7 @@ class ticketing extends controller{
 			);
 			$this->response->setStatus(false);
 			try {
-				if($ticket->param('ticket_lock') === false or $ticket->param('ticket_lock') == ticket::canSendMessage){
+				if(!$ticket->param('ticket_lock')){
 
 					$inputs = $this->checkinputs($inputsRules);
 					$ticket_message = new ticket_message();
@@ -301,7 +314,7 @@ class ticketing extends controller{
 					$ticket_message->date = time();
 					$ticket_message->user = authentication::getID();
 					$ticket_message->text = $inputs['text'];
-					$ticket_message->status = 0;
+					$ticket_message->status = ticket_message::unread;
 					$ticket_message->save();
 
 					if(isset($inputs['file'])){
@@ -359,10 +372,9 @@ class ticketing extends controller{
 		$ticket_message = $this->checkTicketMessage($data['ticket']);
 		$view->setMessageData($ticket_message);
 		if(http::is_post()){
-				$ticket = $ticket_message->ticket;
-				if($ticket_message->delete()){
-					$this->response->Go(userpanel\url('ticketing/view/'.$ticket));
-				}
+			$ticket = $ticket_message->ticket;
+			$ticket_message->delete();
+			$this->response->Go(userpanel\url('ticketing/view/'.$ticket));
 		}else{
 			$this->response->setStatus(true);
 		}
@@ -374,22 +386,28 @@ class ticketing extends controller{
 		authorization::haveOrFail('message_edit');
 
 		$ticket_message = $this->checkTicketMessage($data['ticket']);
-		$inputsRules = array(
-			'text' => array(
-				'type' => 'string',
-			)
-		);
+
 		$this->response->setStatus(false);
 		if(http::is_post()){
-			$inputs = $this->checkinputs($inputsRules);
-			$ticket_message->text = $inputs['text'];
-			$ticket_message->save();
-			$this->response->setStatus(true);
-			$this->response->Go(userpanel\url('ticketing/view/'.$ticket_message->ticket));
+			$inputsRules = array(
+				'text' => array(
+					'type' => 'string',
+				)
+			);
+			try {
+				$inputs = $this->checkinputs($inputsRules);
+
+				$ticket_message->text = $inputs['text'];
+				$ticket_message->save();
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url('ticketing/view/'.$ticket_message->ticket));
+			}catch(inputValidation $error){
+				$view->setFormError(FormError::fromException($error));
+			}
 		}else{
-			$view->setMessageData($ticket_message);
 			$this->response->setStatus(true);
 		}
+		$view->setMessageData($ticket_message);
 		$this->response->setView($view);
 		return $this->response;
 	}
@@ -400,29 +418,34 @@ class ticketing extends controller{
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setDepartmentData(department::get());
 		$view->setTicketData($ticket);
-		$status = array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress, ticket::closed);
-		$inputsRules = array(
-			'title' => array(
-				'type' => 'string',
-			),
-			'priority' => array(
-				'type' => 'number',
-				'values' => array(1, 2, 3)
-			),
-			'department' => array(
-				'type' => 'number'
-			),
-			'client' => array(
-				'type' => 'number'
-			),
-			'status' => array(
-				'type' => 'number',
-				'values' => $status
-			)
-		);
-		$this->response->setStatus(false);
 		if(http::is_post()){
+			$this->response->setStatus(false);
 			try {
+				$inputsRules = array(
+					'title' => array(
+						'type' => 'string',
+					),
+					'priority' => array(
+						'type' => 'number',
+						'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary)
+					),
+					'department' => array(
+						'type' => 'number'
+					),
+					'client' => array(
+						'type' => 'number'
+					),
+					'status' => array(
+						'type' => 'number',
+						'values' => array(
+							ticket::unread,
+							ticket::read,
+							ticket::answered,
+							ticket::in_progress,
+							ticket::closed
+						)
+					)
+				);
 				$inputs = $this->checkinputs($inputsRules);
 
 				if($user = user::byId($inputs['client'])){
@@ -434,7 +457,7 @@ class ticketing extends controller{
 						$ticket->status = $inputs['status'];
 						$ticket->save();
 						$this->response->setStatus(true);
-						$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id   ));
+						$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));
 					}
 				}
 			}catch(inputValidation $error){
@@ -454,13 +477,9 @@ class ticketing extends controller{
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
-			try {
-				if($ticket->setParam('ticket_lock', 1)){
-					$this->response->setStatus(true);
-					$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
-				}
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
+			if($ticket->setParam('ticket_lock', 1)){
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 			}
 		}else{
 			$this->response->setStatus(true);
@@ -476,14 +495,10 @@ class ticketing extends controller{
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
-			try {
-				$param = ticket_param::where('ticket', $ticket->id)->where('name', 'ticket_lock')->getOne();
-				$param->delete();
-				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
-			}
+			$param = ticket_param::where('ticket', $ticket->id)->where('name', 'ticket_lock')->getOne();
+			$param->delete();
+			$this->response->setStatus(true);
+			$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		}else{
 			$this->response->setStatus(true);
 		}
@@ -493,19 +508,13 @@ class ticketing extends controller{
 	public function delete($data){
 		$view = view::byName("\\packages\\ticketing\\views\\delete");
 		authorization::haveOrFail('delete');
-
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
-			try {
-				$ticket->delete();
-				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url('ticketing'));
-
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
-			}
+			$ticket->delete();
+			$this->response->setStatus(true);
+			$this->response->Go(userpanel\url('ticketing'));
 		}else{
 			$this->response->setStatus(true);
 		}
@@ -513,27 +522,23 @@ class ticketing extends controller{
 		return $this->response;
 	}
 	public function download($data){
-		if(authorization::is_accessed('files_download')){
-
-			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.id=ticketing_files.message", 'left');
-			db::where("ticketing_files.id", $data['file']);
-			if($fileData = db::getOne("ticketing_files", array("ticketing_files.*"))){
-				$file = new ticket_file($fileData);
-				if(($fopen  = fopen($file->path, 'r')) !== false){
-					$size = $file->size;
-					$responsefile = new responsefile();
-					$responsefile->setStream($fopen);
-					$responsefile->setSize($size);
-					$responsefile->setName($file->name);
-					$this->response->setFile($responsefile);
-					return $this->response;
-				}
-
-			}else{
-				throw new NotFound;
+		authorization::haveOrFail('files_download');
+		db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.id=ticketing_files.message", 'left');
+		db::where("ticketing_files.id", $data['file']);
+		if($fileData = db::getOne("ticketing_files", array("ticketing_files.*"))){
+			$file = new ticket_file($fileData);
+			if(($fopen  = fopen($file->path, 'r')) !== false){
+				$size = $file->size;
+				$responsefile = new responsefile();
+				$responsefile->setStream($fopen);
+				$responsefile->setSize($size);
+				$responsefile->setName($file->name);
+				$this->response->setFile($responsefile);
+				return $this->response;
 			}
+
 		}else{
-			return authorization::FailResponse();
+			throw new NotFound;
 		}
 	}
 }

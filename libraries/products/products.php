@@ -11,6 +11,14 @@ class products{
 		events::trigger(new product_list());
 		return self::$products;
 	}
+	static public function getOne($name){
+		foreach(self::$products as $product){
+			if($product->getName() == $name){
+				return $product;
+			}
+		}
+		return null;
+	}
 	static public function has($name){
 		foreach(self::$products as $product){
 			if($product->getName() == $name){
