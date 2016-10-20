@@ -223,14 +223,19 @@ class ticketing extends controller{
 						throw new inputValidation("product");
 					}
 				}else{
-					$intputs['product'] = null;
+					$inputs['product'] = null;
 				}
-				if($intputs['product'] and isset($inputs['service']) and $inputs['service']){
-					$inputs['service'] = $inputs['product']->getServiceById($inputs['service']);
-					if(!$inputs['service']){
+				if($inputs['product']){
+					if(isset($inputs['service']) and $inputs['service']){
+						$inputs['service'] = $inputs['product']->getServiceById($inputs['service']);
+						if(!$inputs['service']){
+							throw new inputValidation("service");
+						}
+					}else{
 						throw new inputValidation("service");
 					}
 				}
+
 				$ticket = new ticket();
 				$ticket->title	= $inputs['title'];
 				$ticket->priority = $inputs['priority'];
@@ -241,7 +246,6 @@ class ticketing extends controller{
 					$ticket->setParam('product', $inputs['product']->getName());
 					$ticket->setParam('service', $inputs['service']->getId());
 				}
-
 				$ticket->save();
 
 				$message = new ticket_message();
