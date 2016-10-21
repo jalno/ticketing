@@ -62,4 +62,10 @@ class ticket_message extends dbObject{
 		}
 		return $return;
 	}
+	public function delete(){
+		foreach($this->files as $file){
+			$file->delete();
+		}
+		parent::delete();
+	}
 }

@@ -6,6 +6,7 @@ use \packages\base\NotFound;
 use \packages\base\http;
 use \packages\base\db;
 use \packages\base\IO;
+use \packages\base\packages;
 use \packages\base\views\FormError;
 use \packages\base\inputValidation;
 use \packages\base\response\file as responsefile;
@@ -259,12 +260,15 @@ class ticketing extends controller{
 				if(isset($inputs['file'])){
 					if($inputs['file']['error'] == 0){
 						$name = md5_file($inputs['file']['tmp_name']);
-						$directory = __DIR__.'/../storage/'.$name;
-						if(move_uploaded_file($inputs['file']['tmp_name'], $directory)){
+						$directory = packages::package('ticketing')->getFilePath('storage/private');
+						if(!is_dir($directory)){
+							IO\mkdir($directory);
+						}
+						if(move_uploaded_file($inputs['file']['tmp_name'], $directory.'/'.$name)){
 							$message->addFile(array(
 								'name' => $inputs['file']['name'],
 								'size' => $inputs['file']['size'],
-								'path' => $directory,
+								'path' => 'private/'.$name,
 							));
 						}else{
 							throw new inputValidation("file");
@@ -320,12 +324,16 @@ class ticketing extends controller{
 					if(isset($inputs['file'])){
 						if($inputs['file']['error'] == 0){
 							$name = md5_file($inputs['file']['tmp_name']);
-							$directory = __DIR__.'/../storage/'.$name;
-							if(move_uploaded_file($inputs['file']['tmp_name'], $directory)){
+
+							$directory = packages::package('ticketing')->getFilePath('storage/private');
+							if(!is_dir($directory)){
+								IO\mkdir($directory);
+							}
+							if(move_uploaded_file($inputs['file']['tmp_name'], $directory.'/'.$name)){
 								$ticket_message->addFile(array(
 									'name' => $inputs['file']['name'],
 									'size' => $inputs['file']['size'],
-									'path' => $directory,
+									'path' => 'private/'.$name,
 								));
 							}else{
 								throw new inputValidation("file");
@@ -527,16 +535,16 @@ class ticketing extends controller{
 		db::where("ticketing_files.id", $data['file']);
 		if($fileData = db::getOne("ticketing_files", array("ticketing_files.*"))){
 			$file = new ticket_file($fileData);
-			if(($fopen  = fopen($file->path, 'r')) !== false){
-				$size = $file->size;
+			if(($fopen  = @fopen(packages::package('ticketing')->getFilePath('storage/'.$file->path), 'r')) !== false){
 				$responsefile = new responsefile();
 				$responsefile->setStream($fopen);
-				$responsefile->setSize($size);
+				$responsefile->setSize($file->size);
 				$responsefile->setName($file->name);
 				$this->response->setFile($responsefile);
 				return $this->response;
+			}else{
+				throw new NotFound;
 			}
-
 		}else{
 			throw new NotFound;
 		}

@@ -1,5 +1,6 @@
 <?php
 namespace packages\ticketing;
+use \packages\base\db;
 use \packages\base\db\dbObject;
 class ticket extends dbObject{
 	const unread = 1;
@@ -98,5 +99,15 @@ class ticket extends dbObject{
 			$this->tmpmessages = array();
 		}
 		return $return;
+	}
+	public function delete(){
+		db::join("ticketing_tickets_msgs msg", "msg.id=ticketing_files.message", "LEFT");
+		db::where("msg.ticket", $this->id);
+		$files = db::get("ticketing_files", null, "ticketing_files.*");
+		foreach($files as $file){
+			$file = new ticket_file($file);
+			$file->delete();
+		}
+		parent::delete();
 	}
 }
