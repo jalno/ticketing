@@ -24,7 +24,7 @@ var TicketAdd = function () {
 			},
 			select: function( event, ui ) {
 				$(this).val(ui.item.name+(ui.item.lastname ? ' '+ui.item.lastname : ''));
-				$('input[name=client]', form).val(ui.item.id);
+				$('input[name=client]', form).val(ui.item.id).trigger('change');
 				return false;
 			},
 			focus: function( event, ui ) {
@@ -39,18 +39,20 @@ var TicketAdd = function () {
 		};
 	};
 	var getServices = function(){
-		$("select[name=product]").change(function() {
+		$("select[name=product], input[name=client]").change(function() {
 			var product = $('select[name=product]').val();
 			if(product.length){
-				$(".service_name").show("slow");
+				$("select[name=service]").parents(".form-group").show("slow");
 				var user = $("input[name=client]").val();
 				if(user.length){
+					$('select[name=service]').html('');
 					$.ajax({
-						url: "/fa/userpanel/"+product+"s",
+						url: "/fa/userpanel/ticketing/getservices",
 						dataType: "json",
 						data: {
 							ajax:1,
-							user: user
+							client: user,
+							product: product
 						},
 						success:function(data){
 							if(data.status){
@@ -58,7 +60,7 @@ var TicketAdd = function () {
 									$('select[name=service]').append($('<option>',
 										{
 										   value: data.items[i].id,
-										   text : data.items[i].domain
+										   text : data.items[i].title
 									   }));
 
 								}
@@ -68,6 +70,8 @@ var TicketAdd = function () {
 				}else{
 					$.growl.notice({title:"خطا", message:"کاربر پیدا نشد"});
 				}
+			}else{
+				$("select[name=service]").parents(".form-group").hide();
 			}
 		});
 	};

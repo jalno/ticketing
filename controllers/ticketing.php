@@ -549,4 +549,38 @@ class ticketing extends controller{
 			throw new NotFound;
 		}
 	}
+	public function getServices(){
+		$this->response->setStatus(false);
+		try{
+			$inputs = $this->checkinputs(array(
+				'product' => array(
+					'type' => 'string'
+				),
+				'client' => array(
+					'type' => 'number'
+				)
+			));
+			products::get();
+			if(!products::has($inputs['product'])){
+				throw new inputValidation("product");
+			}
+			$inputs['client'] = user::byId($inputs['client']);
+			if(!$inputs['client']){
+				throw new inputValidation("client");
+			}
+			$product = products::getOne($inputs['product']);
+			$services = array();
+			foreach($product->getServices($inputs['client']) as $service){
+				$services[] = array(
+					'id' => $service->getId(),
+					'title' => $service->getTitle()
+				);
+			}
+			$this->response->setdata($services, "items");
+			$this->response->setStatus(true);
+		}catch(inputValidation $error){
+			$this->response->addError(FormError::fromException($error));
+		}
+		return $this->response;
+	}
 }

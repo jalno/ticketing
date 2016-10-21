@@ -38,5 +38,10 @@
 	{
 		"path": ["userpanel","ticketing", "download", {"type":"dynamic","name":"file", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@download"
+	},
+	{
+		"path": ["userpanel","ticketing", "getservices"],
+		"controller": "controllers\\ticketing@getServices",
+		"method":"get"
 	}
 ]

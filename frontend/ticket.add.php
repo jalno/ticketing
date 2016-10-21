@@ -39,7 +39,7 @@ $this->the_header();
 							'type' => 'select',
 							'label' => translator::trans("newticket.typeservice"),
 							'options' => $this->products(),
-							'value' => 0
+							'value' => ''
 						)
 					);
 					foreach($fields as $field){
