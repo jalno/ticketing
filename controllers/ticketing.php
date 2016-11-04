@@ -501,7 +501,7 @@ class ticketing extends controller{
 	}
 	public function unlock($data){
 		$view = view::byName("\\packages\\ticketing\\views\\unlock");
-		authorization::haveOrFail('lock');
+		authorization::haveOrFail('unlock');
 
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setTicketData($ticket);
