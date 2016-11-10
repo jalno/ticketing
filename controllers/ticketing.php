@@ -135,8 +135,9 @@ class ticketing extends controller{
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
+			db::pageLimit($this->items_per_page);
 			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-
+			$totalCount = db::totalCount();
 			$tickets = array();
 			foreach($tickeetData as $ticket){
 				$tickets[] = new ticket($ticket);
@@ -145,13 +146,14 @@ class ticketing extends controller{
 		}else{
 			$this->response->setStatus(true);
 			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-
+			$totalCount = db::totalCount();
 			$tickets = array();
 			foreach($tickeetData as $ticket){
 				$tickets[] = new ticket($ticket);
 			}
 			$view->setTickets($tickets);
 		}
+		$view->setPaginate($this->page,$totalCount, $this->items_per_page);
 		$view->setDepartment(department::get());
 		$this->response->setView($view);
 		return $this->response;

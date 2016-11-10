@@ -41,6 +41,7 @@ class listview extends ticketListView{
 			$item->setTitle(translator::trans('ticketing'));
 			$item->setURL(userpanel\url('ticketing'));
 			$item->setIcon('clip-user-6');
+			$item->setPriority(280);
 			navigation::addItem($item);
 		}
 	}

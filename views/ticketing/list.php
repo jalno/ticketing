@@ -1,9 +1,11 @@
 <?php
 namespace packages\ticketing\views;
-use \packages\ticketing\views\form as list_view;
+use \packages\financial\views\listview as list_view;
+use \packages\base\views\traits\form as formTrait;
 use \packages\ticketing\authorization;
 
-class ticketlist extends form{
+class ticketlist extends list_view{
+	use formTrait;
 	protected $canAdd;
 	protected $canView;
 	protected $canEdit;
