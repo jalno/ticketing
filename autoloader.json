@@ -40,6 +40,10 @@
 			"file":"controllers/ticketing.php"
 		},
 		{
+			"classes":["controllers\\settings\\departments"],
+			"file":"controllers/settings/departments.php"
+		},
+		{
 			"classes":["ticket"],
 			"file":"libraries/ticketing/tickets.php"
 		},
@@ -118,6 +122,10 @@
 		{
 			"classes":["listeners\\settings\\usertype"],
 			"file":"listeners/settings/usertype.php"
+		},
+		{
+			"classes":["views\\settings\\department\\listview"],
+			"file":"views/settings/department/list.php"
 		}
 	]
 }

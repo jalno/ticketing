@@ -50,6 +50,10 @@
 		{
 			"classes":["views\\ticketing\\message_edit"],
 			"file":"views/ticketing/message.edit.php"
+		},
+		{
+			"classes":["views\\ticketing\\settings\\department\\listview"],
+			"file":"views/settings/department/list.php"
 		}
 	]
 }

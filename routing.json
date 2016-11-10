@@ -43,5 +43,9 @@
 		"path": ["userpanel","ticketing", "getservices"],
 		"controller": "controllers\\ticketing@getServices",
 		"method":"get"
+	},
+	{
+		"path": ["userpanel","settings", "departments"],
+		"controller": "controllers\\settings\\departments@listview"
 	}
 ]

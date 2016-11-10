@@ -57,6 +57,11 @@
 			"name":"\\themes\\clipone\\views\\ticketing\\message_edit",
 			"parent":"\\packages\\ticketing\\views\\message_edit",
 			"file":"ticket.message.edit.php"
+		},
+		{
+			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\listview",
+			"parent":"\\packages\\ticketing\\views\\settings\\department\\listview",
+			"file":"settings.department.php"
 		}
 	]
 }
