@@ -17,11 +17,11 @@ $this->the_header();
 		<!-- start: BASIC TABLE PANEL -->
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="clip-user-6"></i> <?php echo translator::trans('tickets'); ?>
+				<i class="clip-user-6"></i> <?php echo translator::trans('departments'); ?>
 				<div class="panel-tools">
 					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('search'); ?>" href="#search" data-toggle="modal" data-original-title=""><i class="fa fa-search"></i></a>
 					<?php if($this->canAdd){ ?>
-					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('ticketing.add'); ?>" href="<?php echo userpanel\url('settings/departments/add'); ?>"><i class="fa fa-plus"></i></a>
+					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('add'); ?>" href="<?php echo userpanel\url('settings/departments/add'); ?>"><i class="fa fa-plus"></i></a>
 					<?php } ?>
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 				</div>
