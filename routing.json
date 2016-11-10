@@ -51,5 +51,13 @@
 	{
 		"path": ["userpanel","settings", "departments", "delete", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\settings\\departments@delete"
+	},
+	{
+		"path": ["userpanel","settings", "departments", "add"],
+		"controller": "controllers\\settings\\departments@add"
+	},
+	{
+		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\settings\\departments@edit"
 	}
 ]

@@ -58,6 +58,14 @@
 		{
 			"classes":["views\\ticketing\\settings\\department\\delete"],
 			"file":"views/settings/department/delete.php"
+		},
+		{
+			"classes":["views\\ticketing\\settings\\department\\add"],
+			"file":"views/settings/department/add.php"
+		},
+		{
+			"classes":["views\\ticketing\\settings\\department\\edit"],
+			"file":"views/settings/department/edit.php"
 		}
 	]
 }

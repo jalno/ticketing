@@ -83,7 +83,7 @@ $this->the_header();
 				),
 				array(
 					'name' => 'title',
-					'label' => translator::trans("ticket.title")
+					'label' => translator::trans("department.title")
 				),
 				array(
 					'type' => 'select',

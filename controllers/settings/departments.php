@@ -101,7 +101,65 @@ class departments extends controller{
 			try{
 				$department->delete();
 				$this->response->setStatus(true);
-				$this->response->GO(userpanel\url("settings/departments"));
+				$this->response->Go(userpanel\url("settings/departments"));
+			}catch(inputValidation $error){
+				$view->setFormError(FormError::fromException($error));
+			}
+		}else{
+			$this->response->setStatus(true);
+		}
+		$this->response->setView($view);
+		return $this->response;
+	}
+	public function add(){
+		authorization::haveOrFail('department_add');
+		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\add");
+		$inputsRules = array(
+			'title' => array(
+				'type' => 'string'
+			)
+		);
+		$this->response->setStatus(false);
+		if(http::is_post()){
+			try{
+				$inputs = $this->checkinputs($inputsRules);
+				$department = new department($inputs);
+				$department->save();
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
+			}catch(inputValidation $error){
+				$view->setFormError(FormError::fromException($error));
+			}
+		}else{
+			$this->response->setStatus(true);
+		}
+		$this->response->setView($view);
+		return $this->response;
+	}
+	public function edit($data){
+		authorization::haveOrFail('department_edit');
+		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\edit");
+		$department = department::byId($data['id']);
+		if(!$department){
+			throw new NotFound;
+		}
+		$view->setDepartmentData($department);
+		$inputsRules = array(
+			'title' => array(
+				'type' => 'string',
+				'optional' => true
+			)
+		);
+		$this->response->setStatus(false);
+		if(http::is_post()){
+			try{
+				$inputs = $this->checkinputs($inputsRules);
+				if(isset($inputs['title'])){
+					$department->title = $inputs['title'];
+					$department->save();
+				}
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
