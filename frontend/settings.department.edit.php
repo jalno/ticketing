@@ -33,11 +33,12 @@ $this->the_header();
 							'value' => $this->getDepartmentData()->title
 						));
 					?>
+					<hr>
+					<p>
+						<a href="<?php echo userpanel\url("settings/departments"); ?>"class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
+						<button type="submit" class="btn btn-yellow"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("edit"); ?></button>
+					</p>
 				</form>
-				<div class="modal-footer">
-					<button type="submit" form="departmentsearch" class="btn btn-success"><?php echo translator::trans("edit"); ?></button>
-					<a href="<?php echo userpanel\url("settings/departments"); ?>" class="btn btn-default"><?php echo translator::trans('return'); ?></a>
-				</div>
 			</div>
 		</div>
 		<!-- end: BASIC TABLE PANEL -->
