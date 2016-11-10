@@ -11,6 +11,7 @@ use \packages\userpanel;
 use \themes\clipone\views\listTrait;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
+use \themes\clipone\utility;
 use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
 
@@ -52,17 +53,8 @@ class view extends ticketView{
 	protected function SetDataView(){
 		$this->messages = $this->getTicketData()->message;
 		foreach($this->messages as $message){
-			$date = time()-$message->date;
-			if($date == 0){
-				$lasTime = translator::trans("just.now");
-			}elseif($date < 60){
-				$lasTime = $date.translator::trans("lastSec");
-			}elseif($date >= 60 and $date < 3600){
-				$lasTime = floor($date/60).translator::trans("lastMin");
-			}elseif($date >= 3600){
-				$lasTime = floor($date/3600).translator::trans("lastHov");
-			}
-			$message->lastime = $lasTime;
+
+			$message->lastime = utility::dateFormNow($message->date);
 
 			if($message->format == "markdown"){
 				$Parsedown = new Parsedown();
