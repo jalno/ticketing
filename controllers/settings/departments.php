@@ -88,4 +88,27 @@ class departments extends controller{
 		$this->response->setView($view);
 		return $this->response;
 	}
+	public function delete($data){
+		authorization::haveOrFail('department_delete');
+		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\delete");
+		$department = department::byId($data['id']);
+		if(!$department){
+			throw new NotFound;
+		}
+		$view->setDepartmentData($department);
+		$this->response->setStatus(false);
+		if(http::is_post()){
+			try{
+				$department->delete();
+				$this->response->setStatus(true);
+				$this->response->GO(userpanel\url("settings/departments"));
+			}catch(inputValidation $error){
+				$view->setFormError(FormError::fromException($error));
+			}
+		}else{
+			$this->response->setStatus(true);
+		}
+		$this->response->setView($view);
+		return $this->response;
+	}
 }

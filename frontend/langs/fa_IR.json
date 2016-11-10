@@ -63,7 +63,7 @@
 		"newticket.typeservice":"نوع سرویس مربوط:",
 		"none":"هیچکدام",
 		"typeservice.chatroom":"چتروم ها",
-		"newticket.department":"بخش مربوط:",
+		"newticket.department":"دپارتمان مربوط:",
 		"newticket.service":"سرویس مربوط:",
 		"newticket.priority":"الویت تیکت:",
 		"newticket.service":"سرویس مربوطه:",
@@ -82,13 +82,15 @@
 		"usertype.permissions.ticketing_message_delete": "حذف پیام های تیکت",
 		"usertype.permissions.ticketing_message_edit": "ویرایش پیام های تیکت",
 		"usertype.permissions.ticketing_files_download": "دانلود فایل های پیوست تیکت",
-		"usertype.permissions.ticketing_department_list": "لیست بخش های پشتیبانی",
-		"usertype.permissions.ticketing_department_edit": "ویرایش بخش های پشتیبانی",
-		"usertype.permissions.ticketing_department_delete": "حذف بخش های پشتیبانی",
-		"usertype.permissions.ticketing_department_add": "افزودن بخش های پشتیبانی",
+		"usertype.permissions.ticketing_department_list": "لیست دپارتمان های پشتیبانی",
+		"usertype.permissions.ticketing_department_edit": "ویرایش دپارتمان های پشتیبانی",
+		"usertype.permissions.ticketing_department_delete": "حذف دپارتمان های پشتیبانی",
+		"usertype.permissions.ticketing_department_add": "افزودن دپارتمان های پشتیبانی",
 		"department.edit":"ویرایش",
 		"department.delete":"حذف",
-		"departments" : "دپارتمان ها"
+		"departments" : "دپارتمان ها",
+		"department.delete.warning.title": "حذف دپارتمان",
+		"department.delete.warning": "آیا از حذف دپارتمان به شناسه #{department_id} اطمینان دارید؟ این عملیات بدون بازگشت است"
 
 	}
 }

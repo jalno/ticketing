@@ -54,6 +54,10 @@
 		{
 			"classes":["views\\ticketing\\settings\\department\\listview"],
 			"file":"views/settings/department/list.php"
+		},
+		{
+			"classes":["views\\ticketing\\settings\\department\\delete"],
+			"file":"views/settings/department/delete.php"
 		}
 	]
 }

@@ -47,5 +47,9 @@
 	{
 		"path": ["userpanel","settings", "departments"],
 		"controller": "controllers\\settings\\departments@listview"
+	},
+	{
+		"path": ["userpanel","settings", "departments", "delete", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\settings\\departments@delete"
 	}
 ]

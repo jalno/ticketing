@@ -17,7 +17,7 @@ $this->the_header();
 		<!-- start: BASIC TABLE PANEL -->
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="clip-user-6"></i> <?php echo translator::trans('departments'); ?>
+				<i class="fa fa-university"></i> <?php echo translator::trans('departments'); ?>
 				<div class="panel-tools">
 					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('search'); ?>" href="#search" data-toggle="modal" data-original-title=""><i class="fa fa-search"></i></a>
 					<?php if($this->canAdd){ ?>
@@ -42,8 +42,8 @@ $this->the_header();
 						<tbody>
 							<?php
 							foreach($this->getDepartments() as $department){
-								$this->setButtonParam('edit', 'link', userpanel\url("settings/edit/".$department->id));
-								$this->setButtonParam('delete', 'link', userpanel\url("settings/delete/".$department->id));
+								$this->setButtonParam('edit', 'link', userpanel\url("settings/departments/edit/".$department->id));
+								$this->setButtonParam('delete', 'link', userpanel\url("settings/departments/delete/".$department->id));
 							?>
 							<tr>
 								<td class="center"><?php echo $department->id; ?></td>

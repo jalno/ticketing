@@ -62,6 +62,11 @@
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\listview",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\listview",
 			"file":"settings.department.php"
+		},
+		{
+			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\delete",
+			"parent":"\\packages\\ticketing\\views\\settings\\department\\delete",
+			"file":"settings.department.delete.php"
 		}
 	]
 }

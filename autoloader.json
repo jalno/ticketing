@@ -126,6 +126,10 @@
 		{
 			"classes":["views\\settings\\department\\listview"],
 			"file":"views/settings/department/list.php"
+		},
+		{
+			"classes":["views\\settings\\department\\delete"],
+			"file":"views/settings/department/delete.php"
 		}
 	]
 }
