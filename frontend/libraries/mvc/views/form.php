@@ -8,7 +8,7 @@ trait formTrait{
 			$options['name'] = '';
 		}
 		if(!isset($options['error']) or $options['error']){
-			$error =  $this->getFromErrorsByInput($options['name']);
+			$error =  $this->getFormErrorsByInput($options['name']);
 		}else{
 			$error = false;
 		}

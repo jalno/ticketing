@@ -92,7 +92,7 @@ class add extends ticketadd{
 		return array_merge($none, $this->getProductsForSelect());
 	}
 	private function setUserInput(){
-		if($error = $this->getFromErrorsByInput('client')){
+		if($error = $this->getFormErrorsByInput('client')){
 			$error->setInput('user_name');
 			$this->setFormError($error);
 		}
