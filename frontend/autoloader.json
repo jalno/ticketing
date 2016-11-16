@@ -66,6 +66,10 @@
 		{
 			"classes":["views\\ticketing\\settings\\department\\edit"],
 			"file":"views/settings/department/edit.php"
+		},
+		{
+			"classes":["listeners\\ticketing\\dashboard"],
+			"file":"listeners/clipone/dashboard.php"
 		}
 	]
 }

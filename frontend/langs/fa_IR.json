@@ -93,7 +93,10 @@
 		"department.delete.warning": "آیا از حذف دپارتمان به شناسه #{department_id} اطمینان دارید؟ این عملیات بدون بازگشت است",
 		"department.title": "عنوان",
 		"department_add": "اضافه کردن دپارتمان",
-		"department_edit": "ویرایش دپارتمان"
+		"department_edit": "ویرایش دپارتمان",
+		"shortcut.tickets.title" : "تیکت ها",
+		"shortcut.tickets.text" : "شاید در تیکت ها پاسخی ارسال شده و شما آن راباید هر چه سریع تر بررسی کنید.",
+		"shortcut.tickets.link" : "لیست تیکت ها"
 
 	}
 }
