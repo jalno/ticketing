@@ -230,7 +230,7 @@ class ticketing extends controller{
 				}
 				if($inputs['product']){
 					if(isset($inputs['service']) and $inputs['service']){
-						$inputs['service'] = $inputs['product']->getServiceById($inputs['service']);
+						$inputs['service'] = $inputs['product']->getServiceById($inputs['client'],$inputs['service']);
 						if(!$inputs['service']){
 							throw new inputValidation("service");
 						}
