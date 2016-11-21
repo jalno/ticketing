@@ -245,12 +245,14 @@ class ticketing extends controller{
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
 				$ticket->status = ticket::unread;
+
 				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
 					$ticket->setParam('product', $inputs['product']->getName());
 					$ticket->setParam('service', $inputs['service']->getId());
 				}
 				$ticket->save();
-
+				print_R($inputs);
+				exit();
 				$message = new ticket_message();
 
 				$message->ticket = $ticket->id;
@@ -259,9 +261,9 @@ class ticketing extends controller{
 				$message->status = ticket::unread;
 
 				$message->save();
-				if(isset($inputs['product'])){
-					$ticket->setParam('product', $inputs['product']);
-					$ticket->setParam('service', $inputs['service']);
+				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
+					$ticket->setParam('product', $inputs['product']->getName());
+					$ticket->setParam('service', $inputs['service']->getId());
 				}
 				if(isset($inputs['file'])){
 					if($inputs['file']['error'] == 0){

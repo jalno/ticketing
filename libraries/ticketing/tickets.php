@@ -40,6 +40,7 @@ class ticket extends dbObject{
 	}
 
 	protected $tmpmessages = array();
+	protected $tmparams = array();
 	protected function addMessage($messagedata){
 		$message = new ticket_message($messagedata);
 		if ($this->isNew){
@@ -92,6 +93,11 @@ class ticket extends dbObject{
 	}
 	public function save($data = null){
 		if(($return = parent::save($data))){
+			foreach($this->tmparams as $param){
+				$param->ticket = $this->id;
+				$param->save();
+			}
+			$this->tmparams = array();
 			foreach($this->tmpmessages as $message){
 				$message->ticket = $this->id;
 				$message->save();
