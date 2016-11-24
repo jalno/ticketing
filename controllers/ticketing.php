@@ -251,8 +251,6 @@ class ticketing extends controller{
 					$ticket->setParam('service', $inputs['service']->getId());
 				}
 				$ticket->save();
-				print_R($inputs);
-				exit();
 				$message = new ticket_message();
 
 				$message->ticket = $ticket->id;
