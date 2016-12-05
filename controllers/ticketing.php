@@ -38,11 +38,11 @@ class ticketing extends controller{
 			db::where("userpanel_users.id", authentication::getID());
 		}
 		db::where("ticketing_tickets.id", $ticketID);
-		if($ticket = new ticket(db::getOne("ticketing_tickets", "ticketing_tickets.*"))){
-			return $ticket;
-		}else{
+		$ticket = new ticket(db::getOne("ticketing_tickets", "ticketing_tickets.*"))
+		if(!$ticket->id){
 			throw new NotFound;
 		}
+		return $ticket;
 	}
 	private function checkTicketMessage($messageID){
 		$types = authorization::childrenTypes();
@@ -537,20 +537,24 @@ class ticketing extends controller{
 	}
 	public function download($data){
 		authorization::haveOrFail('files_download');
-		db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.id=ticketing_files.message", 'left');
+		$types = authorization::childrenTypes();
+		db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.id=ticketing_files.message", 'INNER');
+		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
+		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+		if($types){
+			db::where("userpanel_users.type", $types, 'in');
+		}else{
+			db::where("userpanel_users.id", authentication::getID());
+		}
 		db::where("ticketing_files.id", $data['file']);
 		if($fileData = db::getOne("ticketing_files", array("ticketing_files.*"))){
 			$file = new ticket_file($fileData);
-			if(($fopen  = @fopen(packages::package('ticketing')->getFilePath('storage/'.$file->path), 'r')) !== false){
-				$responsefile = new responsefile();
-				$responsefile->setStream($fopen);
-				$responsefile->setSize($file->size);
-				$responsefile->setName($file->name);
-				$this->response->setFile($responsefile);
-				return $this->response;
-			}else{
-				throw new NotFound;
-			}
+			$responsefile = new responsefile();
+			$responsefile->setLocation(packages::package('ticketing')->getFilePath('storage/'.$file->path));
+			$responsefile->setSize($file->size);
+			$responsefile->setName($file->name);
+			$this->response->setFile($responsefile);
+			return $this->response;
 		}else{
 			throw new NotFound;
 		}
