@@ -96,7 +96,17 @@
 		"department_edit": "ویرایش دپارتمان",
 		"shortcut.tickets.title" : "تیکت ها",
 		"shortcut.tickets.text" : "شاید در تیکت ها پاسخی ارسال شده و شما آن راباید هر چه سریع تر بررسی کنید.",
-		"shortcut.tickets.link" : "لیست تیکت ها"
+		"shortcut.tickets.link" : "لیست تیکت ها",
+		"days": "روزها",
+		"worktimes": "ساعات کاری",
+		"ticketing.departments.worktime.saturday": "شنبه",
+		"ticketing.departments.worktime.sunday": "یکشنبه",
+		"ticketing.departments.worktime.monday": "دوشنبه",
+		"ticketing.departments.worktime.tuesday": "سه شنبه",
+		"ticketing.departments.worktime.wednesday": "چهارشنبه",
+		"ticketing.departments.worktime.thursday": "پنج شنبه",
+		"ticketing.departments.worktime.friday": "جمعه",
+		"un_worktimes.message": "پیام در ساعات غیر کاری"
 
 	}
 }

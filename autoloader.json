@@ -138,6 +138,10 @@
 		{
 			"classes":["views\\settings\\department\\edit"],
 			"file":"views/settings/department/edit.php"
+		},
+		{
+			"classes":["department\\worktime"],
+			"file":"libraries/ticketing/departments.worktime.php"
 		}
 	]
 }

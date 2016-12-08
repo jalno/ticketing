@@ -9,4 +9,7 @@ class ticket_param extends dbObject{
         'name' => array('type' => 'text', 'required' => true),
         'value' => array('type' => 'text', 'required' => true)
     );
+	protected $relations = array(
+		'ticket' => array('hasOne', 'packages\\ticketing\\ticket', 'ticket')
+	);
 }

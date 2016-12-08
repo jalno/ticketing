@@ -38,6 +38,39 @@ var TicketAdd = function () {
 				.appendTo( ul );
 		};
 	};
+	var runDepartmentList = function(){
+		$("select[name=department]", form).change(function(){
+			var isWorking = $("option:selected", this).data("working");
+			var department = $(this).val();
+			if(isWorking == 0){
+				$.ajax({
+					url: "/fa/userpanel/settings/departments/edit/"+department,
+					dataType: "json",
+					data: {
+						ajax:1,
+					},
+					success:function(data){
+						if(data.status){
+							if(data.department.currentWork.message){
+								$(".alert").slideUp("slow", function(){
+									$(this).remove();
+								});
+								var code = '<div class="row">';
+							    code += '<div class="col-xs-12">';
+						        code += '<div class="alert alert-block alert-info">';
+					            code += '<button data-dismiss="alert" class="close" type="button">×</button>';
+					            code += '<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>';
+					            code += '<p>'+data.department.currentWork.message+'</p>';
+						        code += '</div></div></div>';
+								form.parents('.panel').before(code);
+							}
+						}
+					},
+				});
+			}
+		});
+		$("select[name=department]", form).trigger('change');
+	}
 	var getServices = function(){
 		$("select[name=product], input[name=client]").change(function() {
 			var product = $('select[name=product]').val();
@@ -89,6 +122,7 @@ var TicketAdd = function () {
 			initElements();
 			runUserListener();
 			getServices();
+			runDepartmentList();
 
 		}
 	}

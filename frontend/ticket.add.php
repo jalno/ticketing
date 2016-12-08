@@ -60,7 +60,7 @@ $this->the_header();
 							'name' => 'department',
 							'type' => 'select',
 							'label' => translator::trans("newticket.department"),
-							'options' => $this->department
+							'options' => $this->getDepartmentsForSelect()
 						),
 						array(
 							'name' => 'service',

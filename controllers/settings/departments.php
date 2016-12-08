@@ -1,15 +1,12 @@
 <?php
 namespace packages\ticketing\controllers\settings;
 use \packages\base;
-use \packages\base\frontend\theme;
 use \packages\base\NotFound;
 use \packages\base\http;
 use \packages\base\db;
-use \packages\base\IO;
-use \packages\base\packages;
+use \packages\base\utility\safe;
 use \packages\base\views\FormError;
 use \packages\base\inputValidation;
-use \packages\base\response\file as responsefile;
 
 use \packages\userpanel;
 use \packages\userpanel\user;
@@ -20,12 +17,7 @@ use \packages\ticketing\authorization;
 use \packages\userpanel\authentication;
 
 use \packages\ticketing\view;
-use \packages\ticketing\ticket;
 use \packages\ticketing\department;
-use \packages\ticketing\ticket_message;
-use \packages\ticketing\ticket_param;
-use \packages\ticketing\products;
-use \packages\ticketing\ticket_file;
 
 class departments extends controller{
 	protected $authentication = true;
@@ -117,14 +109,52 @@ class departments extends controller{
 		$inputsRules = array(
 			'title' => array(
 				'type' => 'string'
-			)
+			),
+			'day' => array()
 		);
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			try{
 				$inputs = $this->checkinputs($inputsRules);
-				$department = new department($inputs);
+				$department = new department;
+				if(is_array($inputs['day'])){
+					foreach($inputs['day'] as $day => $val){
+						if(!in_array($day, range(1,7))){
+							throw new inputValidation("day[{$day}][enable]");
+						}
+						if(isset($val['enable']) and $val['enable']){
+							if(!isset($val['worktime']['start']) or !in_array($val['worktime']['start'], range(0,23))){
+								throw new inputValidation("day[{$day}][worktime][start]");
+							}
+							if(!isset($val['worktime']['end']) or !in_array($val['worktime']['end'], range(0,23))){
+								throw new inputValidation("day[{$day}][worktime][end]");
+							}
+							if($val['worktime']['end'] < $val['worktime']['start']){
+								throw new inputValidation("day[{$day}][worktime][end]");
+							}
+						}else{
+							$inputs['day'][$day]['worktime']['start'] = $inputs['day'][$day]['worktime']['end'] = 0;
+						}
+						if(array_key_exists('message',$val)){
+							$val['message'] = safe::string($val['message']);
+						}else{
+							throw new inputValidation("day[{$day}][message]");
+						}
+					}
+				}else{
+					throw new inputValidation("day");
+				}
+				if(isset($inputs['title'])){
+					$department->title = $inputs['title'];
+				}
 				$department->save();
+				foreach($department->worktimes as $work){
+					$input = $inputs['day'][$work->day];
+					$work->time_start = $input['worktime']['start'];
+					$work->time_end = $input['worktime']['end'];
+					$work->message = $input['message'];
+					$work->save();
+				}
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
 			}catch(inputValidation $error){
@@ -137,27 +167,62 @@ class departments extends controller{
 		return $this->response;
 	}
 	public function edit($data){
-		authorization::haveOrFail('department_edit');
+		(($this->response->is_ajax() and !http::is_post()) or authorization::haveOrFail('department_edit'));
 		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\edit");
 		$department = department::byId($data['id']);
 		if(!$department){
 			throw new NotFound;
 		}
-		$view->setDepartmentData($department);
+		$view->setDepartment($department);
 		$inputsRules = array(
 			'title' => array(
 				'type' => 'string',
 				'optional' => true
-			)
+			),
+			'day' => array()
 		);
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			try{
 				$inputs = $this->checkinputs($inputsRules);
+				if(is_array($inputs['day'])){
+					foreach($inputs['day'] as $day => $val){
+						if(!in_array($day, range(1,7))){
+							throw new inputValidation("day[{$day}][enable]");
+						}
+						if(isset($val['enable']) and $val['enable']){
+							if(!isset($val['worktime']['start']) or !in_array($val['worktime']['start'], range(0,23))){
+								throw new inputValidation("day[{$day}][worktime][start]");
+							}
+							if(!isset($val['worktime']['end']) or !in_array($val['worktime']['end'], range(0,23))){
+								throw new inputValidation("day[{$day}][worktime][end]");
+							}
+							if($val['worktime']['end'] < $val['worktime']['start']){
+								throw new inputValidation("day[{$day}][worktime][end]");
+							}
+						}else{
+							$inputs['day'][$day]['worktime']['start'] = $inputs['day'][$day]['worktime']['end'] = 0;
+						}
+						if(array_key_exists('message',$val)){
+							$val['message'] = safe::string($val['message']);
+						}else{
+							throw new inputValidation("day[{$day}][message]");
+						}
+					}
+				}else{
+					throw new inputValidation("day");
+				}
 				if(isset($inputs['title'])){
 					$department->title = $inputs['title'];
-					$department->save();
 				}
+				foreach($department->worktimes as $work){
+					$input = $inputs['day'][$work->day];
+					$work->time_start = $input['worktime']['start'];
+					$work->time_end = $input['worktime']['end'];
+					$work->message = $input['message'];
+					$work->save();
+				}
+				$department->save();
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
 			}catch(inputValidation $error){

@@ -8,6 +8,7 @@ use \packages\base\db;
 use \packages\base\IO;
 use \packages\base\packages;
 use \packages\base\views\FormError;
+use \packages\base\view\error;
 use \packages\base\inputValidation;
 use \packages\base\response\file as responsefile;
 
@@ -301,6 +302,16 @@ class ticketing extends controller{
 		authorization::haveOrFail('view');
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setTicketData($ticket);
+		if(!$ticket->department->isWorking()){
+			$work = $ticket->department->currentWork();
+			if($work->message){
+				$error = new error;
+				$error->setType(error::NOTICE);
+				$error->setCode("ticketing.department.closed");
+				$error->setMessage($work->message);
+				$view->addError($error);
+			}
+		}
 		if(http::is_post()){
 			authorization::haveOrFail('reply');
 			$inputsRules = array(

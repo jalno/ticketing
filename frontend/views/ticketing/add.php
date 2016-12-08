@@ -19,14 +19,12 @@ use \themes\clipone\navigation\menuItem;
 
 class add extends ticketadd{
 	use viewTrait,formTrait;
-	protected $department;
 	protected $user;
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing.add')
 		));
 		$this->setNavigation();
-		$this->SetDataValue();
 		$this->addAssets();
 		$this->setUserInput();
 
@@ -49,13 +47,18 @@ class add extends ticketadd{
 		$this->addCSSFile(theme::url('assets/css/custom.css'));
 		$this->addJSFile(theme::url('assets/js/pages/ticket.add.js'));
 	}
-	protected function SetDataValue(){
+	protected function getDepartmentsForSelect(){
+		$options = array();
 		foreach($this->getDepartmentData() as $row){
-			$this->department[] = array(
+			$options[] = array(
 				'title' => $row->title,
-				'value' => $row->id
+				'value' => $row->id,
+				'data' => array(
+					'working' => $row->isWorking() ? 1 : 0
+				)
 			);
 		}
+		return $options;
 	}
 	protected function getProductsForSelect(){
 		$products = array();

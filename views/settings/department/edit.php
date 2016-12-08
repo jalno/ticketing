@@ -1,12 +1,31 @@
 <?php
 namespace packages\ticketing\views\settings\department;
+use \packages\ticketing\department;
+use \packages\ticketing\views\form;
+class edit extends form {
+	public function setDepartment(department $department){
+		$this->setData($department, 'department');
 
-class edit extends \packages\ticketing\views\form{
-	protected $department;
-	public function setDepartmentData($department){
-		$this->department = $department;
+		$this->setDataForm($department->title,'title');
+		foreach($department->worktimes as $work){
+			$this->setDataForm(($work->time_start or $work->time_end), "day[{$work->day}][enable]");
+			$this->setDataForm($work->time_start, "day[{$work->day}][worktime][start]");
+			$this->setDataForm($work->time_end, "day[{$work->day}][worktime][end]");
+			$this->setDataForm($work->message, "day[{$work->day}][message]");
+		}
 	}
-	public function getDepartmentData(){
-		return $this->department;
+	public function getDepartment(){
+		return $this->getData('department');
+	}
+	public function export(){
+		$department = $this->getDepartment();
+
+		$data = array(
+			'department' => $department->toArray(),
+		);
+		$data['department']['currentWork'] =  $department->currentWork()->toArray();
+		return array(
+			'data' => $data
+		);
 	}
 }
