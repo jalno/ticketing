@@ -17,11 +17,8 @@ class ticketlist extends list_view{
 		$this->canEdit = authorization::is_accessed('edit');
 		$this->canDel = authorization::is_accessed('delete');
 	}
-	public function setTickets($ticket){
-		$this->setData($ticket, 'tickets');
-	}
 	public function getTickets(){
-		return $this->getData('tickets');
+		return $this->dataList;
 	}
 	public function setDepartment($department){
 		$this->setData($department, 'department');

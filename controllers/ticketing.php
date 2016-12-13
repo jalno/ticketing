@@ -1,14 +1,15 @@
 <?php
 namespace packages\ticketing\controllers;
 use \packages\base;
-use \packages\base\frontend\theme;
-use \packages\base\NotFound;
-use \packages\base\http;
-use \packages\base\db;
 use \packages\base\IO;
+use \packages\base\db;
+use \packages\base\http;
 use \packages\base\packages;
-use \packages\base\views\FormError;
+use \packages\base\NotFound;
 use \packages\base\view\error;
+use \packages\base\db\parenthesis;
+use \packages\base\frontend\theme;
+use \packages\base\views\FormError;
 use \packages\base\inputValidation;
 use \packages\base\response\file as responsefile;
 
@@ -54,12 +55,11 @@ class ticketing extends controller{
 			db::where("userpanel_users.id", authentication::getID());
 		}
 		db::where("ticketing_tickets_msgs.id", $messageID);
-
-		if($ticket_message = new ticket_message(db::getOne("ticketing_tickets_msgs", "ticketing_tickets_msgs.*"))){
-			return $ticket_message;
-		}else{
+		$ticket_message = new ticket_message(db::getOne("ticketing_tickets_msgs", "ticketing_tickets_msgs.*"));
+		if(!$ticket_message->id){
 			throw new NotFound;
 		}
+		return $ticket_message;
 	}
 	public function index(){
 		authorization::haveOrFail('list');
@@ -71,8 +71,6 @@ class ticketing extends controller{
 		}else{
 			db::where("userpanel_users.id", authentication::getID());
 		}
-		db::orderBy('id', ' DESC');
-		db::pageLimit($this->items_per_page);
 		$inputsRules = array(
 			'id' => array(
 				'type' => 'number',
@@ -85,7 +83,7 @@ class ticketing extends controller{
 				'empty' => true
 			),
 			'client' => array(
-				'type' => 'email',
+				'type' => 'number',
 				'optional' => true,
 				'empty' => true
 			),
@@ -105,56 +103,54 @@ class ticketing extends controller{
 				'type' => 'number',
 				'optional' => true,
 				'empty' => true
+			),
+			'word' => array(
+				'type' => 'string',
+				'optional' => true,
+				'empty' => true
+			),
+			'comparison' => array(
+				'values' => array('equals', 'startswith', 'contains'),
+				'default' => 'contains',
+				'optional' => true
 			)
 		);
-		$this->response->setStatus(false);
-		if(http::is_post()){
-			try{
-				$inputs = $this->checkinputs($inputsRules);
-				if(empty($inputs)){
-					throw new inputValidation("search");
+		$this->response->setStatus(true);
+		try{
+			$inputs = $this->checkinputs($inputsRules);
+			foreach(array('id', 'title', 'status', 'client', 'title', 'priority', 'department') as $item){
+				if(isset($inputs[$item]) and $inputs[$item]){
+					$comparison = $inputs['comparison'];
+					if(in_array($item, array('id', 'status', 'client'))){
+						$comparison = 'equals';
+					}
+					db::where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
 				}
-				if(isset($inputs['id']) and $inputs['id']){
-					db::where('ticketing_tickets.id', $inputs['id']);
-				}
-				if(isset($inputs['title']) and $inputs['title']){
-					db::where('ticketing_tickets.title', $inputs['title'], "%");
-				}
-				if(isset($inputs['client']) and $inputs['client']){
-					db::where('userpanel_users.email', $inputs['client']);
-				}
-				if(isset($inputs['status']) and $inputs['status']){
-					db::where('ticketing_tickets.status', $inputs['status']);
-				}
-				if(isset($inputs['priority']) and $inputs['priority']){
-					db::where('ticketing_tickets.priority', $inputs['priority']);
-				}
-				if(isset($inputs['department']) and $inputs['department']){
-					db::where('ticketing_tickets.department', $inputs['department']);
-				}
-				$this->response->setStatus(true);
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
 			}
-			db::pageLimit($this->items_per_page);
-			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-			$totalCount = db::totalCount();
-			$tickets = array();
-			foreach($tickeetData as $ticket){
-				$tickets[] = new ticket($ticket);
+			if(isset($inputs['word']) and $inputs['word']){
+				$parenthesis = new parenthesis();
+				foreach(array('title') as $item){
+					if(!isset($inputs[$item]) or !$inputs[$item]){
+						$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
+					}
+				}
+				db::where($parenthesis);
 			}
-			$view->setTickets($tickets);
-		}else{
-			$this->response->setStatus(true);
-			$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-			$totalCount = db::totalCount();
-			$tickets = array();
-			foreach($tickeetData as $ticket){
-				$tickets[] = new ticket($ticket);
-			}
-			$view->setTickets($tickets);
+		}catch(inputValidation $error){
+			$view->setFormError(FormError::fromException($error));
+			$this->response->setStatus(false);
 		}
-		$view->setPaginate($this->page,$totalCount, $this->items_per_page);
+		$view->setDataForm($this->inputsvalue($inputs));
+
+		db::orderBy('id', ' DESC');
+		db::pageLimit($this->items_per_page);
+		$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
+		$tickets = array();
+		foreach($tickeetData as $ticket){
+			$tickets[] = new ticket($ticket);
+		}
+		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
+		$view->setDataList($tickets);
 		$view->setDepartment(department::get());
 		$this->response->setView($view);
 		return $this->response;

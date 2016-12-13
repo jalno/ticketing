@@ -1,15 +1,18 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\ticketing\views\ticketlist as ticketListView;
 use \packages\userpanel;
+
+use \packages\base\translator;
+use \packages\base\frontend\theme;
+
+use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
-use \themes\clipone\navigation\menuItem;
 use \themes\clipone\views\listTrait;
 use \themes\clipone\views\formTrait;
-use \themes\clipone\viewTrait;
-use \packages\base\translator;
+use \themes\clipone\navigation\menuItem;
 
 use \packages\ticketing\ticket;
+use \packages\ticketing\views\ticketlist as ticketListView;
 
 class listview extends ticketListView{
 	use viewTrait,listTrait,formTrait;
@@ -20,7 +23,11 @@ class listview extends ticketListView{
 		));
 		$this->setButtons();
 		$this->onSourceLoad();
+		$this->addAssets();
 		navigation::active("ticketing/list");
+	}
+	private function addAssets(){
+		$this->addJSFile(theme::url("assets/js/pages/ticketing.list.js"));
 	}
 	public function setButtons(){
 		$this->setButton('view', $this->canView, array(
@@ -45,16 +52,21 @@ class listview extends ticketListView{
 			navigation::addItem($item);
 		}
 	}
-	protected function department(){
-		$choose = array(
-			array(
-				'title' => translator::trans("choose"),
-				'value' => ''
-			)
+	protected function getDepartmentsForSelect(){
+		$departments = array();
+		$departments[0] = array(
+			'title' => translator::trans("choose"),
+			'value' => ''
 		);
-		return array_merge($choose, $this->getDepartment());
+		foreach($this->getDepartment() as $department){
+			$departments[] = array(
+				'title' => $department->title,
+				'value' => $department->id
+			);
+		}
+		return $departments;
 	}
-	protected function Priorty(){
+	protected function getPriortyForSelect(){
 		return array(
 			array(
 				'title' => translator::trans("choose"),
@@ -74,7 +86,7 @@ class listview extends ticketListView{
 			)
 		);
 	}
-	protected function Status(){
+	protected function getStatusForSelect(){
 		return array(
 			array(
 				'title' => translator::trans("choose"),
@@ -99,6 +111,22 @@ class listview extends ticketListView{
 			array(
 				'title' => translator::trans("closed"),
 				'value' => ticket::closed
+			)
+		);
+	}
+	protected function getComparisonsForSelect(){
+		return array(
+			array(
+				'title' => translator::trans('search.comparison.contains'),
+				'value' => 'contains'
+			),
+			array(
+				'title' => translator::trans('search.comparison.equals'),
+				'value' => 'equals'
+			),
+			array(
+				'title' => translator::trans('search.comparison.startswith'),
+				'value' => 'startswith'
 			)
 		);
 	}

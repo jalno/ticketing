@@ -106,7 +106,8 @@
 		"ticketing.departments.worktime.wednesday": "چهارشنبه",
 		"ticketing.departments.worktime.thursday": "پنج شنبه",
 		"ticketing.departments.worktime.friday": "جمعه",
-		"un_worktimes.message": "پیام در ساعات غیر کاری"
+		"un_worktimes.message": "پیام در ساعات غیر کاری",
+		"ticketing.ticket.keyword": "کلمه کلیدی"
 
 	}
 }

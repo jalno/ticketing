@@ -19,8 +19,10 @@ $this->the_header();
 			<div class="panel-heading">
 				<i class="clip-user-6"></i> <?php echo translator::trans('tickets'); ?>
 				<div class="panel-tools">
-					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('search'); ?>" href="#search" data-toggle="modal" data-original-title=""><i class="fa fa-search"></i></a>
+					<?php if($this->canAdd){ ?>
 					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('ticketing.add'); ?>" href="<?php echo userpanel\url('ticketing/new'); ?>"><i class="fa fa-plus"></i></a>
+					<?php } ?>
+					<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('search'); ?>" href="#search" data-toggle="modal" data-original-title=""><i class="fa fa-search"></i></a>
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 				</div>
 			</div>
@@ -114,8 +116,12 @@ $this->the_header();
 				<h4 class="modal-title"><?php echo translator::trans('search'); ?></h4>
 			</div>
 			<div class="modal-body">
-				<form id="ticketSearch" class="form-horizontal" action="<?php echo userpanel\url("ticketing"); ?>" method="post">
+				<form id="ticketSearch" class="form-horizontal" action="<?php echo userpanel\url("ticketing"); ?>" method="get">
 					<?php
+					$this->createField(array(
+						'type' => 'hidden',
+						'name' => 'client'
+					));
 					$this->setHorizontalForm('sm-3','sm-9');
 					$feilds = array(
 						array(
@@ -128,28 +134,36 @@ $this->the_header();
 							'label' => translator::trans("ticket.title")
 						),
 						array(
-							'name' => 'client',
-							'type' => 'email',
-							'label' => translator::trans("ticket.client"),
-							'class' => "form-control ltr"
+							'name' => 'client_name',
+							'label' => translator::trans("ticket.client")
 						),
 						array(
 							'name' => 'status',
 							'type' => 'select',
 							'label' => translator::trans("ticket.status"),
-							'options' => $this->Status()
+							'options' => $this->getStatusForSelect()
 						),
 						array(
 							'name' => 'priority',
 							'type' => 'select',
 							'label' => translator::trans("ticket.priority"),
-							'options' => $this->Priorty()
+							'options' => $this->getPriortyForSelect()
 						),
 						array(
 							'name' => 'department',
 							'type' => 'select',
 							'label' => translator::trans("ticket.department"),
-							'options' => $this->department()
+							'options' => $this->getDepartmentsForSelect()
+						),
+						array(
+							'name' => 'word',
+							'label' => translator::trans("ticketing.ticket.keyword")
+						),
+						array(
+							'type' => 'select',
+							'label' => translator::trans('search.comparison'),
+							'name' => 'comparison',
+							'options' => $this->getComparisonsForSelect()
 						)
 					);
 					foreach($feilds as $input){
