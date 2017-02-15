@@ -36,10 +36,10 @@ $this->the_header();
 							<tr>
 								<th class="center">#</th>
 								<th><?php echo translator::trans('ticket.title'); ?></th>
-								<th><?php echo translator::trans('ticket.client'); ?></th>
-								<th><?php echo translator::trans('ticket.department'); ?></th>
-								<th><?php echo translator::trans('ticket.create_at'); ?></th>
-								<th><?php echo translator::trans('ticket.reply_at'); ?></th>
+								<?php if($this->multiuser){ ?><th><?php echo translator::trans('ticket.client'); ?></th><?php } ?>
+								<th class="hidden-xs"><?php echo translator::trans('ticket.department'); ?></th>
+								<th class="hidden-xs"><?php echo translator::trans('ticket.create_at'); ?></th>
+								<th class="hidden-xs"><?php echo translator::trans('ticket.reply_at'); ?></th>
 								<th><?php echo translator::trans('ticket.priority'); ?></th>
 								<th><?php echo translator::trans('ticket.status'); ?></th>
 								<?php if($hasButtons){ ?><th></th><?php } ?>
@@ -88,12 +88,12 @@ $this->the_header();
 							<tr>
 								<td class="center"><?php echo $row->id; ?></td>
 								<td><?php echo $title; ?></td>
-								<td><a href="<?php echo userpanel\url('users/view/'.$row->client->id); ?>"><?php echo($row->client->name.' '.$row->client->lastname); ?></a></td>
-								<td><?php echo $row->department->title; ?></td>
-								<td><?php echo date::format('Y/m/d H:i', $row->create_at); ?></td>
-								<td><?php echo date::format('Y/m/d H:i', $row->reply_at); ?></td>
-								<td class="hidden-xs"><span class="<?php echo $priorityClass; ?>"><?php echo translator::trans($priorityTxt); ?></span></td>
-								<td class="hidden-xs"><span class="<?php echo $statusClass; ?>"><?php echo translator::trans($statusTxt); ?></span></td>
+								<?php if($this->multiuser){ ?><td><a href="<?php echo userpanel\url('users/view/'.$row->client->id); ?>"><?php echo($row->client->getFullName()); ?></a></td><?php } ?>
+								<td class="hidden-xs"><?php echo $row->department->title; ?></td>
+								<td class="hidden-xs"><?php echo date::format('Y/m/d H:i', $row->create_at); ?></td>
+								<td class="hidden-xs"><?php echo date::format('Y/m/d H:i', $row->reply_at); ?></td>
+								<td><span class="<?php echo $priorityClass; ?>"><?php echo translator::trans($priorityTxt); ?></span></td>
+								<td><span class="<?php echo $statusClass; ?>"><?php echo translator::trans($statusTxt); ?></span></td>
 								<?php
 								if($hasButtons){
 									echo("<td class=\"center\">".$this->genButtons()."</td>");
