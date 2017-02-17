@@ -65,7 +65,7 @@ class ticketing extends controller{
 		authorization::haveOrFail('list');
 		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
 		$types = authorization::childrenTypes();
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "LEFT");
+		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		if($types){
 			db::where("userpanel_users.type", $types, 'in');
 		}else{
@@ -134,7 +134,13 @@ class ticketing extends controller{
 						$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
 					}
 				}
+				$parenthesis->where("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison'], 'OR');
+				$parenthesis->where("ticketing_files.name", $inputs['word'], $inputs['comparison'], 'OR');
 				db::where($parenthesis);
+				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
+				db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "INNER");
+
+				db::setQueryOption("DISTINCT");
 			}
 		}catch(inputValidation $error){
 			$view->setFormError(FormError::fromException($error));
