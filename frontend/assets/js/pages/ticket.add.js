@@ -1,6 +1,8 @@
 var TicketAdd = function () {
 	var form = $('.create_form');
 	var runUserListener = function(){
+		var $input = $("input[name=user_name]", form);
+		if(!$input.length)return;
 		$("input[name=user_name]", form).autocomplete({
 			source: function( request, response ) {
 				$.ajax({
@@ -66,6 +68,10 @@ var TicketAdd = function () {
 							}
 						}
 					},
+				});
+			}else if(isWorking == 1){
+				$(".alert").slideUp("slow", function(){
+					$(this).remove();
 				});
 			}
 		});

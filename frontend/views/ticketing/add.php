@@ -1,6 +1,7 @@
 <?php
 namespace themes\clipone\views\ticketing;
 use \packages\base;
+use \packages\base\events;
 use \packages\base\frontend\theme;
 use \packages\base\translator;
 
@@ -15,11 +16,13 @@ use \themes\clipone\views\formTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
-
-
+use \themes\clipone\events\addingTicket;
+use \themes\clipone\views\dashboard\box;
+use \themes\clipone\views\dashboard\shortcut;
 class add extends ticketadd{
 	use viewTrait,formTrait;
-	protected $user;
+	public static $shortcuts = array();
+	public static $boxs = array();
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing.add')
@@ -27,8 +30,9 @@ class add extends ticketadd{
 		$this->setNavigation();
 		$this->addAssets();
 		$this->setUserInput();
-
-
+		$initEvent = new addingTicket();
+		$initEvent->view = $this;
+		events::trigger($initEvent);
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
@@ -103,5 +107,76 @@ class add extends ticketadd{
 		if($user and $user = user::byId($user)){
 			$this->setDataForm($user->name, 'user_name');
 		}
+	}
+	public static function addShortcut(shortcut $shortcut){
+		foreach(self::$shortcuts as $key => $item){
+			if($item->name == $shortcut->name){
+				self::$shortcuts[$key] = $shortcut;
+				return;
+			}
+		}
+		self::$shortcuts[] = $shortcut;
+	}
+	public static function addBox(box $box){
+		self::$boxs[] = $box;
+	}
+	public function getBoxs(){
+		return self::$boxs;
+	}
+	public function generateShortcuts(){
+		$rows = array();
+		$lastrow = 0;
+		$shortcuts = array_slice(self::$shortcuts, 0, max(3, floor(count(self::$shortcuts)/2)));
+		foreach($shortcuts as $box){
+			$rows[$lastrow][] = $box;
+			$size = 0;
+			foreach($rows[$lastrow] as $rowbox){
+				$size += $rowbox->size;
+			}
+			if($size >= 12){
+				$lastrow++;
+			}
+		}
+		$html = '';
+		foreach($rows as $row){
+			$html .= "<div class=\"row\">";
+			foreach($row as $shortcut){
+				$html .= "<div class=\"col-sm-{$shortcut->size}\">";
+				$html .= "<div class=\"core-box\">";
+				$html .= "<div class=\"heading\">";
+				$html .= "<i class=\"{$shortcut->icon} circle-icon circle-{$shortcut->color}\"></i>";
+				$html .= "<h2>{$shortcut->title}</h2>";
+				$html .= "</div>";
+				$html .= "<div class=\"content\">{$shortcut->text}</div>";
+				$html .= "<a class=\"view-more\" href=\"".$shortcut->link[1]."\"><i class=\"clip-arrow-left-2\"></i> ".$shortcut->link[0]."</a>";
+				$html .= "</div>";
+				$html .= "</div>";
+			}
+			$html .= "</div>";
+		}
+		return $html;
+	}
+	public function generateRows(){
+		$rows = array();
+		$lastrow = 0;
+		foreach(self::$boxs as $box){
+			$rows[$lastrow][] = $box;
+			$size = 0;
+			foreach($rows[$lastrow] as $rowbox){
+				$size += $rowbox->size;
+			}
+			if($size >= 12){
+				$lastrow++;
+			}
+		}
+		$html = '';
+		foreach($rows as $row){
+			$html .= "<div class=\"row\">";
+			foreach($row as $box){
+				$html .= "<div class=\"col-md-{$box->size}\">".$box->getHTML()."</div>";
+			}
+			$html .= "</div>";
+		}
+		return $html;
 	}
 }

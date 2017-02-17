@@ -247,7 +247,7 @@ class ticketing extends controller{
 				$ticket->priority = $inputs['priority'];
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
-				$ticket->status = ticket::unread;
+				$ticket->status = $children ? ticket::answered : ticket::unread;
 
 				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
 					$ticket->setParam('product', $inputs['product']->getName());
@@ -259,7 +259,7 @@ class ticketing extends controller{
 				$message->ticket = $ticket->id;
 				$message->text = $inputs['text'];
 				$message->user = authentication::getID();
-				$message->status = ticket::unread;
+				$message->status = ticket_message::unread;
 
 				$message->save();
 				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
@@ -362,7 +362,7 @@ class ticketing extends controller{
 						}
 					}
 
-					$ticket->status = ticket::answered;
+					$ticket->status = ((authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? ticket::answered : ticket::unread);
 					$ticket->reply_at = date::time();
 					$ticket->save();
 					$this->response->Go(userpanel\url('ticketing/view/'.$data['ticket']));
@@ -375,7 +375,8 @@ class ticketing extends controller{
 				$view->setFormError(FormError::fromException($error));
 			}
 		}else{
-			if($ticket->status == ticket::unread){
+			$lastMSG = ticket_message::where("ticket", $ticket->id)->orderBy("date", "DESC")->getOne();
+			if($ticket->status == ticket::unread and authentication::getID() != $lastMSG->user->id){
 				$ticket->status = ticket::read;
 				$ticket->save();
 			}

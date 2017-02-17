@@ -107,4 +107,6 @@ $this->the_header();
     </div>
 </div>
 <?php
-	$this->the_footer();
+echo $this->generateShortcuts();
+echo $this->generateRows();
+$this->the_footer();

@@ -70,6 +70,10 @@
 		{
 			"classes":["listeners\\ticketing\\dashboard"],
 			"file":"listeners/clipone/dashboard.php"
+		},
+		{
+			"classes":["events\\addingTicket"],
+			"file":"libraries/events/addingTicket.php"
 		}
 	]
 }
