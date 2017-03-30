@@ -55,12 +55,13 @@ class listview extends departmentList{
 	public static function onSourceLoad(){
 		parent::onSourceLoad();
 		if(parent::$navigation){
-			$item = navigation::getByName("settings");
-			$departments = new menuItem("departments");
-			$departments->setTitle(translator::trans('departments'));
-			$departments->setURL(userpanel\url('settings/departments'));
-			$departments->setIcon('fa fa-university');
-			$item->addItem($departments);
+			if($item = navigation::getByName("settings")){
+				$departments = new menuItem("departments");
+				$departments->setTitle(translator::trans('departments'));
+				$departments->setURL(userpanel\url('settings/departments'));
+				$departments->setIcon('fa fa-university');
+				$item->addItem($departments);
+			}
 		}
 	}
 }

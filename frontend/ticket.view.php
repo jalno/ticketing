@@ -1,39 +1,31 @@
 <?php
-use \packages\base;
 use \packages\base\frontend\theme;
 use \packages\base\translator;
-use \packages\base\http;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
 use \packages\userpanel\date;
-use \packages\base\views\FormError;
-
-use \themes\clipone\utility;
-
 use \packages\ticketing\ticket;
-
-
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-comment-o"></i>
-				<span><?php echo $this->getTicketData()->title; ?></span>
+				<span><?php echo $this->ticket->title; ?></span>
 				<div class="panel-tools">
 					<?php if($this->canEdit){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->getTicketData()->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>"><i class="fa fa-times tip tooltips" ></i></a>
-						<?php if($this->canSend == true){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->getTicketData()->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
+						<?php if($this->ticket->status != ticket::closed){ ?>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id, array('close'=>'yes')); ?>"><i class="fa fa-times tip tooltips" ></i></a>
+						<?php
+						} 
+						if($this->canSend == true){ ?>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php }else{ ?>
-						<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->getTicketData()->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
+						<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
 				  <?php }
 					} if($this->canDel){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->getTicketData()->id); ?>"><i class="fa fa-trash-o tip"></i></a>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
 					<?php } ?>
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 
@@ -41,7 +33,7 @@ $this->the_header();
 			</div>
 			<div  class="panel-body">
 				<?php foreach($this->messages as $message){ ?>
-					<div class="space clearfix <?php if($message->user->id != $this->getTicketData()->client->id){echo("reply");} ?>" id="ticket_message-<?php echo $message->id; ?>">
+					<div class="space clearfix <?php if($message->user->id != $this->ticket->client->id){echo("reply");} ?>" id="ticket_message-<?php echo $message->id; ?>">
 					    <div class="comment-photo">
 							<img class="img-polaroid" src="<?php echo(theme::url('assets/images/user.png')) ?>" height="60" width="60" alt="client">
 						</div>
@@ -78,19 +70,19 @@ $this->the_header();
 				<?php } ?>
 				<div class="replaycontianer">
 					<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
-					<form action="<?php echo userpanel\url('ticketing/view/'.$this->getTicketData()->id); ?>" method="post" enctype="multipart/form-data">
+					<form action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
 						<div class="row">
-							<div class="col-md-12">
+							<div class="col-xs-12">
 								<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
 								<hr>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-xs-8">
 								<p><?php echo translator::trans('markdown.description'); ?></p>
 							</div>
-							<div class="col-md-4">
-								<div class="col-md-12 btn-group btn-group-lg" role="group">
+							<div class="col-xs-4">
+								<div class="col-xs-12 btn-group btn-group-lg" role="group">
 									<span class="btn btn-file2 btn-default">
 										<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 										<input type="file" name="file">
@@ -103,7 +95,6 @@ $this->the_header();
 				</div>
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
 	</div>
 </div>
 <?php

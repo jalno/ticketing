@@ -1,8 +1,9 @@
 <?php
 namespace packages\ticketing\views;
+use \packages\ticketing\ticket;
+use \packages\ticketing\views\form;
 use \packages\ticketing\authorization;
-
-class view extends \packages\ticketing\views\form{
+class view extends form{
 	protected $canEdit;
 	protected $canEditMessage;
 	protected $canDel;
@@ -15,10 +16,10 @@ class view extends \packages\ticketing\views\form{
 		$this->canDelMessage = authorization::is_accessed('message_delete');
 		$this->canViewDec = authorization::is_accessed('view_description');
 	}
-	public function setTicketData($data){
-		$this->setData($data, 'ticket');
+	public function setTicket(ticket $ticket){
+		$this->setData($ticket, 'ticket');
 	}
-	public function getTicketData(){
+	public function getTicket(){
 		return $this->getData('ticket');
 	}
 }

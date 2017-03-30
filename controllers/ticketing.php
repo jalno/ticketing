@@ -303,7 +303,7 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\view");
 		authorization::haveOrFail('view');
 		$ticket = $this->checkTicket($data['ticket']);
-		$view->setTicketData($ticket);
+		$view->setTicket($ticket);
 		if(!$ticket->department->isWorking()){
 			$work = $ticket->department->currentWork();
 			if($work->message){
@@ -444,24 +444,28 @@ class ticketing extends controller{
 		authorization::haveOrFail('edit');
 
 		$ticket = $this->checkTicket($data['ticket']);
-		$view->setDepartmentData(department::get());
-		$view->setTicketData($ticket);
+		$view->setDepartment(department::get());
+		$view->setTicket($ticket);
 		if(http::is_post()){
 			$this->response->setStatus(false);
 			try {
 				$inputsRules = array(
 					'title' => array(
 						'type' => 'string',
+						'optional' => true
 					),
 					'priority' => array(
 						'type' => 'number',
-						'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary)
+						'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary),
+						'optional' => true
 					),
 					'department' => array(
-						'type' => 'number'
+						'type' => 'number',
+						'optional' => true
 					),
 					'client' => array(
-						'type' => 'number'
+						'type' => 'number',
+						'optional' => true
 					),
 					'status' => array(
 						'type' => 'number',
@@ -471,7 +475,8 @@ class ticketing extends controller{
 							ticket::answered,
 							ticket::in_progress,
 							ticket::closed
-						)
+						),
+						'optional' => true
 					)
 				);
 				$inputs = $this->checkinputs($inputsRules);
@@ -492,6 +497,19 @@ class ticketing extends controller{
 				$view->setFormError(FormError::fromException($error));
 			}
 		}else{
+			$inputsRules = array(
+				'close' => array(
+					'type' => 'string',
+					'optional' => true,
+					'empty' => true
+				)
+			);
+			$inputs = $this->checkinputs($inputsRules);
+			if(isset($inputs['close']) and $inputs['close']){
+				if(strtolower($inputs['close']) == 'yes'){
+					$view->setDataForm(ticket::closed, 'status');
+				}
+			}
 			$this->response->setStatus(true);
 		}
 		$this->response->setView($view);
