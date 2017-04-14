@@ -20,6 +20,7 @@ class ticket_message extends dbObject{
 		'status' => array('type' => 'int', 'required' => true)
     );
 	protected $relations = array(
+		'ticket' => array('hasOne', 'packages\\ticketing\\ticket', 'ticket'),
 		'user' => array('hasOne', 'packages\\userpanel\\user', 'user'),
 		'files' => array('hasMany', 'packages\\ticketing\\ticket_file', 'message')
 	);

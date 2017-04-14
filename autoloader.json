@@ -124,6 +124,10 @@
 			"file":"listeners/settings/usertype.php"
 		},
 		{
+			"classes":["listeners\\sms"],
+			"file":"listeners/sms.php"
+		},
+		{
 			"classes":["views\\settings\\department\\listview"],
 			"file":"views/settings/department/list.php"
 		},

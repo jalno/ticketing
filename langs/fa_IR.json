@@ -1,0 +1,37 @@
+{
+	"author": {
+		"name" : "Amir.h Yeganemehr",
+		"website" : "http://yeganemehr.ir/"
+	},
+	"rtl": true,
+	"phrases":{
+
+		"sms.template.name.ticketing_ticket_reply":"ارسال پاسخ تیکت",
+		"sms.template.name.ticketing_ticket_add":"تیکت جدید",
+		"sms.template.variable.ticket_message->ticket":"شناسه تیکت",
+		"sms.template.variable.ticket_message->date":"زمان ارسال پیام",
+		"sms.template.variable.ticket_message->user":"شناسه ارسال کننده پیام",
+		"sms.template.variable.ticket_message->text":"متن پیام",
+		"sms.template.variable.ticket_message->format":"فرمت پیام",
+		"sms.template.variable.ticket_message->status":"وضعیت پیام",
+		"sms.template.variable.ticket->title":"عنوان تیکت",
+		"sms.template.variable.ticket->create_at":"زمان ایجاد پیام",
+		"sms.template.variable.ticket->reply_at":"زمان آخرین پیام",
+		"sms.template.variable.ticket->priority":"اولویت تیکت",
+		"sms.template.variable.ticket->department":"شناسه دپارتمان",
+		"sms.template.variable.ticket->client":"ایجاد کننده تیکت",
+		"sms.template.variable.ticket->status":"وضعیت تیکت",
+		"sms.template.variable.ticket->client->email":"ایمیل مشتری",
+		"sms.template.variable.ticket->client->name":"نام مشتری",
+		"sms.template.variable.ticket->client->lastname":"نام خانوادگی مشتری",
+		"sms.template.variable.ticket->client->cellphone":"تلفن همراه مشتری",
+		"sms.template.variable.ticket->client->phone":"تلفن ثابت مشتری",
+		"sms.template.variable.ticket->client->city":"شهر مشتری",
+		"sms.template.variable.ticket->client->country":"شناسه کشور مشتری",
+		"sms.template.variable.country->code":"کد دو حرفی کشور",
+		"sms.template.variable.country->name":"نام کشور",
+		"sms.template.variable.department->title":"نام دپارتمان",
+		"sms.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری"
+
+	}
+}
