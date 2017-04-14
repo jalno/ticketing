@@ -8,6 +8,7 @@ use \packages\ticketing\views\edit as ticketEdit;
 use \packages\ticketing\ticket;
 
 use \packages\userpanel;
+use \packages\userpanel\user;
 
 use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
@@ -17,45 +18,42 @@ use \themes\clipone\navigation\menuItem;
 
 
 class edit extends ticketEdit{
-	use viewTrait,formTrait;
-	protected $department;
-	protected $user;
+	use viewTrait, formTrait;
+	protected $thicket;
 	function __beforeLoad(){
+		$this->ticket = $this->getTicket();
 		$this->setTitle(array(
 			translator::trans('ticketing.edit'),
 			translator::trans('ticket'),
-			"#".$this->getTicketData()->id
+			"#".$this->ticket->id
 		));
 		$this->setShortDescription(translator::trans('ticketing.edit').' '.translator::trans('ticket'));
 		$this->setNavigation();
-		$this->SetDataValue();
-		$this->getStatusForSelect();
-		$this->getpriortyForSelect();
 		$this->addAssets();
+		$this->setFormData();
+	}
+	private function setFormData(){
+		if($user = $this->getDataForm('client')){
+			if($user = user::byId($user)){
+				$this->setDataForm($user->getFullName(), 'user_name');
+			}
+		}
 	}
 	private function setNavigation(){
-		$item = new menuItem("ticketing");
-		$item->setTitle(translator::trans('ticketing'));
-		$item->setURL(userpanel\url('ticketing'));
-		$item->setIcon('clip-paperplane');
-		breadcrumb::addItem($item);
-
-		$item = new menuItem("ticketing.edit");
-		$item->setTitle(translator::trans('ticketing.edit'));
-		$item->setIcon('fa fa-edit tip tooltips');
-		breadcrumb::addItem($item);
 		navigation::active("ticketing/list");
 	}
 	protected function addAssets(){
 		$this->addJSFile(theme::url('assets/js/pages/ticket.add.js'));
 	}
-	protected function SetDataValue(){
-		foreach($this->getDepartmentData() as $row){
-			$this->department[] = array(
-				'title' => $row->title,
-				'value' => $row->id
+	protected function getDepartmentForSelect(){
+		$departments = [];
+		foreach($this->getDepartment() as $department){
+			$departments[] = array(
+				'title' => $department->title,
+				'value' => $department->id
 			);
 		}
+		return $departments;
 	}
 	protected function getStatusForSelect(){
 		return array(

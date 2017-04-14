@@ -22,11 +22,13 @@ class view extends ticketView{
 	use viewTrait,listTrait;
 	protected $messages;
 	protected $canSend = true;
+	protected $ticket;
 	function __beforeLoad(){
+		$this->ticket = $this->getTicket();
 		$this->setTitle(array(
 			translator::trans('ticketing.view'),
 			translator::trans('ticket'),
-			"#".$this->getTicketData()->id
+			"#".$this->ticket->id
 		));
 		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
 		$this->setNavigation();
@@ -41,7 +43,7 @@ class view extends ticketView{
 		breadcrumb::addItem($item);
 
 		$item = new menuItem("ticketing.view");
-		$item->setTitle($this->getTicketData()->title);
+		$item->setTitle($this->ticket->title);
 		$item->setURL(userpanel\url('ticketing'));
 		$item->setIcon('fa fa-comment-o');
 		breadcrumb::addItem($item);
@@ -51,7 +53,7 @@ class view extends ticketView{
 		$this->addCSSFile(theme::url('assets/css/custom.css'));
 	}
 	protected function SetDataView(){
-		$this->messages = $this->getTicketData()->message;
+		$this->messages = $this->ticket->message;
 		foreach($this->messages as $message){
 
 			$message->lastime = utility::dateFormNow($message->date);
@@ -64,7 +66,7 @@ class view extends ticketView{
 			}
 			$message->content = $text;
 		}
-		if($this->getTicketData()->param('ticket_lock') or $this->getTicketData()->param('ticket_lock') != ticket::canSendMessage){
+		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
 			$this->canSend = false;
 		}
 
