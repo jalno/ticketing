@@ -158,6 +158,10 @@
 		{
 			"classes":["events\\tickets\\reply"],
 			"file":"libraries/events/tickets/reply.php"
+		},
+		{
+			"classes":["events\\tickets\\close"],
+			"file":"libraries/events/tickets/close.php"
 		}
 	]
 }

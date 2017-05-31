@@ -495,6 +495,10 @@ class ticketing extends controller{
 						$ticket->client = $user->id;
 						$ticket->status = $inputs['status'];
 						$ticket->save();
+						if($ticket->status == ticket::closed){
+							$event = new events\tickets\close($ticket);
+							$event->trigger();
+						}
 						$this->response->setStatus(true);
 						$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));
 					}

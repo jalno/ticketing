@@ -6,5 +6,6 @@ class notifications{
 	public function events(events $events){
 		$events->add(ticketingEevents\tickets\add::class);
 		$events->add(ticketingEevents\tickets\reply::class);
+		$events->add(ticketingEevents\tickets\close::class);
 	}
 }
