@@ -128,6 +128,10 @@
 			"file":"listeners/sms.php"
 		},
 		{
+			"classes":["listeners\\notifications"],
+			"file":"listeners/notifications.php"
+		},
+		{
 			"classes":["views\\settings\\department\\listview"],
 			"file":"views/settings/department/list.php"
 		},
@@ -146,6 +150,22 @@
 		{
 			"classes":["department\\worktime"],
 			"file":"libraries/ticketing/departments.worktime.php"
+		},
+		{
+			"classes":["events\\tickets\\add"],
+			"file":"libraries/events/tickets/add.php"
+		},
+		{
+			"classes":["events\\tickets\\reply"],
+			"file":"libraries/events/tickets/reply.php"
+		},
+		{
+			"classes":["events\\tickets\\close"],
+			"file":"libraries/events/tickets/close.php"
+		},
+		{
+			"classes":["events\\tickets\\inprogress"],
+			"file":"libraries/events/tickets/inprogress.php"
 		}
 	]
 }
