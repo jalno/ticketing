@@ -368,6 +368,8 @@ class ticketing extends controller{
 					$ticket->status = ((authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? ticket::answered : ticket::unread);
 					$ticket->reply_at = date::time();
 					$ticket->save();
+					$event = new events\tickets\reply($ticket_message);
+					$event->trigger();
 					
 					$this->response->Go(userpanel\url('ticketing/view/'.$data['ticket']));
 

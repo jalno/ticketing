@@ -154,6 +154,10 @@
 		{
 			"classes":["events\\tickets\\add"],
 			"file":"libraries/events/tickets/add.php"
+		},
+		{
+			"classes":["events\\tickets\\reply"],
+			"file":"libraries/events/tickets/reply.php"
 		}
 	]
 }
