@@ -12,6 +12,10 @@
 		{
 			"name":"\\packages\\sms\\events\\templates",
 			"listener": "listeners\\sms@templates"
+		},
+		{
+			"name":"\\packages\\notifications\\events",
+			"listener": "listeners\\notifications@events"
 		}
 	]
 }
