@@ -489,15 +489,21 @@ class ticketing extends controller{
 
 				if($user = user::byId($inputs['client'])){
 					if($department = department::byId($inputs['department'])){
+						$oldStatus = $ticket->status;
 						$ticket->title = $inputs['title'];
 						$ticket->priority = $inputs['priority'];
 						$ticket->department = $department->id;
 						$ticket->client = $user->id;
 						$ticket->status = $inputs['status'];
 						$ticket->save();
-						if($ticket->status == ticket::closed){
-							$event = new events\tickets\close($ticket);
-							$event->trigger();
+						if($oldStatus != $ticket->status){
+							if($ticket->status == ticket::closed){
+								$event = new events\tickets\close($ticket);
+								$event->trigger();
+							}elseif($ticket->status == ticket::in_progress){
+								$event = new events\tickets\inprogress($ticket);
+								$event->trigger();
+							}
 						}
 						$this->response->setStatus(true);
 						$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));

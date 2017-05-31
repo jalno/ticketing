@@ -162,6 +162,10 @@
 		{
 			"classes":["events\\tickets\\close"],
 			"file":"libraries/events/tickets/close.php"
+		},
+		{
+			"classes":["events\\tickets\\inprogress"],
+			"file":"libraries/events/tickets/inprogress.php"
 		}
 	]
 }
