@@ -28,6 +28,7 @@ use \packages\ticketing\ticket_message;
 use \packages\ticketing\ticket_param;
 use \packages\ticketing\products;
 use \packages\ticketing\ticket_file;
+use \packages\ticketing\events;
 
 class ticketing extends controller{
 	protected $authentication = true;
@@ -286,6 +287,8 @@ class ticketing extends controller{
 						throw new inputValidation("file_status");
 					}
 				}
+				$event = new events\tickets\add($message);
+				$event->trigger();
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 
@@ -365,6 +368,7 @@ class ticketing extends controller{
 					$ticket->status = ((authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? ticket::answered : ticket::unread);
 					$ticket->reply_at = date::time();
 					$ticket->save();
+					
 					$this->response->Go(userpanel\url('ticketing/view/'.$data['ticket']));
 
 					$this->response->setStatus(true);

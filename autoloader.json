@@ -150,6 +150,10 @@
 		{
 			"classes":["department\\worktime"],
 			"file":"libraries/ticketing/departments.worktime.php"
+		},
+		{
+			"classes":["events\\tickets\\add"],
+			"file":"libraries/events/tickets/add.php"
 		}
 	]
 }
