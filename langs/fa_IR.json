@@ -31,7 +31,8 @@
 		"sms.template.variable.country->code":"کد دو حرفی کشور",
 		"sms.template.variable.country->name":"نام کشور",
 		"sms.template.variable.department->title":"نام دپارتمان",
-		"sms.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری"
+		"sms.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری",
+		"error.ticketDependencies": "تیکت هایی با این دپارتمان وجود دارند ، لطفا ابتدا تکلیف <a href=\"{ticket_search_link}\"> تیکت </a> ها را مشخص کنبد."
 
 	}
 }

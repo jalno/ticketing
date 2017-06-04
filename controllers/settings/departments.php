@@ -1,24 +1,22 @@
 <?php
 namespace packages\ticketing\controllers\settings;
-use \packages\base;
-use \packages\base\NotFound;
-use \packages\base\http;
 use \packages\base\db;
+use \packages\base\http;
+use \packages\base\NotFound;
+use \packages\base\translator;
+use \packages\base\view\error;
 use \packages\base\utility\safe;
 use \packages\base\views\FormError;
 use \packages\base\inputValidation;
-
 use \packages\userpanel;
 use \packages\userpanel\user;
 use \packages\userpanel\date;
-
 use \packages\ticketing\controller;
 use \packages\ticketing\authorization;
 use \packages\userpanel\authentication;
-
+use \packages\ticketing\ticket;
 use \packages\ticketing\view;
 use \packages\ticketing\department;
-
 class departments extends controller{
 	protected $authentication = true;
 	public function listview(){
@@ -82,20 +80,30 @@ class departments extends controller{
 	}
 	public function delete($data){
 		authorization::haveOrFail('department_delete');
-		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\delete");
 		$department = department::byId($data['id']);
 		if(!$department){
 			throw new NotFound;
 		}
+		$view = view::byName("\\packages\\ticketing\\views\\settings\\department\\delete");
 		$view->setDepartmentData($department);
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			try{
+				$ticket = new ticket();
+				$ticket->where('department', $department->id);
+				if($ticket->has()){
+					throw new ticketDependencies();
+				}
 				$department->delete();
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url("settings/departments"));
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
+			}catch(ticketDependencies $e){
+				$error = new error();
+				$error->setCode('ticketDependencies');
+				$error->setMessage(translator::trans('error.ticketDependencies', ['ticket_search_link' => userpanel\url('ticketing', ['department'=>$department->id])]));
+				$view->addError($error);
 			}
 		}else{
 			$this->response->setStatus(true);
@@ -235,3 +243,4 @@ class departments extends controller{
 		return $this->response;
 	}
 }
+class ticketDependencies extends \Exception{}

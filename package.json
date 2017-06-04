@@ -3,6 +3,9 @@
 	"routing": "routing.json",
 	"frontend":"frontend",
 	"autoload":"autoloader.json",
+	"languages":{
+		"fa_IR" : "langs/fa_IR.json"
+	},
 	"dependencies": ["base", "userpanel"],
 	"events": [
 		{
