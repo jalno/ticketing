@@ -1,20 +1,14 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
 use \packages\userpanel\date;
-
 use \themes\clipone\utility;
-
 use \packages\ticketing\ticket;
-
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
+	<?php if(!empty($this->getTickets())){ ?>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="clip-user-6"></i> <?php echo translator::trans('tickets'); ?>
@@ -109,7 +103,6 @@ $this->the_header();
 				<?php $this->paginator(); ?>
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
 		<div class="modal fade" id="search" tabindex="-1" data-show="true" role="dialog">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -118,10 +111,6 @@ $this->the_header();
 			<div class="modal-body">
 				<form id="ticketSearch" class="form-horizontal" action="<?php echo userpanel\url("ticketing"); ?>" method="get">
 					<?php
-					$this->createField(array(
-						'type' => 'hidden',
-						'name' => 'client'
-					));
 					$this->setHorizontalForm('sm-3','sm-9');
 					$feilds = array(
 						array(
@@ -132,10 +121,6 @@ $this->the_header();
 						array(
 							'name' => 'title',
 							'label' => translator::trans("ticket.title")
-						),
-						array(
-							'name' => 'client_name',
-							'label' => translator::trans("ticket.client")
 						),
 						array(
 							'name' => 'status',
@@ -166,8 +151,21 @@ $this->the_header();
 							'options' => $this->getComparisonsForSelect()
 						)
 					);
+					if($this->multiuser){
+						$userFields = [
+							[
+								'type' => 'hidden',
+								'name' => 'client'
+							],
+							[
+								'name' => 'client_name',
+								'label' => translator::trans("ticket.client")
+							]
+						];
+						array_splice($feilds, 2, 0, $userFields);
+					}
 					foreach($feilds as $input){
-						echo $this->createField($input);
+						$this->createField($input);
 					}
 					?>
 				</form>
@@ -177,6 +175,7 @@ $this->the_header();
 				<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo translator::trans('cancel'); ?></button>
 			</div>
 		</div>
+	<?php } ?>
 	</div>
 </div>
 <?php
