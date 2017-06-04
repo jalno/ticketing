@@ -1,21 +1,18 @@
 <?php
 namespace themes\clipone\views\ticketing;
 use \packages\userpanel;
-
 use \packages\base\translator;
+use \packages\base\view\error;
 use \packages\base\frontend\theme;
-
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\views\listTrait;
 use \themes\clipone\views\formTrait;
 use \themes\clipone\navigation\menuItem;
-
 use \packages\ticketing\ticket;
 use \packages\ticketing\views\ticketlist as ticketListView;
-
 class listview extends ticketListView{
-	use viewTrait,listTrait,formTrait;
+	use viewTrait, listTrait, formTrait;
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing'),
@@ -25,6 +22,22 @@ class listview extends ticketListView{
 		$this->onSourceLoad();
 		$this->addAssets();
 		navigation::active("ticketing/list");
+		if(empty($this->getTickets())){
+			$this->addNotFoundError();
+		}
+	}
+	private function addNotFoundError(){
+		$error = new error();
+		$error->setType(error::NOTICE);
+		$error->setCode('ticketing.ticket.notfound');
+		$error->setData([
+			[
+				'type' => 'btn-teal',
+				'txt' => translator::trans('ticketing.add'),
+				'link' => userpanel\url('ticketing/new')
+			]
+		], 'btns');
+		$this->addError($error);
 	}
 	private function addAssets(){
 		$this->addJSFile(theme::url("assets/js/pages/ticketing.list.js"));

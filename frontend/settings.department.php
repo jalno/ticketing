@@ -13,8 +13,8 @@ use \packages\ticketing\ticket;
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
+	<?php if(!empty($this->getDepartments())){ ?>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-university"></i> <?php echo translator::trans('departments'); ?>
@@ -63,7 +63,7 @@ $this->the_header();
 				<?php $this->paginator(); ?>
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
+	<?php } ?>
 	</div>
 </div>
 <div class="modal fade" id="search" tabindex="-1" data-show="true" role="dialog">
@@ -93,7 +93,7 @@ $this->the_header();
 				)
 			);
 			foreach($feilds as $input){
-				echo $this->createField($input);
+				$this->createField($input);
 			}
 			?>
 		</form>

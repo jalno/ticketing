@@ -1,6 +1,5 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\ticketing\views\settings\department\listview as departmentList;
 use \packages\userpanel;
 use \themes\clipone\navigation;
 use \themes\clipone\navigation\menuItem;
@@ -8,11 +7,10 @@ use \themes\clipone\views\listTrait;
 use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
 use \packages\base\translator;
-
-use \packages\ticketing\ticket;
-
+use \packages\base\view\error;
+use \packages\ticketing\views\settings\department\listview as departmentList;
 class listview extends departmentList{
-	use viewTrait,listTrait,formTrait;
+	use viewTrait, listTrait, formTrait;
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('settings'),
@@ -22,6 +20,24 @@ class listview extends departmentList{
 		$this->setButtons();
 		$this->onSourceLoad();
 		navigation::active("settings/departments/list");
+		if(empty($this->getDepartments())){
+			$this->addNotFoundError();
+		}
+	}
+	private function addNotFoundError(){
+		$error = new error();
+		$error->setType(error::NOTICE);
+		$error->setCode('ticketing.settings.department.notfound');
+		if($this->canAdd){
+			$error->setData([
+				[
+					'type' => 'btn-teal',
+					'txt' => translator::trans('add'),
+					'link' => userpanel\url('settings/departments/add')
+				]
+			], 'btns');
+		}
+		$this->addError($error);
 	}
 	public function setButtons(){
 		$this->setButton('edit', $this->canEdit, array(
