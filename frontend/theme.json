@@ -11,6 +11,11 @@
 		"fa_IR" : "langs/fa_IR.json"
 	},
 	"assets":[
+		{"type":"package", "name":"jquery"},
+		{"type":"package", "name":"jquery-ui"},
+		{"type":"package", "name":"bootstrap"},
+		{"type":"package", "name":"webuilder"},
+		{"type":"ts", "file":"assets/ts/Main.ts"}
 	],
 	"events":[
 		{
@@ -22,7 +27,7 @@
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\listview",
 			"parent":"\\packages\\ticketing\\views\\ticketlist",
-			"file":"ticket.list.php"
+			"file":"html/tickets/list.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\add",

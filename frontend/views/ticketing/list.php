@@ -3,7 +3,6 @@ namespace themes\clipone\views\ticketing;
 use \packages\userpanel;
 use \packages\base\translator;
 use \packages\base\view\error;
-use \packages\base\frontend\theme;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\views\listTrait;
@@ -20,7 +19,6 @@ class listview extends ticketListView{
 		));
 		$this->setButtons();
 		$this->onSourceLoad();
-		$this->addAssets();
 		navigation::active("ticketing/list");
 		if(empty($this->getTickets())){
 			$this->addNotFoundError();
@@ -38,9 +36,6 @@ class listview extends ticketListView{
 			]
 		], 'btns');
 		$this->addError($error);
-	}
-	private function addAssets(){
-		$this->addJSFile(theme::url("assets/js/pages/ticketing.list.js"));
 	}
 	public function setButtons(){
 		$this->setButton('view', $this->canView, array(
