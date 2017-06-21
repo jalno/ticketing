@@ -15,6 +15,7 @@
 		{"type":"package", "name":"jquery-ui"},
 		{"type":"package", "name":"bootstrap"},
 		{"type":"package", "name":"webuilder"},
+		{"type":"less", "file":"assets/less/btn-file2.less"},
 		{"type":"ts", "file":"assets/ts/Main.ts"}
 	],
 	"events":[
@@ -32,7 +33,7 @@
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\add",
 			"parent":"\\packages\\ticketing\\views\\add",
-			"file":"ticket.add.php"
+			"file":"html/tickets/add.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\view",

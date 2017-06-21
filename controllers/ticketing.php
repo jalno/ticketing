@@ -168,9 +168,6 @@ class ticketing extends controller{
 		$children = authorization::childrenTypes();
 		$view->setDepartmentData(department::get());
 		$view->setProducts(products::get());
-		if($children){
-			$view->setData(true, 'selectclient');
-		}
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			$inputsRules = array(
@@ -216,8 +213,6 @@ class ticketing extends controller{
 				$inputs = $this->checkinputs($inputsRules);
 				$inputs['department'] = department::byId($inputs['department']);
 				$inputs['client'] = isset($inputs['client']) ? user::byId($inputs['client']) : authentication::getUser();
-
-
 				if(!$inputs['department']){
 					throw new inputValidation("department");
 				}
@@ -284,7 +279,7 @@ class ticketing extends controller{
 							throw new inputValidation("file");
 						}
 					}elseif($inputs['file']['error'] != 4){
-						throw new inputValidation("file_status");
+						throw new inputValidation("file");
 					}
 				}
 				$event = new events\tickets\add($message);

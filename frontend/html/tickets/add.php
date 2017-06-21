@@ -6,23 +6,23 @@ use \packages\userpanel;
 $this->the_header();
 ?>
 <div class="row">
-    <div class="col-md-12">
-        <!-- start: BASIC TABLE PANEL -->
+    <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <i class="fa fa-plus"></i>
                 <span><?php echo translator::trans("newticket")?></span>
             </div>
             <div class="panel-body">
-                <form class="create_form" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
-                    <div class="col-md-6">
+                <form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
+                    <div class="col-xs-6">
                     <?php
-					if($this->getData('selectclient')){
-					?>
-						<input type="hidden" name="client" value="<?php echo $this->getDataForm('client'); ?>">
-					<?php
+					if($this->multiuser){
 						$this->createField(array(
-							'name' => 'user_name',
+							'name' => 'client',
+							'type' => 'hidden'
+						));
+						$this->createField(array(
+							'name' => 'client_name',
 							'label' => translator::trans("newticket.client"),
 							'error' => array(
 								'data_validation' => 'newticket.client.data_validation'
@@ -47,7 +47,7 @@ $this->the_header();
 					}
 					?>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-xs-6">
                     <?php
 					$fields = array(
 						array(
@@ -75,7 +75,7 @@ $this->the_header();
 					?>
                     </div>
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-xs-12">
 							<?php
 							$this->createField(array(
 								'name' => 'text',
@@ -87,11 +87,11 @@ $this->the_header();
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-8">
+						<div class="col-xs-8">
 							<p><?php echo translator::trans('markdown.description'); ?></p>
 						</div>
-						<div class="col-md-4">
-							<div class="col-md-12 btn-group btn-group-lg" role="group">
+						<div class="col-xs-4">
+							<div class="col-xs-12 btn-group btn-group-lg" role="group">
 								<span class="btn btn-file2 btn-default">
 									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 									<input type="file" name="file">
@@ -103,7 +103,6 @@ $this->the_header();
                 </form>
             </div>
         </div>
-        <!-- end: BASIC TABLE PANEL -->
     </div>
 </div>
 <?php

@@ -1,16 +1,11 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\base;
-use \packages\base\events;
-use \packages\base\frontend\theme;
 use \packages\base\translator;
-
 use \packages\ticketing\views\add as ticketadd;
 use \packages\ticketing\ticket;
-
+use \packages\ticketing\authorization;
 use \packages\userpanel;
 use \packages\userpanel\user;
-
 use \themes\clipone\viewTrait;
 use \themes\clipone\views\formTrait;
 use \themes\clipone\navigation;
@@ -20,19 +15,20 @@ use \themes\clipone\events\addingTicket;
 use \themes\clipone\views\dashboard\box;
 use \themes\clipone\views\dashboard\shortcut;
 class add extends ticketadd{
-	use viewTrait,formTrait;
+	use viewTrait, formTrait;
 	public static $shortcuts = array();
 	public static $boxs = array();
+	protected $multiuser = false;
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing.add')
 		));
 		$this->setNavigation();
-		$this->addAssets();
 		$this->setUserInput();
 		$initEvent = new addingTicket();
 		$initEvent->view = $this;
-		events::trigger($initEvent);
+		$initEvent->trigger();
+		$this->multiuser = (bool)authorization::childrenTypes();
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
@@ -46,10 +42,6 @@ class add extends ticketadd{
 		$item->setIcon('fa fa-add tip');
 		breadcrumb::addItem($item);
 		navigation::active("ticketing/list");
-	}
-	private function addAssets(){
-		$this->addCSSFile(theme::url('assets/css/custom.css'));
-		$this->addJSFile(theme::url('assets/js/pages/ticket.add.js'));
 	}
 	protected function getDepartmentsForSelect(){
 		$options = array();
