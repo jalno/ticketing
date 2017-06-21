@@ -70,7 +70,7 @@ $this->the_header();
 				<?php } ?>
 				<div class="replaycontianer">
 					<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
-					<form action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
+					<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
 						<div class="row">
 							<div class="col-xs-12">
 								<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
