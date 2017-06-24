@@ -1,20 +1,10 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-
-use \themes\clipone\utility;
-
-use \packages\ticketing\ticket;
-
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-university"></i><?php echo translator::trans("department_add"); ?>
@@ -23,7 +13,7 @@ $this->the_header();
 				</div>
 			</div>
 			<div class="panel-body">
-				<form id="departmentEdit" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/add"); ?>" method="post">
+				<form id="settings-departmetns-management" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/add"); ?>" method="post">
 					<?php
 						$this->setHorizontalForm('sm-2','sm-5');
 						$this->createField(
@@ -45,7 +35,6 @@ $this->the_header();
 							</thead>
 							<tbody>
 								<?php foreach($this->sortedDays() as $day){ ?>
-
 								<tr>
 									<td class="center" style="width: 10px;">
 										<?php
@@ -72,7 +61,6 @@ $this->the_header();
 												)
 											)
 										));
-
 										?>
 										</div>
 									</td>
@@ -102,7 +90,6 @@ $this->the_header();
 
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
 	</div>
 </div>
 <?php

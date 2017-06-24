@@ -13,8 +13,13 @@
 	"assets":[
 		{"type":"package", "name":"jquery"},
 		{"type":"package", "name":"jquery-ui"},
+		{"type":"package", "name":"jquery.growl"},
 		{"type":"package", "name":"bootstrap"},
+		{"type":"package", "name":"bootstrap-inputmsg"},
 		{"type":"package", "name":"webuilder"},
+		{"type":"package", "name":"ion-rangeslider"},
+		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.css"},
+		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.skinHTML5.css"},
 		{"type":"less", "file":"assets/less/ticket-layout.less"},
 		{"type":"less", "file":"assets/less/btn-file2.less"},
 		{"type":"ts", "file":"assets/ts/Main.ts"}
@@ -84,12 +89,12 @@
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\add",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\add",
-			"file":"settings.department.add.php"
+			"file":"html/settings/departments/add.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\edit",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\edit",
-			"file":"settings.department.edit.php"
+			"file":"html/settings/departments/edit.php"
 		}
 	]
 }

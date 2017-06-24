@@ -1,22 +1,13 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\base;
 use \packages\base\translator;
-use \packages\base\frontend\theme;
-
 use \packages\ticketing\views\settings\department\add as departmentAdd;
-
 use \packages\userpanel;
 use \packages\userpanel\date;
-
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
-use \themes\clipone\breadcrumb;
 use \themes\clipone\views\formTrait;
-use \themes\clipone\navigation\menuItem;
-
 use \packages\ticketing\department\worktime;
-
 class add extends departmentAdd{
 	use viewTrait, formTrait;
 	protected $days = array();
@@ -28,17 +19,11 @@ class add extends departmentAdd{
 		));
 		$this->setNavigation();
 		$this->setDaysValue();
-		$this->addAssets();
 		navigation::active("settings/departments/list");
-	}
-	private function addAssets(){
-		$this->addCSSFile(theme::url('assets/plugins/jQRangeSlider/css/classic-min.css'));
-		$this->addJSFile(theme::url('assets/plugins/jQRangeSlider/jQAllRangeSliders-min.js'));
-		$this->addJSFile(theme::url('assets/js/pages/department.js'));
 	}
 	private function setNavigation(){
 		$item = navigation::getByName("settings");
-		$departments = new menuItem("departments");
+		$departments = new navigation\menuItem("departments");
 		$departments->setTitle(translator::trans('departments'));
 		$departments->setURL(userpanel\url('settings/departments'));
 		$departments->setIcon('fa fa-university');
