@@ -1,15 +1,6 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-
-use \themes\clipone\utility;
-
-use \packages\ticketing\ticket;
-
 $this->the_header();
 ?>
 <div class="row">

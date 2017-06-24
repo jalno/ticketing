@@ -49,42 +49,42 @@
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\edit",
 			"parent":"\\packages\\ticketing\\views\\edit",
-			"file":"ticket.edit.php"
+			"file":"html/tickets/edit.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\lock",
 			"parent":"\\packages\\ticketing\\views\\lock",
-			"file":"ticket.lock.php"
+			"file":"html/tickets/lock.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\unlock",
 			"parent":"\\packages\\ticketing\\views\\unlock",
-			"file":"ticket.unlock.php"
+			"file":"html/tickets/unlock.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\delete",
 			"parent":"\\packages\\ticketing\\views\\delete",
-			"file":"ticket.delete.php"
+			"file":"html/tickets/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\message_delete",
 			"parent":"\\packages\\ticketing\\views\\message_delete",
-			"file":"ticket.message.delete.php"
+			"file":"html/tickets/message/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\message_edit",
 			"parent":"\\packages\\ticketing\\views\\message_edit",
-			"file":"ticket.message.edit.php"
+			"file":"html/tickets/message/edit.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\listview",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\listview",
-			"file":"settings.department.php"
+			"file":"html/settings/departments/search.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\delete",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\delete",
-			"file":"settings.department.delete.php"
+			"file":"html/settings/departments/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\add",
