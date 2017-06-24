@@ -1,22 +1,13 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\base;
-use \packages\base\frontend\theme;
 use \packages\base\translator;
-
 use \packages\ticketing\views\edit as ticketEdit;
 use \packages\ticketing\ticket;
-
 use \packages\userpanel;
 use \packages\userpanel\user;
-
 use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
-use \themes\clipone\breadcrumb;
-use \themes\clipone\navigation\menuItem;
-
-
 class edit extends ticketEdit{
 	use viewTrait, formTrait;
 	protected $thicket;

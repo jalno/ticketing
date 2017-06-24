@@ -1,29 +1,19 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-
-use \themes\clipone\utility;
-
-use \packages\ticketing\ticket;
-
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-university"></i><?php echo translator::trans("department_add"); ?>
+				<i class="fa fa-university"></i><?php echo translator::trans("department_edit"); ?>
 				<div class="panel-tools">
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 				</div>
 			</div>
 			<div class="panel-body">
-				<form id="departmentEdit" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/add"); ?>" method="post">
+				<form id="settings-departmetns-management" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/edit/".$this->department->id); ?>" method="post">
 					<?php
 						$this->setHorizontalForm('sm-2','sm-5');
 						$this->createField(
@@ -51,20 +41,18 @@ $this->the_header();
 										<?php
 										$this->createField(array(
 											'type' => 'hidden',
-											'name' => "day[{$day['day']}][worktime][start]",
-											'value' => 0
+											'name' => "day[{$day->day}][worktime][start]"
 										));
 										$this->createField(array(
 											'type' => 'hidden',
-											'name' => "day[{$day['day']}][worktime][end]",
-											'value' => 0
+											'name' => "day[{$day->day}][worktime][end]"
 										));
 										?>
 										<div class="checkbox-table">
 										<?php
 										$this->createField(array(
 											'type' => 'checkbox',
-											'name' => "day[{$day['day']}][enable]",
+											'name' => "day[{$day->day}][enable]",
 											'options' => array(
 												array(
 													'value' => true,
@@ -76,15 +64,15 @@ $this->the_header();
 										?>
 										</div>
 									</td>
-									<td><?php echo($this->getTranslatDays($day['day'])); ?></td>
+									<td><?php echo($this->getTranslatDays($day->day)); ?></td>
 									<td>
-										<div data-day="<?php echo $day['day']; ?>" class="slider"></div>
+										<div data-day="<?php echo $day->day; ?>" class="slider"></div>
 									</td>
 									<td>
 										<?php
 										$this->createField(array(
 											'type' => 'textarea',
-											'name' => "day[{$day['day']}][message]",
+											'name' => "day[{$day->day}][message]",
 										));
 										?>
 									</td>
@@ -96,13 +84,11 @@ $this->the_header();
 					<hr>
 					<p>
 						<a href="<?php echo userpanel\url("settings/departments"); ?>"class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
-						<button type="submit" class="btn btn-success"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("add"); ?></button>
+						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("edit"); ?></button>
 					</p>
 				</form>
-
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
 	</div>
 </div>
 <?php

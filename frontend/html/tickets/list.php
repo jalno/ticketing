@@ -52,30 +52,30 @@ $this->the_header();
 
 								$this->setButtonParam('view', 'link', userpanel\url("ticketing/view/".$row->id));
 								$this->setButtonParam('delete', 'link', userpanel\url("ticketing/delete/".$row->id));
-								$statusClass = utility::switchcase($row->status, array(
+								$statusClass = utility::switchcase($row->status, [
 									'label label-primary' => ticket::unread,
 									'label label-info' => ticket::read,
 									'label label-success' => ticket::answered,
 									'label label-warning' => ticket::in_progress,
 									'label label-inverse' => ticket::closed
-								));
-								$statusTxt = utility::switchcase($row->status, array(
+								]);
+								$statusTxt = utility::switchcase($row->status, [
 									'unread' => ticket::unread,
 									'read' => ticket::read,
 									'answered' => ticket::answered,
 									'in_progress' => ticket::in_progress,
 									'closed' => ticket::closed
-								));
-								$priorityClass = utility::switchcase($row->priority, array(
+								]);
+								$priorityClass = utility::switchcase($row->priority, [
 									'label label-warning' => ticket::instantaneous,
 									'label label-primary' => ticket::important,
 									'label label-info' => ticket::ordinary
-								));
-								$priorityTxt = utility::switchcase($row->priority, array(
+								]);
+								$priorityTxt = utility::switchcase($row->priority, [
 									'instantaneous' => ticket::instantaneous,
 									'important' => ticket::important,
 									'ordinary' => ticket::ordinary
-								));
+								]);
 
 								$title = ($messageread ? $row->title : "<b>".$row->title."</b>");
 							?>
@@ -112,45 +112,45 @@ $this->the_header();
 				<form id="ticketSearch" class="form-horizontal" action="<?php echo userpanel\url("ticketing"); ?>" method="get">
 					<?php
 					$this->setHorizontalForm('sm-3','sm-9');
-					$feilds = array(
-						array(
+					$feilds = [
+						[
 							'name' => 'id',
 							'type' => 'number',
 							'label' => translator::trans("ticket.id")
-						),
-						array(
+						],
+						[
 							'name' => 'title',
 							'label' => translator::trans("ticket.title")
-						),
-						array(
+						],
+						[
 							'name' => 'status',
 							'type' => 'select',
 							'label' => translator::trans("ticket.status"),
 							'options' => $this->getStatusForSelect()
-						),
-						array(
+						],
+						[
 							'name' => 'priority',
 							'type' => 'select',
 							'label' => translator::trans("ticket.priority"),
 							'options' => $this->getPriortyForSelect()
-						),
-						array(
+						],
+						[
 							'name' => 'department',
 							'type' => 'select',
 							'label' => translator::trans("ticket.department"),
 							'options' => $this->getDepartmentsForSelect()
-						),
-						array(
+						],
+						[
 							'name' => 'word',
 							'label' => translator::trans("ticketing.ticket.keyword")
-						),
-						array(
+						],
+						[
 							'type' => 'select',
 							'label' => translator::trans('search.comparison'),
 							'name' => 'comparison',
 							'options' => $this->getComparisonsForSelect()
-						)
-					);
+						]
+					];
 					if($this->multiuser){
 						$userFields = [
 							[

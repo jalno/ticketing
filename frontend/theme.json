@@ -11,6 +11,18 @@
 		"fa_IR" : "langs/fa_IR.json"
 	},
 	"assets":[
+		{"type":"package", "name":"jquery"},
+		{"type":"package", "name":"jquery-ui"},
+		{"type":"package", "name":"jquery.growl"},
+		{"type":"package", "name":"bootstrap"},
+		{"type":"package", "name":"bootstrap-inputmsg"},
+		{"type":"package", "name":"webuilder"},
+		{"type":"package", "name":"ion-rangeslider"},
+		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.css"},
+		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.skinHTML5.css"},
+		{"type":"less", "file":"assets/less/ticket-layout.less"},
+		{"type":"less", "file":"assets/less/btn-file2.less"},
+		{"type":"ts", "file":"assets/ts/Main.ts"}
 	],
 	"events":[
 		{
@@ -22,67 +34,67 @@
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\listview",
 			"parent":"\\packages\\ticketing\\views\\ticketlist",
-			"file":"ticket.list.php"
+			"file":"html/tickets/list.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\add",
 			"parent":"\\packages\\ticketing\\views\\add",
-			"file":"ticket.add.php"
+			"file":"html/tickets/add.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\view",
 			"parent":"\\packages\\ticketing\\views\\view",
-			"file":"ticket.view.php"
+			"file":"html/tickets/view.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\edit",
 			"parent":"\\packages\\ticketing\\views\\edit",
-			"file":"ticket.edit.php"
+			"file":"html/tickets/edit.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\lock",
 			"parent":"\\packages\\ticketing\\views\\lock",
-			"file":"ticket.lock.php"
+			"file":"html/tickets/lock.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\unlock",
 			"parent":"\\packages\\ticketing\\views\\unlock",
-			"file":"ticket.unlock.php"
+			"file":"html/tickets/unlock.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\delete",
 			"parent":"\\packages\\ticketing\\views\\delete",
-			"file":"ticket.delete.php"
+			"file":"html/tickets/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\message_delete",
 			"parent":"\\packages\\ticketing\\views\\message_delete",
-			"file":"ticket.message.delete.php"
+			"file":"html/tickets/message/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\message_edit",
 			"parent":"\\packages\\ticketing\\views\\message_edit",
-			"file":"ticket.message.edit.php"
+			"file":"html/tickets/message/edit.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\listview",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\listview",
-			"file":"settings.department.php"
+			"file":"html/settings/departments/search.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\delete",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\delete",
-			"file":"settings.department.delete.php"
+			"file":"html/settings/departments/delete.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\add",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\add",
-			"file":"settings.department.add.php"
+			"file":"html/settings/departments/add.php"
 		},
 		{
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\edit",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\edit",
-			"file":"settings.department.edit.php"
+			"file":"html/settings/departments/edit.php"
 		}
 	]
 }

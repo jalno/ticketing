@@ -43,7 +43,7 @@ class listview extends departmentList{
 		$this->setButton('edit', $this->canEdit, array(
 			'title' => translator::trans('department.edit'),
 			'icon' => 'fa fa-edit',
-			'classes' => array('btn', 'btn-xs', 'btn-warning')
+			'classes' => array('btn', 'btn-xs', 'btn-teal')
 		));
 		$this->setButton('delete', $this->canDel, array(
 			'title' => translator::trans('department.delete'),

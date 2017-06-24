@@ -3,7 +3,6 @@ namespace packages\ticketing\views;
 use \packages\financial\views\listview as list_view;
 use \packages\base\views\traits\form as formTrait;
 use \packages\ticketing\authorization;
-
 class ticketlist extends list_view{
 	use formTrait;
 	protected $canAdd;

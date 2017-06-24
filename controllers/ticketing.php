@@ -1,6 +1,5 @@
 <?php
 namespace packages\ticketing\controllers;
-use \packages\base;
 use \packages\base\IO;
 use \packages\base\db;
 use \packages\base\http;
@@ -168,9 +167,6 @@ class ticketing extends controller{
 		$children = authorization::childrenTypes();
 		$view->setDepartmentData(department::get());
 		$view->setProducts(products::get());
-		if($children){
-			$view->setData(true, 'selectclient');
-		}
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			$inputsRules = array(
@@ -216,8 +212,6 @@ class ticketing extends controller{
 				$inputs = $this->checkinputs($inputsRules);
 				$inputs['department'] = department::byId($inputs['department']);
 				$inputs['client'] = isset($inputs['client']) ? user::byId($inputs['client']) : authentication::getUser();
-
-
 				if(!$inputs['department']){
 					throw new inputValidation("department");
 				}
@@ -284,7 +278,7 @@ class ticketing extends controller{
 							throw new inputValidation("file");
 						}
 					}elseif($inputs['file']['error'] != 4){
-						throw new inputValidation("file_status");
+						throw new inputValidation("file");
 					}
 				}
 				$event = new events\tickets\add($message);
@@ -341,7 +335,6 @@ class ticketing extends controller{
 					$ticket_message->user = authentication::getID();
 					$ticket_message->text = $inputs['text'];
 					$ticket_message->status = ticket_message::unread;
-					$ticket_message->save();
 
 					if(isset($inputs['file'])){
 						if($inputs['file']['error'] == 0){
@@ -361,24 +354,22 @@ class ticketing extends controller{
 								throw new inputValidation("file");
 							}
 						}elseif($inputs['file']['error'] != 4){
-							throw new inputValidation("file_status");
+							throw new inputValidation("file");
 						}
 					}
-
+					$ticket_message->save();
 					$ticket->status = ((authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? ticket::answered : ticket::unread);
 					$ticket->reply_at = date::time();
 					$ticket->save();
 					$event = new events\tickets\reply($ticket_message);
 					$event->trigger();
-					
 					$this->response->Go(userpanel\url('ticketing/view/'.$data['ticket']));
-
 					$this->response->setStatus(true);
 				}else{
 					throw new inputValidation("ticket_lock");
 				}
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
+			}catch(inputValidation $e){
+				$view->setFormError(FormError::fromException($e));
 			}
 		}else{
 			$lastMSG = ticket_message::where("ticket", $ticket->id)->orderBy("date", "DESC")->getOne();

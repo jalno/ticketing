@@ -127,7 +127,7 @@ class departments extends controller{
 				$department = new department;
 				if(is_array($inputs['day'])){
 					foreach($inputs['day'] as $day => $val){
-						if(!in_array($day, range(1,7))){
+						if(!in_array($day, range(1, 7))){
 							throw new inputValidation("day[{$day}][enable]");
 						}
 						if(isset($val['enable']) and $val['enable']){
@@ -143,7 +143,7 @@ class departments extends controller{
 						}else{
 							$inputs['day'][$day]['worktime']['start'] = $inputs['day'][$day]['worktime']['end'] = 0;
 						}
-						if(array_key_exists('message',$val)){
+						if(isset($val['message']) and $val['message']){
 							$val['message'] = safe::string($val['message']);
 						}else{
 							throw new inputValidation("day[{$day}][message]");
@@ -211,7 +211,7 @@ class departments extends controller{
 						}else{
 							$inputs['day'][$day]['worktime']['start'] = $inputs['day'][$day]['worktime']['end'] = 0;
 						}
-						if(array_key_exists('message',$val)){
+						if(isset($val['message']) and $val['message']){
 							$val['message'] = safe::string($val['message']);
 						}else{
 							throw new inputValidation("day[{$day}][message]");
@@ -232,7 +232,6 @@ class departments extends controller{
 				}
 				$department->save();
 				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
