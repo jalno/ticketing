@@ -1,22 +1,15 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\base;
-use \packages\base\frontend\theme;
 use \packages\base\translator;
-
 use \packages\ticketing\views\settings\department\edit as departmentEdit;
-
 use \packages\userpanel;
 use \packages\userpanel\date;
-
 use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
-
 use \packages\ticketing\department\worktime;
-
 class edit extends departmentEdit{
 	use viewTrait,formTrait;
 	protected $department;
@@ -27,13 +20,7 @@ class edit extends departmentEdit{
 			translator::trans('departments'),
 			translator::trans('department_edit')
 		));
-		$this->addAssets();
 		navigation::active("settings/departments/list");
-	}
-	private function addAssets(){
-		$this->addCSSFile(theme::url('assets/plugins/jQRangeSlider/css/classic-min.css'));
-		$this->addJSFile(theme::url('assets/plugins/jQRangeSlider/jQAllRangeSliders-min.js'));
-		$this->addJSFile(theme::url('assets/js/pages/department.js'));
 	}
 	protected function getTranslatDays($day){
 		switch($day){

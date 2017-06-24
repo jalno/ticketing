@@ -1,20 +1,10 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
-
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-
-use \themes\clipone\utility;
-
-use \packages\ticketing\ticket;
-
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-md-12">
-		<!-- start: BASIC TABLE PANEL -->
+	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-university"></i><?php echo translator::trans("department_edit"); ?>
@@ -23,7 +13,7 @@ $this->the_header();
 				</div>
 			</div>
 			<div class="panel-body">
-				<form id="departmentEdit" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/edit/".$this->department->id); ?>" method="post">
+				<form id="settings-departmetns-management" class="form-horizontal" action="<?php echo userpanel\url("settings/departments/edit/".$this->department->id); ?>" method="post">
 					<?php
 						$this->setHorizontalForm('sm-2','sm-5');
 						$this->createField(
@@ -94,12 +84,11 @@ $this->the_header();
 					<hr>
 					<p>
 						<a href="<?php echo userpanel\url("settings/departments"); ?>"class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
-						<button type="submit" class="btn btn-yellow"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("edit"); ?></button>
+						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("edit"); ?></button>
 					</p>
 				</form>
 			</div>
 		</div>
-		<!-- end: BASIC TABLE PANEL -->
 	</div>
 </div>
 <?php
