@@ -4,7 +4,7 @@ import "jquery.growl";
 import "bootstrap-inputmsg";
 export default class Reply{
 	private static $form = $('#ticket-reply');
-	private static runSubmitFormListener = function(){
+	private static runSubmitFormListener(){
 		Reply.$form.on('submit', function(e){
 			e.preventDefault();
 			$(this).formAjax({

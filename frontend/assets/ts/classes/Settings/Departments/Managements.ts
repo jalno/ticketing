@@ -42,7 +42,7 @@ export default class Managements{
 			Managements.disableListener(tr, disabled);
 		});
 	}
-	private static runSubmitFormListener = function(){
+	private static runSubmitFormListener(){
 		Managements.$form.on('submit', function(e){
 			e.preventDefault();
 			$(this).formAjax({

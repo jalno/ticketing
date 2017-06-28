@@ -46,7 +46,7 @@ export default class Add{
 		});
 		$("select[name=department]", Add.$form).trigger('change');
 	}
-	private static runServicesListener = function(){
+	private static runServicesListener(){
 		$("select[name=product], input[name=client]").change(function() {
 			let product:string = $('select[name=product]').val().toString();
 			if(product.length){
@@ -94,7 +94,7 @@ export default class Add{
 			$service.parents('.form-group').first().hide();
 		}
 	}
-	private static runSubmitFormListener = function(){
+	private static runSubmitFormListener(){
 		Add.$form.on('submit', function(e){
 			e.preventDefault();
 			$(this).formAjax({
