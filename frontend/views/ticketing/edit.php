@@ -20,7 +20,6 @@ class edit extends ticketEdit{
 		));
 		$this->setShortDescription(translator::trans('ticketing.edit').' '.translator::trans('ticket'));
 		$this->setNavigation();
-		$this->addAssets();
 		$this->setFormData();
 	}
 	private function setFormData(){
@@ -32,9 +31,6 @@ class edit extends ticketEdit{
 	}
 	private function setNavigation(){
 		navigation::active("ticketing/list");
-	}
-	protected function addAssets(){
-		$this->addJSFile(theme::url('assets/js/pages/ticket.add.js'));
 	}
 	protected function getDepartmentForSelect(){
 		$departments = [];
