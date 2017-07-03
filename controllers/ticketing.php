@@ -64,12 +64,13 @@ class ticketing extends controller{
 	public function index(){
 		authorization::haveOrFail('list');
 		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
+		$ticket = new ticket();
 		$types = authorization::childrenTypes();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		if($types){
-			db::where("userpanel_users.type", $types, 'in');
+			$ticket->where("userpanel_users.type", $types, 'in');
 		}else{
-			db::where("userpanel_users.id", authentication::getID());
+			$ticket->where("userpanel_users.id", authentication::getID());
 		}
 		$inputsRules = array(
 			'id' => array(
@@ -124,7 +125,7 @@ class ticketing extends controller{
 					if(in_array($item, array('id', 'status', 'client'))){
 						$comparison = 'equals';
 					}
-					db::where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
+					$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
 				}
 			}
 			if(isset($inputs['word']) and $inputs['word']){
@@ -136,28 +137,21 @@ class ticketing extends controller{
 				}
 				$parenthesis->where("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison'], 'OR');
 				$parenthesis->where("ticketing_files.name", $inputs['word'], $inputs['comparison'], 'OR');
-				db::where($parenthesis);
-				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
-				db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "INNER");
-
-				db::setQueryOption("DISTINCT");
+				$ticket->where($parenthesis);
+				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
+				db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
+				$ticket->setQueryOption("DISTINCT");
 			}
+			$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
+			$ticket->pageLimit = $this->items_per_page;
+			$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
+			$view->setDataList($tickets);
+			$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
+			$view->setDepartment(department::get());
 		}catch(inputValidation $error){
 			$view->setFormError(FormError::fromException($error));
 			$this->response->setStatus(false);
 		}
-		$view->setDataForm($this->inputsvalue($inputs));
-
-		db::orderBy('id', ' DESC');
-		db::pageLimit($this->items_per_page);
-		$tickeetData = db::paginate("ticketing_tickets", $this->page, array("ticketing_tickets.*"));
-		$tickets = array();
-		foreach($tickeetData as $ticket){
-			$tickets[] = new ticket($ticket);
-		}
-		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
-		$view->setDataList($tickets);
-		$view->setDepartment(department::get());
 		$this->response->setView($view);
 		return $this->response;
 	}
