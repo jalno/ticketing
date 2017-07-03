@@ -23,7 +23,7 @@ $this->the_header();
 						));
 						$this->horizontal_form = false;
 					?>
-					<div class="col-md-12">
+					<div class="col-sm-12 table-responsive">
 						<table class="table sliders table-striped">
 							<thead>
 								<tr>
@@ -50,22 +50,15 @@ $this->the_header();
 										));
 										?>
 										<div class="checkbox-table">
-										<?php
-										$this->createField(array(
-											'type' => 'checkbox',
-											'name' => "day[{$day['day']}][enable]",
-											'options' => array(
-												array(
-													'value' => true,
-													'class' => 'flat-grey'
-												)
-											)
-										));
-										?>
+											<div class="checkbox">
+												<label class="">
+													<input name="<?php echo "day[{$day['day']}][enable]"; ?>" value="1" type="checkbox">
+												</label>
+											</div>
 										</div>
 									</td>
 									<td><?php echo($this->getTranslatDays($day['day'])); ?></td>
-									<td>
+									<td style="min-width: 200px;">
 										<div data-day="<?php echo $day['day']; ?>" class="slider"></div>
 									</td>
 									<td>
@@ -87,7 +80,6 @@ $this->the_header();
 						<button type="submit" class="btn btn-success"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("add"); ?></button>
 					</p>
 				</form>
-
 			</div>
 		</div>
 	</div>
