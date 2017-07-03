@@ -25,7 +25,7 @@ class edit extends ticketEdit{
 	private function setFormData(){
 		if($user = $this->getDataForm('client')){
 			if($user = user::byId($user)){
-				$this->setDataForm($user->getFullName(), 'user_name');
+				$this->setDataForm($user->getFullName(), 'client_name');
 			}
 		}
 	}

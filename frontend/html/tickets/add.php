@@ -14,7 +14,7 @@ $this->the_header();
             </div>
             <div class="panel-body">
                 <form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
-                    <div class="col-xs-6">
+                    <div class="col-sm-6">
                     <?php
 					if($this->multiuser){
 						$this->createField(array(
@@ -47,7 +47,7 @@ $this->the_header();
 					}
 					?>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-sm-6">
                     <?php
 					$fields = array(
 						array(
@@ -75,7 +75,7 @@ $this->the_header();
 					?>
                     </div>
 					<div class="row">
-						<div class="col-xs-12">
+						<div class="col-sm-12">
 							<?php
 							$this->createField(array(
 								'name' => 'text',
@@ -87,10 +87,10 @@ $this->the_header();
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-8">
+						<div class="col-sm-8">
 							<p><?php echo translator::trans('markdown.description'); ?></p>
 						</div>
-						<div class="col-xs-4">
+						<div class="col-sm-4">
 							<div class="col-xs-12 btn-group btn-group-lg" role="group">
 								<span class="btn btn-file2 btn-default">
 									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
