@@ -44,7 +44,16 @@ $this->the_header();
 						</div>
 						<div class="msgtext">
 							<?php echo $message->content; ?>
-							<div class="message-files"></div>
+							<?php if($message->files){?>
+							<div class="message-files">
+								<p><?php echo translator::trans("attachment.files"); ?></p>
+								<ul>
+									<?php foreach($message->files as $file){ ?>
+										<li><a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>" target="_blank"><?php echo $file->name; ?></a></li>
+									<?php } ?>
+								</ul>
+							</div>
+							<?php } ?>
 						</div>
 					</div>
 					<div class="icons">
