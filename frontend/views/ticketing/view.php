@@ -44,7 +44,6 @@ class view extends ticketView{
 	protected function SetDataView(){
 		$this->messages = $this->ticket->message;
 		foreach($this->messages as $message){
-			$message->lastime = utility::dateFormNow($message->date);
 			if($message->format == "markdown"){
 				$Parsedown = new Parsedown();
 				$text = $Parsedown->text($message->text);

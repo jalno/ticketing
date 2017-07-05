@@ -31,42 +31,30 @@ $this->the_header();
 
 				</div>
 			</div>
-			<div  class="panel-body">
+			<div  class="panel-body tecket-message">
 				<?php foreach($this->messages as $message){ ?>
-					<div class="space clearfix <?php if($message->user->id != $this->ticket->client->id){echo("reply");} ?>" id="ticket_message-<?php echo $message->id; ?>">
-					    <div class="comment-photo">
-							<img class="img-polaroid" src="<?php echo(theme::url('assets/images/user.png')) ?>" height="60" width="60" alt="client">
+				<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
+					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo(theme::url('assets/images/user.png')) ?>" class="img-polaroid"></a>
+					<div class="text">
+						<div class="info clearfix">
+							<span class="name">
+								<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?></a>
+							</span>
+							<span class="date tooltips" title="<?php echo date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo date::relativeTime($message->date); ?></span>
 						</div>
-					    <div class="comment-wraper text">
-					        <a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><h5 class="h-comment m-right-1"><?php echo $message->user->name." ".$message->user->lastname; ?></h5></a>
-					        <div class="space black m-right-1">
-					            <?php echo $message->content;
-								if($message->files){?>
-								<br><hr>
-								<p class="smal">
-									<?php echo translator::trans("attachment.files"); ?>
-								</p>
-								<p>
-									<?php foreach($message->files as $file){ ?>
-										<a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>"><?php echo $file->name; ?></a>
-									<?php } ?>
-								</p>
-								<?php } ?>
-					        </div>
-					        <div class="panel-heading">
-								<i class="fa fa-clock-o"></i>
-
-								<a class="tooltips cursor-default" title="<?php echo date::format('Y/m/d H:i:s', $message->date);?>"><span class="meta-tag"><?php echo $message->lastime; ?></span><a>
-								<div class="panel-tools">
-									<?php if($this->canEditMessage){ ?>
-										<a class="btn btn-xs btn-link ticket-options" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo translator::trans("message.edit.notice.title"); ?>"></i></a>
-									<?php } if($this->canDelMessage){ ?>
-										<a class="btn btn-xs btn-link ticket-delete" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-trash-o tip tooltips" title="<?php echo translator::trans("message.delete.warning.title"); ?>"></i></a>
-									<?php } ?>
-								</div>
-							</div>
-					    </div>
+						<div class="msgtext">
+							<?php echo $message->content; ?>
+							<div class="message-files"></div>
+						</div>
 					</div>
+					<div class="icons">
+						<?php if($this->canEditMessage){ ?>
+						<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo translator::trans("message.edit.notice.title"); ?>"></i></a>
+						<?php } if($this->canDelMessage){ ?>
+						<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo translator::trans("message.delete.warning.title"); ?>"></i></a>
+						<?php } ?>
+					</div>
+				</div>
 				<?php } ?>
 				<div class="replaycontianer">
 					<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>

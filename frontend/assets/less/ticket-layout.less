@@ -1,65 +1,104 @@
-.comment-photo{
-    width: 50px;
-    height: 50px;
-    background-size: cover;
-	float: right;
-	margin-right: 0px;
-	margin-left: 15px;
-}
-.comment-wraper{
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
-.h-comment {
-    margin-bottom: 0;
-}
-.meta-tag {
-    color: #919191;
-    font-size: 13px;
-    line-height: 24px;
-}
-.space {
-    margin-top: 20px;
-}
-.divider-1 {
-    width: 100%;
-    height: 1px;
-    background-color: #e1e1e1;
-	&.div-blog {
-		margin-top: 30px;
-		margin-bottom: 30px;
+.panel{
+	.tecket-message{
+		.msgbox{
+			.text{
+				position: relative;
+   				min-height: 86px;
+			}
+			.icons {
+				position: absolute;
+				top: 63px;
+				a {
+					cursor: pointer;
+					color: #666;
+					font-size: 12px;
+				}
+			}
+			&.itemIn, &.itemOut{
+				margin: 5px 0px 10px 0px;
+				clear: left;
+				position: relative;
+				.image{
+					position: absolute;
+					display: block;
+					right: 0px;
+					top: 0px;
+					.img-polaroid {
+						width: 60px;
+						height: 60px;
+						padding: 4px;
+						background-color: rgb(255, 255, 255);
+						border: 1px solid rgba(0, 0, 0, 0.2);
+						box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+					}
+				}
+				.text{
+					padding: 7px 8px 15px;
+					border: 1px solid #d5d5d5;
+					background-color: #FFF;
+					margin-right: 70px;
+					font-size: 11px;
+					color: #333;
+					line-height: 17px;
+					-moz-border-radius: 3px;
+					-webkit-border-radius: 3px;
+					-o-border-radius: 3px;
+					-ms-border-radius: 3px;
+					border-radius: 3px;
+					.info{
+						margin-bottom: 5px;
+						.name{
+							font-size: 11px;
+							color: #005580;
+							font-weight: bold;
+						}
+						.date {
+							font-size: 11px;
+							color: #999;
+						}
+					}
+				}
+			}
+			&.itemOut{
+				.image {
+					right: auto;
+					left: 0px;
+				}
+				.text {
+					margin: 0px 0px 0px 70px;
+					.info{
+						.name {
+							float: left;
+						}
+					}
+				}
+				.icons {
+					left: 16px;
+					a {
+						float: right;
+						margin-right: 9px;
+					}
+				}
+			}
+			&.itemIn{
+				.text {
+					.info{
+						.name {
+							float: right;
+						}
+					}
+					.date {
+						float: left;
+					}
+				}
+				.icons {
+					right: 16px;
+					a {
+						float: right;
+						margin-left: 9px;
+					}
+				}
+			}
+		}
 	}
-}
-.reply {
-    padding-left: 0;
-    padding-right: 30px;
-}
-.black *{
-	color: #313131;;
-}
-.w-clearfix span{
-	float: left;
-	margin-left: 17px;
-	margin-right: 0;
-	line-height: 21px;
-}
-.text{
-	border: 1px solid #d5d5d5;
-}
-.m-right-1{
-	margin-right: 10px;
-}
-.img-polaroid{
-    padding: 4px;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-}
-.text-send{
-	overflow: hidden;
-	word-wrap: break-word;
-	resize: none;
-}
-.cursor-default{
-	cursor: default;
 }
