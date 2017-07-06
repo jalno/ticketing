@@ -107,7 +107,11 @@
 		"ticketing.departments.worktime.thursday": "پنج شنبه",
 		"ticketing.departments.worktime.friday": "جمعه",
 		"un_worktimes.message": "پیام در ساعات غیر کاری",
-		"ticketing.ticket.keyword": "کلمه کلیدی"
-
+		"ticketing.ticket.keyword": "کلمه کلیدی",
+		"ticket.client.email": "رایانامه",
+		"ticket.client.phone": "تلفن",
+		"ticket.client.cellphone": "تلفن همراه",
+		"ticket.client.lastonline": "آخرین فعالیت",
+		"ticket.client.type": "سطح کاربری"
 	}
 }

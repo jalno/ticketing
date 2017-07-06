@@ -4,10 +4,58 @@ use \packages\base\translator;
 use \packages\userpanel;
 use \packages\userpanel\date;
 use \packages\ticketing\ticket;
+use \packages\ticketing\authorization;
 $this->the_header();
 ?>
 <div class="row">
-	<div class="col-xs-12">
+	<div class="col-md-4 col-md-pull-8">
+	<?php if((bool)authorization::childrenTypes()){ ?>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading"><i class="fa fa-hdd-o"></i> <?php echo translator::trans('ticket.client'); ?>
+					<div class="panel-tools">
+						<?php $client = $this->ticket->client; ?>
+						<a href="<?php echo userpanel\url('users/view/'.$client->id); ?>" target="_blank" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('view'); ?>"><i class="fa fa-user"></i></a>
+						<a href="#" class="btn btn-xs btn-link panel-collapse collapses"></a>
+					</div>
+				</div>
+				<div class="panel-body form-horizontal">
+					<div class="form-group">
+						<label class="col-xs-5"><?php echo translator::trans('ticket.client.type'); ?>:</label>
+						<div class="col-xs-7"><?php echo $client->type->title; ?></div>
+					</div>
+					<div class="form-group"><label class="col-xs-3"><?php echo translator::trans('ticket.client.email'); ?>:</label>
+						<div class="col-xs-9 ltr">
+							<a href="<?php echo userpanel\url('email/send/', ['user' => $client->id]); ?>"><?php echo $client->email; ?></a>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-3"><?php echo translator::trans('ticket.client.phone'); ?>:</label>
+						<div class="col-xs-9 ltr"><?php echo $client->phone; ?></div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-5"><?php echo translator::trans('ticket.client.cellphone'); ?>:</label>
+						<div class="col-xs-7 ltr">
+							<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->cellphone; ?></a>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-5"><?php echo translator::trans('ticket.client.lastonline'); ?>:</label>
+						<div class="col-xs-7"><?php echo date::relativeTime($client->lastonline); ?></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+	}
+	if($product = $this->getProductService()){
+		echo $product->generateRows();
+	}
+	?>
+	</div>
+	<div class="col-md-8 col-md-push-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-comment-o"></i>
@@ -32,63 +80,71 @@ $this->the_header();
 				</div>
 			</div>
 			<div  class="panel-body tecket-message">
-				<?php foreach($this->messages as $message){ ?>
-				<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
-					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo(theme::url('assets/images/user.png')) ?>" class="img-polaroid"></a>
-					<div class="text">
-						<div class="info clearfix">
-							<span class="name">
-								<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?></a>
-							</span>
-							<span class="date tooltips" title="<?php echo date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo date::relativeTime($message->date); ?></span>
-						</div>
-						<div class="msgtext">
-							<?php echo $message->content; ?>
-							<?php if($message->files){?>
-							<div class="message-files">
-								<p><?php echo translator::trans("attachment.files"); ?></p>
-								<ul>
-									<?php foreach($message->files as $file){ ?>
-										<li><a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>" target="_blank"><?php echo $file->name; ?></a></li>
+				<div class="row">
+					<div class="col-sm-12">
+						<?php foreach($this->messages as $message){ ?>
+						<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
+							<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo(theme::url('assets/images/user.png')) ?>" class="img-polaroid"></a>
+							<div class="text">
+								<div class="info clearfix">
+									<span class="name">
+										<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?></a>
+									</span>
+									<span class="date tooltips" title="<?php echo date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo date::relativeTime($message->date); ?></span>
+								</div>
+								<div class="msgtext">
+									<?php echo $message->content; ?>
+									<?php if($message->files){?>
+									<div class="message-files">
+										<p><?php echo translator::trans("attachment.files"); ?></p>
+										<ul>
+											<?php foreach($message->files as $file){ ?>
+												<li><a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>" target="_blank"><?php echo $file->name; ?></a></li>
+											<?php } ?>
+										</ul>
+									</div>
 									<?php } ?>
-								</ul>
+								</div>
 							</div>
-							<?php } ?>
+							<div class="icons">
+								<?php if($this->canEditMessage){ ?>
+								<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo translator::trans("message.edit.notice.title"); ?>"></i></a>
+								<?php } if($this->canDelMessage){ ?>
+								<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo translator::trans("message.delete.warning.title"); ?>"></i></a>
+								<?php } ?>
+							</div>
 						</div>
-					</div>
-					<div class="icons">
-						<?php if($this->canEditMessage){ ?>
-						<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo translator::trans("message.edit.notice.title"); ?>"></i></a>
-						<?php } if($this->canDelMessage){ ?>
-						<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo translator::trans("message.delete.warning.title"); ?>"></i></a>
 						<?php } ?>
 					</div>
 				</div>
-				<?php } ?>
-				<div class="replaycontianer">
-					<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
-					<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
-						<div class="row">
-							<div class="col-xs-12">
-								<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
-								<hr>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-8">
-								<p><?php echo translator::trans('markdown.description'); ?></p>
-							</div>
-							<div class="col-sm-4">
-								<div class="col-xs-12 btn-group btn-group-lg" role="group">
-									<span class="btn btn-file2 btn-default">
-										<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
-										<input type="file" name="file">
-									</span>
-									<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="replaycontianer">
+							<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
+							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
+								<div class="row">
+									<div class="col-sm-12">
+										<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
+										<hr>
+									</div>
 								</div>
-							</div>
+								<div class="row">
+									<div class="col-sm-7">
+										<p><?php echo translator::trans('markdown.description'); ?></p>
+									</div>
+									<div class="col-sm-5">
+										<div class="row btn-group btn-group-lg" role="group">
+											<span class="btn btn-file2 btn-default">
+												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+												<input type="file" name="file">
+											</span>
+											<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+										</div>
+									</div>
+								</div>
+							</form>
 						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</div>
