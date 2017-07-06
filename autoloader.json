@@ -166,6 +166,14 @@
 		{
 			"classes":["events\\tickets\\inprogress"],
 			"file":"libraries/events/tickets/inprogress.php"
+		},
+		{
+			"classes":["product\\box"],
+			"file":"libraries/products/box.php"
+		},
+		{
+			"classes":["product\\panel"],
+			"file":"libraries/products/panel.php"
 		}
 	]
 }

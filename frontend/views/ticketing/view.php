@@ -11,6 +11,7 @@ use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
 use \packages\ticketing\ticket;
 use \packages\ticketing\Parsedown;
+use \packages\ticketing\products;
 class view extends ticketView{
 	use viewTrait, listTrait;
 	protected $messages;
@@ -55,6 +56,14 @@ class view extends ticketView{
 		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
 			$this->canSend = false;
 		}
-
+	}
+	protected function getProductService(){
+		foreach(products::get() as $product){
+			if($product->getName() == $this->ticket->param('product')){
+				$product->showInformationBox($this->ticket->client, $this->ticket->param('service'));
+				return $product;
+			}
+		}
+		return null;
 	}
 }
