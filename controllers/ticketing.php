@@ -241,6 +241,7 @@ class ticketing extends controller{
 					}
 				}
 				if(isset($inputs['file'])){
+					$files = [];
 					foreach($inputs['file'] as $file){
 						if($file['error'] == 0){
 							$files[] = $file;
@@ -632,7 +633,9 @@ class ticketing extends controller{
 					'type' => 'string'
 				),
 				'client' => array(
-					'type' => 'number'
+					'type' => 'number',
+					'optional' => true,
+					'default' => authentication::getID()
 				)
 			));
 			products::get();
@@ -654,6 +657,7 @@ class ticketing extends controller{
 			$this->response->setdata($services, "items");
 			$this->response->setStatus(true);
 		}catch(inputValidation $error){
+			print_r($error);
 			$this->response->addError(FormError::fromException($error));
 		}
 		return $this->response;

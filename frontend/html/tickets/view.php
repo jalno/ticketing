@@ -6,56 +6,60 @@ use \packages\userpanel\date;
 use \packages\ticketing\ticket;
 use \packages\ticketing\authorization;
 $this->the_header();
+$product = $this->getProductService();
+$childrenType = (bool)authorization::childrenTypes();
 ?>
 <div class="row">
+<?php if($childrenType or $product){ ?>
 	<div class="col-md-4 col-md-pull-8">
-	<?php if((bool)authorization::childrenTypes()){ ?>
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="panel panel-default">
-				<div class="panel-heading"><i class="fa fa-hdd-o"></i> <?php echo translator::trans('ticket.client'); ?>
-					<div class="panel-tools">
-						<?php $client = $this->ticket->client; ?>
-						<a href="<?php echo userpanel\url('users/view/'.$client->id); ?>" target="_blank" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('view'); ?>"><i class="fa fa-user"></i></a>
-						<a href="#" class="btn btn-xs btn-link panel-collapse collapses"></a>
-					</div>
-				</div>
-				<div class="panel-body form-horizontal">
-					<div class="form-group">
-						<label class="col-xs-5"><?php echo translator::trans('ticket.client.type'); ?>:</label>
-						<div class="col-xs-7"><?php echo $client->type->title; ?></div>
-					</div>
-					<div class="form-group"><label class="col-xs-3"><?php echo translator::trans('ticket.client.email'); ?>:</label>
-						<div class="col-xs-9 ltr">
-							<a href="<?php echo userpanel\url('email/send/', ['user' => $client->id]); ?>"><?php echo $client->email; ?></a>
+		<?php if($childrenType){ ?>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading"><i class="fa fa-hdd-o"></i> <?php echo translator::trans('ticket.client'); ?>
+						<div class="panel-tools">
+							<?php $client = $this->ticket->client; ?>
+							<a href="<?php echo userpanel\url('users/view/'.$client->id); ?>" target="_blank" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans('view'); ?>"><i class="fa fa-user"></i></a>
+							<a href="#" class="btn btn-xs btn-link panel-collapse collapses"></a>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-xs-3"><?php echo translator::trans('ticket.client.phone'); ?>:</label>
-						<div class="col-xs-9 ltr"><?php echo $client->phone; ?></div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5"><?php echo translator::trans('ticket.client.cellphone'); ?>:</label>
-						<div class="col-xs-7 ltr">
-							<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->cellphone; ?></a>
+					<div class="panel-body form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-5"><?php echo translator::trans('ticket.client.type'); ?>:</label>
+							<div class="col-xs-7"><?php echo $client->type->title; ?></div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5"><?php echo translator::trans('ticket.client.lastonline'); ?>:</label>
-						<div class="col-xs-7"><?php echo date::relativeTime($client->lastonline); ?></div>
+						<div class="form-group"><label class="col-xs-3"><?php echo translator::trans('ticket.client.email'); ?>:</label>
+							<div class="col-xs-9 ltr">
+								<a href="<?php echo userpanel\url('email/send/', ['user' => $client->id]); ?>"><?php echo $client->email; ?></a>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-3"><?php echo translator::trans('ticket.client.phone'); ?>:</label>
+							<div class="col-xs-9 ltr"><?php echo $client->phone; ?></div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-5"><?php echo translator::trans('ticket.client.cellphone'); ?>:</label>
+							<div class="col-xs-7 ltr">
+								<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->cellphone; ?></a>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-5"><?php echo translator::trans('ticket.client.lastonline'); ?>:</label>
+							<div class="col-xs-7"><?php echo date::relativeTime($client->lastonline); ?></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<?php
+		}
+		if($product){
+			echo $product->generateRows();
+		}
+		?>
 	</div>
-	<?php
-	}
-	if($product = $this->getProductService()){
-		echo $product->generateRows();
-	}
-	?>
-	</div>
-	<div class="col-md-8 col-md-push-4">
+<?php } ?>
+	<div class="<?php echo (($childrenType or $product) ? 'col-md-8 col-md-push-4' : 'col-sm-12'); ?>">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-comment-o"></i>
@@ -132,7 +136,7 @@ $this->the_header();
 									<div class="col-sm-7">
 										<p><?php echo translator::trans('markdown.description'); ?></p>
 									</div>
-									<div class="col-sm-5">
+									<div class="col-sm-5 text-center">
 										<div class="row btn-group btn-group-lg" role="group">
 											<span class="btn btn-file2 btn-default">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>

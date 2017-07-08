@@ -90,8 +90,8 @@ $this->the_header();
 						<div class="col-sm-8">
 							<p><?php echo translator::trans('markdown.description'); ?></p>
 						</div>
-						<div class="col-sm-4">
-							<div class="col-xs-12 btn-group btn-group-lg" role="group">
+						<div class="col-sm-4 text-center">
+							<div class="row btn-group btn-group-lg" role="group">
 								<span class="btn btn-file2 btn-default">
 									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 									<input type="file" name="file[]" multiple="">

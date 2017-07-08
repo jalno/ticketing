@@ -51,38 +51,41 @@ export default class Add{
 			let product:string = $('select[name=product]').val().toString();
 			if(product.length){
 				$("select[name=service]").parents(".form-group").show("slow");
-				let user = $("input[name=client]").val();
-				if(user){
-					$('select[name=service]').html('');
-					AjaxRequest({
-						url: '/fa/userpanel/ticketing/getservices',
-						data:{
-							ajax: 1,
-							client: user,
-							product: product
-						},
-						success: (data: webuilder.AjaxResponse) => {
-							for (let i = 0; i < data.items.length; i++) {
-								$('select[name=service]').append($('<option>',{
-									value: data.items[i].id,
-									text : data.items[i].title
-								}));
-
-							}
-						},
-						error: function(error:webuilder.AjaxError){
-							$.growl.error({
-								title:"خطا",
-								message:'درخواست شما توسط سرور قبول نشد'
-							});
-						}
-					});
-				}else{
-					$.growl.error({
-						title:"خطا",
-						message:'کاربر مشخص نشده ، لطفا کاربر را مشخص کنید .'
-					});
+				let user:string;
+				if($("input[name=client]", Add.$form).length){
+					user = $("input[name=client]").val() as string;
+					if(!user){
+						$.growl.error({
+							title:"خطا",
+							message:'کاربر مشخص نشده ، لطفا کاربر را مشخص کنید .'
+						});
+						return ;
+					}
 				}
+				$('select[name=service]').html('');
+				AjaxRequest({
+					url: '/fa/userpanel/ticketing/getservices',
+					data:{
+						ajax: 1,
+						client: user,
+						product: product
+					},
+					success: (data: webuilder.AjaxResponse) => {
+						for (let i = 0; i < data.items.length; i++) {
+							$('select[name=service]').append($('<option>',{
+								value: data.items[i].id,
+								text : data.items[i].title
+							}));
+
+						}
+					},
+					error: function(error:webuilder.AjaxError){
+						$.growl.error({
+							title:"خطا",
+							message:'درخواست شما توسط سرور قبول نشد'
+						});
+					}
+				});
 			}else{
 				$("select[name=service]").parents(".form-group").hide();
 			}
