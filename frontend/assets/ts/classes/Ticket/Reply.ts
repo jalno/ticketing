@@ -45,6 +45,9 @@ export default class Reply{
 	}
 	public static init(){
 		Reply.runSubmitFormListener();
+		if($('input[type=file]', Reply.$form).prop('disabled')){
+			$('.btn-file2', Reply.$form).addClass('disabled');
+		}
 	}
 	public static initIfNeeded(){
 		if(Reply.$form.length){

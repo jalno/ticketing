@@ -124,7 +124,7 @@ $this->the_header();
 							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data">
 								<div class="row">
 									<div class="col-sm-12">
-										<textarea <?php if($this->canSend == false){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
+										<textarea <?php if(!$this->canSend){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
 										<hr>
 									</div>
 								</div>
@@ -136,9 +136,9 @@ $this->the_header();
 										<div class="row btn-group btn-group-lg" role="group">
 											<span class="btn btn-file2 btn-default">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
-												<input type="file" name="file[]" multiple="">
+												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
-											<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+											<button <?php if(!$this->canSend){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 										</div>
 									</div>
 								</div>

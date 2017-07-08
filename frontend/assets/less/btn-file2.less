@@ -13,6 +13,16 @@
 		min-height: 100%;
 		opacity: 0;
 		outline: none;
-		cursor: pointer !important;
+		cursor: pointer;
+		&:disabled{
+			cursor: not-allowed;
+		}
+	}
+	&.disabled{
+		cursor: not-allowed;
+		opacity: 0.65;
+		filter: alpha(opacity=65);
+		-webkit-box-shadow: none;
+		box-shadow: none;
 	}
 }
