@@ -136,7 +136,7 @@ $this->the_header();
 										<div class="row btn-group btn-group-lg" role="group">
 											<span class="btn btn-file2 btn-default">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
-												<input type="file" name="file">
+												<input type="file" name="file[]" multiple="">
 											</span>
 											<button <?php if($this->canSend == false){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 										</div>

@@ -256,23 +256,28 @@ class ticketing extends controller{
 					$ticket->setParam('service', $inputs['service']->getId());
 				}
 				if(isset($inputs['file'])){
-					if($inputs['file']['error'] == 0){
-						$name = md5_file($inputs['file']['tmp_name']);
-						$directory = packages::package('ticketing')->getFilePath('storage/private');
-						if(!is_dir($directory)){
-							IO\mkdir($directory);
-						}
-						if(move_uploaded_file($inputs['file']['tmp_name'], $directory.'/'.$name)){
-							$message->addFile(array(
-								'name' => $inputs['file']['name'],
-								'size' => $inputs['file']['size'],
-								'path' => 'private/'.$name,
-							));
-						}else{
+					if(!is_array($inputs['file'])){
+						throw new inputValidation("file");
+					}
+					foreach($inputs['file'] as $file){
+						if($file['error'] == 0){
+							$name = md5_file($file['tmp_name']);
+							$directory = packages::package('ticketing')->getFilePath('storage/private');
+							if(!is_dir($directory)){
+								IO\mkdir($directory);
+							}
+							if(move_uploaded_file($file['tmp_name'], $directory.'/'.$name)){
+								$message->addFile(array(
+									'name' => $file['name'],
+									'size' => $file['size'],
+									'path' => 'private/'.$name,
+								));
+							}else{
+								throw new inputValidation("file");
+							}
+						}elseif($file['error'] != 4){
 							throw new inputValidation("file");
 						}
-					}elseif($inputs['file']['error'] != 4){
-						throw new inputValidation("file");
 					}
 				}
 				$event = new events\tickets\add($message);
@@ -331,24 +336,28 @@ class ticketing extends controller{
 					$ticket_message->status = ticket_message::unread;
 
 					if(isset($inputs['file'])){
-						if($inputs['file']['error'] == 0){
-							$name = md5_file($inputs['file']['tmp_name']);
-
-							$directory = packages::package('ticketing')->getFilePath('storage/private');
-							if(!is_dir($directory)){
-								IO\mkdir($directory);
-							}
-							if(move_uploaded_file($inputs['file']['tmp_name'], $directory.'/'.$name)){
-								$ticket_message->addFile(array(
-									'name' => $inputs['file']['name'],
-									'size' => $inputs['file']['size'],
-									'path' => 'private/'.$name,
-								));
-							}else{
+						if(!is_array($inputs['file'])){
+							throw new inputValidation("file");
+						}
+						foreach($inputs['file'] as $file){
+							if($file['error'] == 0){
+								$name = md5_file($file['tmp_name']);
+								$directory = packages::package('ticketing')->getFilePath('storage/private');
+								if(!is_dir($directory)){
+									IO\mkdir($directory);
+								}
+								if(move_uploaded_file($file['tmp_name'], $directory.'/'.$name)){
+									$ticket_message->addFile(array(
+										'name' => $file['name'],
+										'size' => $file['size'],
+										'path' => 'private/'.$name,
+									));
+								}else{
+									throw new inputValidation("file");
+								}
+							}elseif($file['error'] != 4){
 								throw new inputValidation("file");
 							}
-						}elseif($inputs['file']['error'] != 4){
-							throw new inputValidation("file");
 						}
 					}
 					$ticket_message->save();
