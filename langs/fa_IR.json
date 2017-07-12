@@ -5,7 +5,6 @@
 	},
 	"rtl": true,
 	"phrases":{
-
 		"sms.template.name.ticketing_ticket_reply":"ارسال پاسخ تیکت",
 		"sms.template.name.ticketing_ticket_add":"تیکت جدید",
 		"sms.template.variable.ticket_message->ticket":"شناسه تیکت",
@@ -32,7 +31,34 @@
 		"sms.template.variable.country->name":"نام کشور",
 		"sms.template.variable.department->title":"نام دپارتمان",
 		"sms.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری",
-		"error.ticketDependencies": "تیکت هایی با این دپارتمان وجود دارند ، لطفا ابتدا تکلیف <a href=\"{ticket_search_link}\"> تیکت </a> ها را مشخص کنبد."
-
+		"error.ticketDependencies": "تیکت هایی با این دپارتمان وجود دارند ، لطفا ابتدا تکلیف <a href=\"{ticket_search_link}\"> تیکت </a> ها را مشخص کنبد.",
+		"email.template.name.ticketing_ticket_reply":"ارسال پاسخ تیکت",
+		"email.template.name.ticketing_ticket_add":"تیکت جدید",
+		"email.template.variable.ticket_message->ticket":"شناسه تیکت",
+		"email.template.variable.ticket_message->date":"زمان ارسال پیام",
+		"email.template.variable.ticket_message->user":"شناسه ارسال کننده پیام",
+		"email.template.variable.ticket_message->text":"متن پیام",
+		"email.template.variable.ticket_message->format":"فرمت پیام",
+		"email.template.variable.ticket_message->status":"وضعیت پیام",
+		"email.template.variable.ticket->title":"عنوان تیکت",
+		"email.template.variable.ticket->create_at":"زمان ایجاد پیام",
+		"email.template.variable.ticket->reply_at":"زمان آخرین پیام",
+		"email.template.variable.ticket->priority":"اولویت تیکت",
+		"email.template.variable.ticket->department":"شناسه دپارتمان",
+		"email.template.variable.ticket->client":"ایجاد کننده تیکت",
+		"email.template.variable.ticket->status":"وضعیت تیکت",
+		"email.template.variable.ticket->client->email":"ایمیل مشتری",
+		"email.template.variable.ticket->client->name":"نام مشتری",
+		"email.template.variable.ticket->client->lastname":"نام خانوادگی مشتری",
+		"email.template.variable.ticket->client->cellphone":"تلفن همراه مشتری",
+		"email.template.variable.ticket->client->phone":"تلفن ثابت مشتری",
+		"email.template.variable.ticket->client->city":"شهر مشتری",
+		"email.template.variable.ticket->client->country":"شناسه کشور مشتری",
+		"email.template.variable.country->code":"کد دو حرفی کشور",
+		"email.template.variable.country->name":"نام کشور",
+		"email.template.variable.department->title":"نام دپارتمان",
+		"email.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری",
+		"email.template.name.ticketing_ticket_close": "بستن تیکت",
+		"email.template.name.ticketing_ticket_inprogress": "وضعیت پیگیری در تیکت"
 	}
 }
