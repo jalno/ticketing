@@ -145,8 +145,6 @@ class departments extends controller{
 						}
 						if(isset($val['message']) and $val['message']){
 							$val['message'] = safe::string($val['message']);
-						}else{
-							throw new inputValidation("day[{$day}][message]");
 						}
 					}
 				}else{
@@ -160,7 +158,7 @@ class departments extends controller{
 					$input = $inputs['day'][$work->day];
 					$work->time_start = $input['worktime']['start'];
 					$work->time_end = $input['worktime']['end'];
-					$work->message = $input['message'];
+					$work->message = isset($input['message']) ? $input['message'] : '';
 					$work->save();
 				}
 				$this->response->setStatus(true);
@@ -213,8 +211,6 @@ class departments extends controller{
 						}
 						if(isset($val['message']) and $val['message']){
 							$val['message'] = safe::string($val['message']);
-						}else{
-							throw new inputValidation("day[{$day}][message]");
 						}
 					}
 				}else{
@@ -227,7 +223,7 @@ class departments extends controller{
 					$input = $inputs['day'][$work->day];
 					$work->time_start = $input['worktime']['start'];
 					$work->time_end = $input['worktime']['end'];
-					$work->message = $input['message'];
+					$work->message = isset($input['message']) ? $input['message'] : '';
 					$work->save();
 				}
 				$department->save();
