@@ -112,6 +112,7 @@
 		"ticket.client.phone": "تلفن",
 		"ticket.client.cellphone": "تلفن همراه",
 		"ticket.client.lastonline": "آخرین فعالیت",
-		"ticket.client.type": "سطح کاربری"
+		"ticket.client.type": "سطح کاربری",
+		"error.ticketing.ticket.notfound": "هیچ تیکتی یافت نشد ، در این قسمت میتوانید مشکلات و سوالات خود را در قالب تیکت ارسال و پیگیری کنید ."
 	}
 }
