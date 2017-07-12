@@ -199,7 +199,8 @@ class ticketing extends controller{
 			);
 			if($children){
 				$inputsRules['client'] = array(
-					'type' => 'number'
+					'type' => 'number',
+					'optional' => true
 				);
 			}
 			try {
@@ -272,7 +273,7 @@ class ticketing extends controller{
 				$ticket->priority = $inputs['priority'];
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
-				$ticket->status = $children ? ticket::answered : ticket::unread;
+				$ticket->status = ((authentication::getID() == $inputs['client']->id) ? ticket::unread : ticket::answered);
 				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
 					$ticket->setParam('product', $inputs['product']->getName());
 					$ticket->setParam('service', $inputs['service']->getId());
@@ -400,11 +401,12 @@ class ticketing extends controller{
 			}
 		}else{
 			$lastMSG = ticket_message::where("ticket", $ticket->id)->orderBy("date", "DESC")->getOne();
-			if($ticket->status == ticket::unread and authentication::getID() != $lastMSG->user->id){
-				$ticket->status = ticket::read;
-				$ticket->save();
-			}
-			if($ticket->client->id == authentication::getID()){
+			if(authentication::getID() != $ticket->client->id){
+				if($ticket->status == ticket::unread){
+					$ticket->status = ticket::read;
+					$ticket->save();
+				}
+			}else{
 				foreach($ticket->message as $row){
 					if($row->status == 0){
 						$row->status = 1;
