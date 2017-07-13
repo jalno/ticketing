@@ -95,6 +95,11 @@
 			"name":"\\themes\\clipone\\views\\ticketing\\settings\\department\\edit",
 			"parent":"\\packages\\ticketing\\views\\settings\\department\\edit",
 			"file":"html/settings/departments/edit.php"
+		},
+		{
+			"name":"\\themes\\clipone\\views\\ticketing\\close",
+			"parent":"\\packages\\ticketing\\views\\close",
+			"file":"html/tickets/close.php"
 		}
 	]
 }

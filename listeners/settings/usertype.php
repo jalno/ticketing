@@ -12,6 +12,7 @@ class usertype{
 			'lock',
 			'unlock',
 			'delete',
+			'close',
 
 			'message_delete',
 			'message_edit',

@@ -74,6 +74,10 @@
 		{
 			"classes":["events\\addingTicket"],
 			"file":"libraries/events/addingTicket.php"
+		},
+		{
+			"classes":["views\\ticketing\\close"],
+			"file":"views/ticketing/close.php"
 		}
 	]
 }

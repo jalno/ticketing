@@ -60,5 +60,15 @@
 	{
 		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\settings\\departments@edit"
+	},
+	{
+		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@confirmClose",
+		"method": "get"
+	},
+	{
+		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@close",
+		"method": "post"
 	}
 ]

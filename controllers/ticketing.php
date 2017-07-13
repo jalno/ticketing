@@ -31,7 +31,7 @@ use \packages\ticketing\events;
 
 class ticketing extends controller{
 	protected $authentication = true;
-	private function checkTicket($ticketID){
+	private function checkTicket(int $ticketID){
 		$types = authorization::childrenTypes();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "LEFT");
 		if($types){
@@ -39,9 +39,10 @@ class ticketing extends controller{
 		}else{
 			db::where("userpanel_users.id", authentication::getID());
 		}
-		db::where("ticketing_tickets.id", $ticketID);
-		$ticket = new ticket(db::getOne("ticketing_tickets", "ticketing_tickets.*"));
-		if(!$ticket->id){
+		$ticket = new ticket();
+		$ticket->where("ticketing_tickets.id", $ticketID);
+		$ticket = $ticket->getOne('ticketing_tickets.*');
+		if(!$ticket){
 			throw new NotFound;
 		}
 		return $ticket;
@@ -659,9 +660,36 @@ class ticketing extends controller{
 			$this->response->setdata($services, "items");
 			$this->response->setStatus(true);
 		}catch(inputValidation $error){
-			print_r($error);
 			$this->response->addError(FormError::fromException($error));
 		}
+		return $this->response;
+	}
+	public function confirmClose(array $data){
+		authorization::haveOrFail('close');
+		$ticket = $this->checkTicket($data['ticket']);
+		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
+			throw new NotFound();
+		}
+		$view = view::byName("\\packages\\ticketing\\views\\close");
+		$view->setTicket($ticket);
+		$this->response->setStatus(true);
+		$this->response->setView($view);
+		return $this->response;
+	}
+	public function close(array $data){
+		authorization::haveOrFail('close');
+		$ticket = $this->checkTicket($data['ticket']);
+		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
+			throw new NotFound();
+		}
+		$view = view::byName("\\packages\\ticketing\\views\\close");
+		$view->setTicket($ticket);
+		$this->response->setStatus(false);
+		$ticket->status = ticket::closed;
+		$ticket->save();
+		$this->response->setStatus(true);
+		$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
+		$this->response->setView($view);
 		return $this->response;
 	}
 }

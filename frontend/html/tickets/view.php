@@ -67,17 +67,17 @@ $childrenType = (bool)authorization::childrenTypes();
 				<div class="panel-tools">
 					<?php if($this->canEdit){ ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
-						<?php if($this->ticket->status != ticket::closed){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id, array('close'=>'yes')); ?>"><i class="fa fa-times tip tooltips" ></i></a>
-						<?php
-						} 
-						if($this->canSend == true){ ?>
+						<?php if($this->canSend == true){ ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php }else{ ?>
 						<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
 				  <?php }
-					} if($this->canDel){ ?>
+					}
+					if($this->canDel){ ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
+					<?php } ?>
+					<?php if($this->ticket->status != ticket::closed and $this->canClose){ ?>
+					<a id="ticket-close" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/close/'.$this->ticket->id); ?>"><i class="fa fa-times" ></i></a>
 					<?php } ?>
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 

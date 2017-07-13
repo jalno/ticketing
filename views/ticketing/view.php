@@ -8,6 +8,7 @@ class view extends form{
 	protected $canEditMessage;
 	protected $canDel;
 	protected $canDelMessage;
+	protected $canClose;
 	static protected $navigation;
 	function __construct(){
 		$this->canEdit = authorization::is_accessed('edit');
@@ -15,6 +16,7 @@ class view extends form{
 		$this->canEditMessage = authorization::is_accessed('message_edit');
 		$this->canDelMessage = authorization::is_accessed('message_delete');
 		$this->canViewDec = authorization::is_accessed('view_description');
+		$this->canClose = authorization::is_accessed('close');
 	}
 	public function setTicket(ticket $ticket){
 		$this->setData($ticket, 'ticket');

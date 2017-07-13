@@ -66,7 +66,6 @@
 		"newticket.department":"دپارتمان مربوط:",
 		"newticket.service":"سرویس مربوط:",
 		"newticket.priority":"الویت تیکت:",
-		"newticket.service":"سرویس مربوطه:",
 		"upload":"بارگذاری فایل",
 		"attachment.files":"فایل های پیوست :",
 		"search":"جستجو",
@@ -113,6 +112,9 @@
 		"ticket.client.cellphone": "تلفن همراه",
 		"ticket.client.lastonline": "آخرین فعالیت",
 		"ticket.client.type": "سطح کاربری",
-		"error.ticketing.ticket.notfound": "هیچ تیکتی یافت نشد ، در این قسمت میتوانید مشکلات و سوالات خود را در قالب تیکت ارسال و پیگیری کنید ."
+		"error.ticketing.ticket.notfound": "هیچ تیکتی یافت نشد ، در این قسمت میتوانید مشکلات و سوالات خود را در قالب تیکت ارسال و پیگیری کنید .",
+		"usertype.permissions.ticketing_close": "بستن تیکت",
+		"ticket.return": "بازگشت",
+		"ticket.close.warning": "آیا از بستن تیکت #{ticket.id} اطمیان دارید ؟ </br> خوشحالیم که توانستیم مشکلتان را رفع کنیم و یا به سوالتان پاسخ دهیم . میتوانید هر زمان با ارسال پیام جدید ، تیکت را باز کنید ."
 	}
 }
