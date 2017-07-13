@@ -138,11 +138,11 @@ $childrenType = (bool)authorization::childrenTypes();
 									</div>
 									<div class="col-sm-5 text-center">
 										<div class="row btn-group btn-group-lg" role="group">
-											<span class="btn btn-file2 btn-default">
+											<span class="btn btn-file2">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
-											<button <?php if(!$this->canSend){echo("disabled");} ?> class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+											<button <?php if(!$this->canSend){echo("disabled");} ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 										</div>
 									</div>
 								</div>

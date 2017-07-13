@@ -1,8 +1,6 @@
 <?php
-use \packages\base;
 use \packages\base\translator;
 use \packages\userpanel;
-
 $this->the_header();
 ?>
 <div class="row">
@@ -92,11 +90,11 @@ $this->the_header();
 						</div>
 						<div class="col-sm-4 text-center">
 							<div class="row btn-group btn-group-lg" role="group">
-								<span class="btn btn-file2 btn-default">
+								<span class="btn btn-file2">
 									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 									<input type="file" name="file[]" multiple="">
 								</span>
-								<button class="btn btn-teal btn-default" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
+								<button class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 							</div>
 						</div>
 					</div>
