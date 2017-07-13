@@ -429,6 +429,7 @@ class ticketing extends controller{
 		if(http::is_post()){
 			$ticket = $ticket_message->ticket;
 			$ticket_message->delete();
+			$this->response->setStatus(true);
 			$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		}else{
 			$this->response->setStatus(true);
@@ -439,11 +440,10 @@ class ticketing extends controller{
 	public function message_edit($data){
 		$view = view::byName("\\packages\\ticketing\\views\\message_edit");
 		authorization::haveOrFail('message_edit');
-
 		$ticket_message = $this->checkTicketMessage($data['ticket']);
-
-		$this->response->setStatus(false);
+		$view->setMessageData($ticket_message);
 		if(http::is_post()){
+			$this->response->setStatus(false);
 			$inputsRules = array(
 				'text' => array(
 					'type' => 'string',
@@ -455,14 +455,13 @@ class ticketing extends controller{
 				$ticket_message->text = $inputs['text'];
 				$ticket_message->save();
 				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url('ticketing/view/'.$ticket_message->ticket));
+				$this->response->Go(userpanel\url('ticketing/view/'.$ticket_message->ticket->id));
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
 		}else{
 			$this->response->setStatus(true);
 		}
-		$view->setMessageData($ticket_message);
 		$this->response->setView($view);
 		return $this->response;
 	}
