@@ -1,5 +1,8 @@
 <?php
 namespace packages\ticketing\views;
+use \packages\base\packages;
+use \packages\base\frontend\theme;
+use \packages\userpanel\user;
 use \packages\ticketing\ticket;
 use \packages\ticketing\views\form;
 use \packages\ticketing\authorization;
@@ -23,5 +26,8 @@ class view extends form{
 	}
 	public function getTicket(){
 		return $this->getData('ticket');
+	}
+	protected function getUserAvatar(user $user){
+		return $user->avatar ? packages::package('userpanel')->url($user->avatar) : theme::url('assets/images/user.png');
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-use \packages\base\frontend\theme;
 use \packages\base\translator;
 use \packages\userpanel;
 use \packages\userpanel\date;
@@ -88,7 +87,7 @@ $childrenType = (bool)authorization::childrenTypes();
 					<div class="col-sm-12">
 						<?php foreach($this->messages as $message){ ?>
 						<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
-							<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo(theme::url('assets/images/user.png')) ?>" class="img-polaroid"></a>
+							<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo $this->getUserAvatar($message->user); ?>" class="img-polaroid"></a>
 							<div class="text">
 								<div class="info clearfix">
 									<span class="name">
