@@ -133,7 +133,7 @@ $childrenType = (bool)authorization::childrenTypes();
 								</div>
 								<div class="row">
 									<div class="col-sm-7">
-										<p><?php echo translator::trans('markdown.description'); ?></p>
+										<p><?php //echo translator::trans('markdown.description'); ?></p>
 									</div>
 									<div class="col-sm-5 text-center">
 										<div class="row btn-group btn-group-lg" role="group">

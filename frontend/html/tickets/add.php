@@ -86,7 +86,7 @@ $this->the_header();
 					</div>
 					<div class="row">
 						<div class="col-sm-8">
-							<p><?php echo translator::trans('markdown.description'); ?></p>
+							<p><?php //echo translator::trans('markdown.description'); ?></p>
 						</div>
 						<div class="col-sm-4 text-center">
 							<div class="row btn-group btn-group-lg" role="group">
