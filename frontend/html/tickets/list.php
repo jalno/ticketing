@@ -32,7 +32,6 @@ $this->the_header();
 								<th><?php echo translator::trans('ticket.title'); ?></th>
 								<?php if($this->multiuser){ ?><th><?php echo translator::trans('ticket.client'); ?></th><?php } ?>
 								<th class="hidden-xs"><?php echo translator::trans('ticket.department'); ?></th>
-								<th class="hidden-xs"><?php echo translator::trans('ticket.create_at'); ?></th>
 								<th class="hidden-xs"><?php echo translator::trans('ticket.reply_at'); ?></th>
 								<th><?php echo translator::trans('ticket.priority'); ?></th>
 								<th><?php echo translator::trans('ticket.status'); ?></th>
@@ -84,7 +83,6 @@ $this->the_header();
 								<td><?php echo $title; ?></td>
 								<?php if($this->multiuser){ ?><td><a href="<?php echo userpanel\url('users/view/'.$row->client->id); ?>"><?php echo($row->client->getFullName()); ?></a></td><?php } ?>
 								<td class="hidden-xs"><?php echo $row->department->title; ?></td>
-								<td class="hidden-xs"><?php echo date::format('Y/m/d H:i', $row->create_at); ?></td>
 								<td class="hidden-xs"><?php echo date::format('Y/m/d H:i', $row->reply_at); ?></td>
 								<td><span class="<?php echo $priorityClass; ?>"><?php echo translator::trans($priorityTxt); ?></span></td>
 								<td><span class="<?php echo $statusClass; ?>"><?php echo translator::trans($statusTxt); ?></span></td>
