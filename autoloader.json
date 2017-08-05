@@ -182,6 +182,14 @@
 		{
 			"classes":["views\\inprogress"],
 			"file":"views/ticketing/inprogress.php"
+		},
+		{
+			"classes":["listeners\\userpanel\\settings"],
+			"file":"listeners/userpanel/settings.php"
+		},
+		{
+			"classes":["controllers\\userpanel\\settings"],
+			"file":"controllers/userpanel/settings.php"
 		}
 	]
 }

@@ -36,7 +36,7 @@
 		"message.delete.warning":"آیا شما از حذف پیام به شناسه #{message.id} اطمینان داید؟ این عملیات بدون بازگشت است.",
 		"update":"بروزرسانی",
 		"return":"بازگشت",
-		"markdown.description":"میتوانید با فعال کردن <b><i>markdown</i></b> در تنظیمات به جای <code>Html</code> از <code>Markdown</code> استفاده کنید",
+		"markdown.description":"میتوانید با فعال کردن markdown در <a href=\"{settings.url}\">تنظیمات</a> به جای متن ساده از Markdown استفاده کنید .",
 		"instantaneous":"فوری",
 		"important":"مهم",
 		"ordinary":"عادی",

@@ -59,6 +59,10 @@
 		"email.template.variable.department->title":"نام دپارتمان",
 		"email.template.variable.ticket_message->ticket->client->type":"شناسه گروه کاربری مشتری",
 		"email.template.name.ticketing_ticket_close": "بستن تیکت",
-		"email.template.name.ticketing_ticket_inprogress": "وضعیت پیگیری در تیکت"
+		"email.template.name.ticketing_ticket_inprogress": "وضعیت پیگیری در تیکت",
+		"ticketing.usersettings.message.editor.type": "فرمت پیام های ارسالی در تیکت",
+		"ticketing.usersettings.message.editor.type.html": "متن ساده",
+		"ticketing.usersettings.message.editor.type.markdown": "فرمت Markdown",
+		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی"
 	}
 }

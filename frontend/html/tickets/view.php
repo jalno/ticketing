@@ -4,6 +4,8 @@ use \packages\userpanel;
 use \packages\userpanel\date;
 use \packages\ticketing\ticket;
 use \packages\ticketing\authorization;
+use \packages\ticketing\ticket_message;
+use \packages\ticketing\authentication;
 $this->the_header();
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
@@ -135,10 +137,15 @@ $childrenType = (bool)authorization::childrenTypes();
 									</div>
 								</div>
 								<div class="row">
+									<?php
+									$editor = authentication::getUser()->getOption('ticketing_editor');
+									if(!$editor or $editor == ticket_message::html){
+									?>
 									<div class="col-sm-7">
-										<p><?php //echo translator::trans('markdown.description'); ?></p>
+										<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 									</div>
-									<div class="col-sm-5 text-center">
+									<?php } ?>
+									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
 											<span class="btn btn-file2">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>

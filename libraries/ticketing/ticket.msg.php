@@ -9,6 +9,7 @@ class ticket_message extends dbObject{
 	const unread = 0;
 	const read = 1;
 	const html = 'html';
+	const markdown = 'markdown';
 	protected $dbTable = "ticketing_tickets_msgs";
 	protected $primaryKey = "id";
 	protected $dbFields = array(

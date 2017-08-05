@@ -330,7 +330,6 @@ class ticketing extends controller{
 			authorization::haveOrFail('reply');
 			$inputsRules = array(
 				'text' => array(
-					'type' => 'string',
 				),
 				'file' => array(
 					'type' => 'file',
@@ -344,6 +343,9 @@ class ticketing extends controller{
 					throw new NotFound();
 				}
 				$inputs = $this->checkinputs($inputsRules);
+				if(!$inputs['text'] = strip_tags($inputs['text'])){
+					throw new inputValidation("text");
+				}
 				if(isset($inputs['file'])){
 					if(!is_array($inputs['file'])){
 						throw new inputValidation("file");

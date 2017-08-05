@@ -1,6 +1,6 @@
 <?php
 namespace packages\ticketing;
-use \packages\ticketing\authentication as userPanelAuthentication;
+use \packages\userpanel\authentication as userPanelAuthentication;
 class authentication extends userPanelAuthentication{
 
 }
