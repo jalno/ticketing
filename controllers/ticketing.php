@@ -687,6 +687,38 @@ class ticketing extends controller{
 		$this->response->setStatus(false);
 		$ticket->status = ticket::closed;
 		$ticket->save();
+		$event = new events\tickets\close($ticket);
+		$event->trigger();
+		$this->response->setStatus(true);
+		$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
+		$this->response->setView($view);
+		return $this->response;
+	}
+	public function confirmInProgress(array $data){
+		authorization::haveOrFail('edit');
+		$ticket = $this->checkTicket($data['ticket']);
+		if($ticket->status == ticket::in_progress){
+			throw new NotFound();
+		}
+		$view = view::byName("\\packages\\ticketing\\views\\inprogress");
+		$view->setTicket($ticket);
+		$this->response->setStatus(true);
+		$this->response->setView($view);
+		return $this->response;
+	}
+	public function inProgress(array $data){
+		authorization::haveOrFail('edit');
+		$ticket = $this->checkTicket($data['ticket']);
+		if($ticket->status == ticket::in_progress){
+			throw new NotFound();
+		}
+		$view = view::byName("\\packages\\ticketing\\views\\inprogress");
+		$view->setTicket($ticket);
+		$this->response->setStatus(false);
+		$ticket->status = ticket::in_progress;
+		$ticket->save();
+		$event = new events\tickets\inprogress($ticket);
+		$event->trigger();
 		$this->response->setStatus(true);
 		$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		$this->response->setView($view);

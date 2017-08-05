@@ -70,5 +70,15 @@
 		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@close",
 		"method": "post"
+	},
+	{
+		"path": ["userpanel","ticketing", "inprogress", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@confirmInProgress",
+		"method": "get"
+	},
+	{
+		"path": ["userpanel","ticketing", "inprogress", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@inProgress",
+		"method": "post"
 	}
 ]

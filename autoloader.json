@@ -178,6 +178,10 @@
 		{
 			"classes":["views\\close"],
 			"file":"views/ticketing/close.php"
+		},
+		{
+			"classes":["views\\inprogress"],
+			"file":"views/ticketing/inprogress.php"
 		}
 	]
 }

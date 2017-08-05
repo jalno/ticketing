@@ -10,6 +10,7 @@ export default class Ticket{
 	private static closeTicketListener(){
 		$('#ticket-close').on('click', function(e){
 			e.preventDefault();
+			$('i', $(this)).attr('class', 'fa fa-spinner fa-pulse');
 			AjaxRequest({
 				url: Router.url('userpanel/ticketing/close/' + $(this).data('ticket') + '?ajax=1'),
 				data:{},
@@ -22,6 +23,32 @@ export default class Ticket{
 					window.location.href = data.redirect;
 				},
 				error: function(error:webuilder.AjaxError){
+					$('i', $(this)).attr('class', 'fa fa-times');
+					$.growl.error({
+						title:"خطا",
+						message:'درخواست شما توسط سرور قبول نشد'
+					});
+				}
+			});
+		});
+	}
+	private static inProgressTicketListener(){
+		$('#ticket-inProgress').on('click', function(e){
+			e.preventDefault();
+			$('i', $(this)).attr('class', 'fa fa-spinner fa-pulse');
+			AjaxRequest({
+				url: Router.url('userpanel/ticketing/inprogress/' + $(this).data('ticket') + '?ajax=1'),
+				data:{},
+				type: 'post',
+				success: (data: webuilder.AjaxResponse) => {
+					$.growl.notice({
+						title:"موفق",
+						message:"انجام شد ."
+					});
+					window.location.href = data.redirect;
+				},
+				error: function(error:webuilder.AjaxError){
+					$('i', $(this)).attr('class', 'fa fa-tasks');
 					$.growl.error({
 						title:"خطا",
 						message:'درخواست شما توسط سرور قبول نشد'
@@ -33,7 +60,11 @@ export default class Ticket{
 	private static editListener(){
 		$('#ticket-edit').on('click', function(e){
 			e.preventDefault();
+			$('i', $(this)).addClass('fa-spin');
 			$('#settings').modal('show');
+			$('#settings').on('hidden.bs.modal', () => {
+				$('i', $(this)).removeClass('fa-spin');
+			});
 		});
 		$('#settings #editForm').on('submit', function(e){
 			e.preventDefault();
@@ -73,6 +104,9 @@ export default class Ticket{
 	public static init(){
 		if($('#ticket-close').length){
 			Ticket.closeTicketListener();
+		}
+		if($('#ticket-inProgress').length){
+			Ticket.inProgressTicketListener();
 		}
 		if($('#settings').length){
 			Ticket.editListener();

@@ -65,7 +65,10 @@ $childrenType = (bool)authorization::childrenTypes();
 				<span><?php echo $this->ticket->title; ?></span>
 				<div class="panel-tools">
 					<?php if($this->canEdit){ ?>
-						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
+						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-cog"></i></a>
+						<?php if($this->ticket->status != ticket::in_progress){ ?>
+						<a id="ticket-inProgress" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("in_progress"); ?>" href="<?php echo userpanel\url('ticketing/inprogress/'.$this->ticket->id); ?>"><i class="fa fa-tasks" ></i></a>
+						<?php } ?>
 						<?php if($this->canSend == true){ ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php }else{ ?>
