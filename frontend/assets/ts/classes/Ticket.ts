@@ -20,7 +20,7 @@ export default class Ticket{
 						title:"موفق",
 						message:"انجام شد ."
 					});
-					window.location.href = data.redirect;
+					$(this).remove();
 				},
 				error: function(error:webuilder.AjaxError){
 					$('i', $(this)).attr('class', 'fa fa-times');
@@ -45,7 +45,7 @@ export default class Ticket{
 						title:"موفق",
 						message:"انجام شد ."
 					});
-					window.location.href = data.redirect;
+					$(this).remove();
 				},
 				error: function(error:webuilder.AjaxError){
 					$('i', $(this)).attr('class', 'fa fa-tasks');
@@ -58,6 +58,11 @@ export default class Ticket{
 		});
 	}
 	private static editListener(){
+		$('#ticket-edit').hover(function(){
+			$('i', $(this)).addClass('fa-spin');
+		}, function(){
+			$('i', $(this)).removeClass('fa-spin');
+		});
 		$('#ticket-edit').on('click', function(e){
 			e.preventDefault();
 			$('i', $(this)).addClass('fa-spin');
@@ -75,6 +80,7 @@ export default class Ticket{
 						message:"تیکت با موفقیت ویرایش شد ."
 					});
 					$(this).parents('.modal').modal('hide');
+					window.location.href = data.redirect;
 				},
 				error: function(error:webuilder.AjaxError){
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
