@@ -4,6 +4,7 @@ use \packages\base\translator;
 use \packages\ticketing\views\view as ticketView;
 use \packages\userpanel;
 use \themes\clipone\views\listTrait;
+use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\utility;
@@ -13,17 +14,17 @@ use \packages\ticketing\ticket;
 use \packages\ticketing\Parsedown;
 use \packages\ticketing\products;
 class view extends ticketView{
-	use viewTrait, listTrait;
+	use viewTrait, listTrait, formTrait;
 	protected $messages;
 	protected $canSend = true;
 	protected $ticket;
 	function __beforeLoad(){
 		$this->ticket = $this->getTicket();
-		$this->setTitle(array(
+		$this->setTitle([
 			translator::trans('ticketing.view'),
 			translator::trans('ticket'),
 			"#".$this->ticket->id
-		));
+		]);
 		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
 		$this->setNavigation();
 		$this->SetDataView();
@@ -56,6 +57,15 @@ class view extends ticketView{
 		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
 			$this->canSend = false;
 		}
+		if($user = $this->getDataForm('client')){
+			if($user = userpanel\user::byId($user)){
+				$this->setDataForm($user->getFullName(), 'client_name');
+			}
+		}
+		if($error = $this->getFormErrorsByInput('client')){
+			$error->setInput('client_name');
+			$this->setFormError($error);
+		}
 	}
 	protected function getProductService(){
 		foreach(products::get() as $product){
@@ -65,5 +75,55 @@ class view extends ticketView{
 			}
 		}
 		return null;
+	}
+	protected function getDepartmentForSelect(){
+		$departments = [];
+		foreach($this->getDepartment() as $department){
+			$departments[] = [
+				'title' => $department->title,
+				'value' => $department->id
+			];
+		}
+		return $departments;
+	}
+	protected function getStatusForSelect(){
+		return [
+			[
+	            'title' => translator::trans('unread'),
+	            'value' => ticket::unread
+        	],
+			[
+	            'title' => translator::trans('read'),
+	            'value' => ticket::read
+        	],
+			[
+	            'title' => translator::trans('answered'),
+	            'value' => ticket::answered
+        	],
+			[
+	            'title' => translator::trans('in_progress'),
+	            'value' => ticket::in_progress
+        	],
+			[
+	            'title' => translator::trans('closed'),
+	            'value' => ticket::closed
+        	]
+		];
+	}
+	protected function getpriortyForSelect(){
+		return [
+			[
+	            'title' => translator::trans('instantaneous'),
+	            'value' => ticket::instantaneous
+        	],
+			[
+	            'title' => translator::trans('important'),
+	            'value' => ticket::important
+        	],
+			[
+	            'title' => translator::trans('ordinary'),
+	            'value' => ticket::ordinary
+        	]
+		];
 	}
 }

@@ -23,11 +23,18 @@ class view extends form{
 	}
 	public function setTicket(ticket $ticket){
 		$this->setData($ticket, 'ticket');
+		$this->setDataForm($ticket->toArray());
 	}
 	public function getTicket(){
 		return $this->getData('ticket');
 	}
 	protected function getUserAvatar(user $user){
 		return $user->avatar ? packages::package('userpanel')->url($user->avatar) : theme::url('assets/images/user.png');
+	}
+	public function setDepartment(array $departments){
+		$this->setData($departments, 'departments');
+	}
+	protected function getDepartment():array{
+		return $this->getData('departments');
 	}
 }

@@ -325,6 +325,7 @@ class ticketing extends controller{
 				$view->addError($error);
 			}
 		}
+		$view->setDepartment(department::get());
 		if(http::is_post()){
 			authorization::haveOrFail('reply');
 			$inputsRules = array(

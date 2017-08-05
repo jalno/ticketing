@@ -65,7 +65,7 @@ $childrenType = (bool)authorization::childrenTypes();
 				<span><?php echo $this->ticket->title; ?></span>
 				<div class="panel-tools">
 					<?php if($this->canEdit){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
+						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-wrench tip tooltips"></i></a>
 						<?php if($this->canSend == true){ ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php }else{ ?>
@@ -153,5 +153,59 @@ $childrenType = (bool)authorization::childrenTypes();
 		</div>
 	</div>
 </div>
+<?php if($this->canEdit){ ?>
+<div class="modal fade" id="settings" tabindex="-1" data-show="true" role="dialog">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title"><?php echo translator::trans('ticket.edit.notice.title'); ?></h4>
+	</div>
+	<div class="modal-body ticket_edit">
+		<form id="editForm" class="form-horizontal create_form" action="<?php echo userpanel\url("ticketing/edit/".$this->ticket->id); ?>" method="POST">
+			<?php
+			$this->setHorizontalForm('sm-3','sm-9');
+			$feilds = [
+				[
+					'name' => 'title',
+					'label' => translator::trans("ticket.title")
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'client'
+				],
+				[
+					'name' => 'client_name',
+					'label' => translator::trans("ticket.client")
+				],
+				[
+					'name' => 'priority',
+					'type' => 'select',
+					'label' => translator::trans("ticket.priority"),
+					'options' => $this->getPriortyForSelect()
+				],
+				[
+					'name' => 'status',
+					'type' => 'select',
+					'label' => translator::trans("ticket.status"),
+					'options' => $this->getStatusForSelect()
+				],
+				[
+					'name' => 'department',
+					'type' => 'select',
+					'label' => translator::trans("ticket.department"),
+					'options' => $this->getDepartmentForSelect()
+				]
+			];
+			foreach($feilds as $input){
+				$this->createField($input);
+			}
+			?>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" form="editForm" class="btn btn-success"><?php echo translator::trans("update"); ?></button>
+		<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo translator::trans('cancel'); ?></button>
+	</div>
+</div>
+<?php } ?>
 <?php
 $this->the_footer();
