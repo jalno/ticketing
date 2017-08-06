@@ -50,7 +50,7 @@ class view extends ticketView{
 				$Parsedown = new Parsedown();
 				$text = $Parsedown->text($message->text);
 			}elseif($message->format == "html"){
-				$text = "<p>".(nl2br($message->text))."</p>";
+				$text = "<p>".($this->formatUrlsInText(nl2br($message->text)))."</p>";
 			}
 			$message->content = $text;
 		}
@@ -67,6 +67,18 @@ class view extends ticketView{
 			$this->setFormError($error);
 		}
 	}
+	private function formatUrlsInText(string $text):string{
+        $reg_exUrl = '/(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\\'\\,]*)?/';
+        preg_match_all($reg_exUrl, $text, $matches);
+        $usedPatterns = array();
+        foreach($matches[0] as $pattern){
+            if(!array_key_exists($pattern, $usedPatterns)){
+                $usedPatterns[$pattern]=true;
+                $text = str_replace($pattern, "<a href=\"{$pattern}\" rel=\"nofollow\">{$pattern}</a> ", $text);
+            }
+        }
+        return $text;
+    }
 	protected function getProductService(){
 		foreach(products::get() as $product){
 			if($product->getName() == $this->ticket->param('product')){
