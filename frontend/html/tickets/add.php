@@ -13,7 +13,7 @@ $this->the_header();
                 <span><?php echo translator::trans("newticket")?></span>
             </div>
             <div class="panel-body">
-                <form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data">
+                <form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data" spellcheck="false">
                     <div class="col-sm-6">
                     <?php
 					if($this->multiuser){
