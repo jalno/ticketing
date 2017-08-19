@@ -190,6 +190,14 @@
 		{
 			"classes":["controllers\\userpanel\\settings"],
 			"file":"controllers/userpanel/settings.php"
+		},
+		{
+			"classes":["processes\\tickets"],
+			"file":"processes/tickets.php"
+		},
+		{
+			"classes":["listeners\\cronjob"],
+			"file":"listeners/cronjob.php"
 		}
 	]
 }

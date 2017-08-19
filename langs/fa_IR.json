@@ -63,6 +63,7 @@
 		"ticketing.usersettings.message.editor.type": "فرمت پیام های ارسالی در تیکت",
 		"ticketing.usersettings.message.editor.type.html": "متن ساده",
 		"ticketing.usersettings.message.editor.type.markdown": "فرمت Markdown",
-		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی"
+		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی",
+		"cronjob.task.name.ticketing_tickets_autoclose": "بستن خودکار تیکت های پاسخ داده شده"
 	}
 }
