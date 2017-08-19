@@ -15,8 +15,9 @@ class cronjob{
 		$task->parameters = array();
 		$task->schedules = array(
 			new schedule(array(
-				'minute' => 0
-			)),
+				'minute' => 0,
+				'hour' => 0
+			))
 		);
 		return $task;
 	}
