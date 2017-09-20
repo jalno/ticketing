@@ -10,7 +10,6 @@ use \packages\ticketing\ticket;
 use \packages\ticketing\events;
 class tickets extends process{
 	public function autoClose($data):response{
-		log::setLevel('debug');
 		$log = log::getInstance();
 		$response = new response();
 		$response->setStatus(false);
