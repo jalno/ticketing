@@ -198,6 +198,10 @@
 		{
 			"classes":["listeners\\cronjob"],
 			"file":"listeners/cronjob.php"
+		},
+		{
+			"classes":["logs\\tickets\\add"],
+			"file":"logs/tickets/add.php"
 		}
 	]
 }

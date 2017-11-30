@@ -1,33 +1,9 @@
 <?php
 namespace packages\ticketing\controllers;
-use \packages\base\IO;
-use \packages\base\db;
-use \packages\base\http;
-use \packages\base\packages;
-use \packages\base\NotFound;
-use \packages\base\view\error;
-use \packages\base\db\parenthesis;
-use \packages\base\frontend\theme;
-use \packages\base\views\FormError;
-use \packages\base\inputValidation;
-use \packages\base\response\file as responsefile;
-
+use \packages\base\{IO, db, http, packages, NotFound, view\error, db\parenthesis, views\FormError, inputValidation, response\file as responsefile, translator};
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-
-use \packages\ticketing\controller;
-use \packages\ticketing\authorization;
-use \packages\userpanel\authentication;
-
-use \packages\ticketing\view;
-use \packages\ticketing\ticket;
-use \packages\ticketing\department;
-use \packages\ticketing\ticket_message;
-use \packages\ticketing\ticket_param;
-use \packages\ticketing\products;
-use \packages\ticketing\ticket_file;
-use \packages\ticketing\events;
+use \packages\userpanel\{user, date, log};
+use \packages\ticketing\{controller, authorization, authentication, view, ticket, department, ticket_message, ticket_param, products, ticket_file, events, logs};
 
 class ticketing extends controller{
 	protected $authentication = true;
@@ -297,9 +273,15 @@ class ticketing extends controller{
 				$message->save();
 				$event = new events\tickets\add($message);
 				$event->trigger();
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->title = translator::trans("ticketing.logs.add", ['ticket_id' => $ticket->id]);
+				$log->type = logs\tickets\add::class;
+				$log->save();
+
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
-
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}
