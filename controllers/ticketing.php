@@ -574,6 +574,12 @@ class ticketing extends controller{
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			if($ticket->setParam('ticket_lock', 1)){
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->title = translator::trans("ticketing.logs.lock", ['ticket_id' => $ticket->id]);
+				$log->type = logs\tickets\lock::class;
+				$log->save();
+				
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 			}

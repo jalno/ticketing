@@ -206,6 +206,10 @@
 		{
 			"classes":["logs\\tickets\\edit"],
 			"file":"logs/tickets/edit.php"
+		},
+		{
+			"classes":["logs\\tickets\\lock"],
+			"file":"logs/tickets/lock.php"
 		}
 	]
 }
