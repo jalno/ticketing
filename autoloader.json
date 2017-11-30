@@ -202,6 +202,10 @@
 		{
 			"classes":["logs\\tickets\\add"],
 			"file":"logs/tickets/add.php"
+		},
+		{
+			"classes":["logs\\tickets\\edit"],
+			"file":"logs/tickets/edit.php"
 		}
 	]
 }

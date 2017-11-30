@@ -491,29 +491,58 @@ class ticketing extends controller{
 					)
 				);
 				$inputs = $this->checkinputs($inputsRules);
-
-				if($user = user::byId($inputs['client'])){
-					if($department = department::byId($inputs['department'])){
-						$oldStatus = $ticket->status;
-						$ticket->title = $inputs['title'];
-						$ticket->priority = $inputs['priority'];
-						$ticket->department = $department->id;
-						$ticket->client = $user->id;
-						$ticket->status = $inputs['status'];
-						$ticket->save();
-						if($oldStatus != $ticket->status){
-							if($ticket->status == ticket::closed){
-								$event = new events\tickets\close($ticket);
-								$event->trigger();
-							}elseif($ticket->status == ticket::in_progress){
-								$event = new events\tickets\inprogress($ticket);
-								$event->trigger();
-							}
-						}
-						$this->response->setStatus(true);
-						$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));
+				if(isset($inputs['client'])){
+					if(!$inputs['client'] = user::byId($inputs['client'])){
+						throw new inputValidation("client");
 					}
 				}
+				if(isset($inputs['department'])){
+					if(!$inputs['department'] = department::byId($inputs['department'])){
+						throw new inputValidation("department");
+					}
+				}
+				$parameters = ['oldData' => []];
+				if(isset($inputs['status'])){
+					$inputs['oldStatus'] = $ticket->status;
+				}
+				foreach(['title', 'priority', 'status'] as $item){
+					if(isset($inputs[$item])){
+						if($inputs[$item] != $ticket->$item){
+							$parameters['oldData'][$item] = $ticket->$item;
+							$ticket->$item = $inputs[$item];
+						}
+					}
+				}
+				foreach(['department', 'client'] as $item){
+					if(isset($inputs[$item])){
+						if($inputs[$item]->id != $ticket->$item->id){
+							$parameters['oldData'][$item] = $ticket->$item;
+							$ticket->$item = $inputs[$item]->id;
+						}
+					}
+				}
+				$ticket->save();
+				if(isset($inputs['oldStatus'])){
+					if($inputs['oldStatus'] != $ticket->status){
+						if($ticket->status == ticket::closed){
+							$event = new events\tickets\close($ticket);
+							$event->trigger();
+						}elseif($ticket->status == ticket::in_progress){
+							$event = new events\tickets\inprogress($ticket);
+							$event->trigger();
+						}
+					}
+				}
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->title = translator::trans("ticketing.logs.edit", ['ticket_id' => $ticket->id]);
+				$log->type = logs\tickets\edit::class;
+				$log->parameters = $parameters;
+				$log->save();
+
+				$this->response->setStatus(true);
+				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
 			}

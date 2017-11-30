@@ -119,6 +119,8 @@
 		"ticket.update": "بروزرسانی",
 		"ticket.inprogress": "در حال پیگیری",
 		"ticket.inprogress.warning": "آیا مطمئنید میخواهید وضعیت تیک #{ticket.id} را در حالت پیگیری قرار دهید ؟ هر زمان با مراجعه به صفحه ویرایش تیکت ، میتوانید وضعیت را تغییر دهید .",
-		"ticketing.logs.add": "تیکت #{ticket_id} را ایجاد کرد "
+		"ticketing.logs.add": "تیکت #{ticket_id} را ایجاد کرد ",
+		"ticketing.logs.edit": "تیکت #{ticket_id} را ویرایش کرد ",
+		"ticketing.logs.ticket.information": "مشخصات ویرایش شده"
 	}
 }
