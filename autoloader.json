@@ -214,6 +214,10 @@
 		{
 			"classes":["logs\\tickets\\unlock"],
 			"file":"logs/tickets/unlock.php"
+		},
+		{
+			"classes":["logs\\tickets\\delete"],
+			"file":"logs/tickets/delete.php"
 		}
 	]
 }

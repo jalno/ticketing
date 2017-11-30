@@ -123,6 +123,7 @@
 		"ticketing.logs.edit": "تیکت #{ticket_id} را ویرایش کرد ",
 		"ticketing.logs.ticket.information": "مشخصات ویرایش شده",
 		"ticketing.logs.lock": "تیکت #{ticket_id} را قفل کرد ",
-		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد "
+		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد ",
+		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد "
 	}
 }

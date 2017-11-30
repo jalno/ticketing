@@ -621,6 +621,13 @@ class ticketing extends controller{
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
+			$log = new log();
+			$log->user = authentication::getID();
+			$log->title = translator::trans("ticketing.logs.delete", ['ticket_id' => $ticket->id]);
+			$log->type = logs\tickets\delete::class;
+			$log->parameters = ['ticket' => $ticket];
+			$log->save();
+
 			$ticket->delete();
 			$this->response->setStatus(true);
 			$this->response->Go(userpanel\url('ticketing'));
