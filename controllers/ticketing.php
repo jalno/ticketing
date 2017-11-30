@@ -579,7 +579,7 @@ class ticketing extends controller{
 				$log->title = translator::trans("ticketing.logs.lock", ['ticket_id' => $ticket->id]);
 				$log->type = logs\tickets\lock::class;
 				$log->save();
-				
+
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 			}
@@ -599,6 +599,13 @@ class ticketing extends controller{
 		if(http::is_post()){
 			$param = ticket_param::where('ticket', $ticket->id)->where('name', 'ticket_lock')->getOne();
 			$param->delete();
+
+			$log = new log();
+			$log->user = authentication::getID();
+			$log->title = translator::trans("ticketing.logs.unlock", ['ticket_id' => $ticket->id]);
+			$log->type = logs\tickets\unlock::class;
+			$log->save();
+
 			$this->response->setStatus(true);
 			$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		}else{

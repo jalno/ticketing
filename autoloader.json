@@ -210,6 +210,10 @@
 		{
 			"classes":["logs\\tickets\\lock"],
 			"file":"logs/tickets/lock.php"
+		},
+		{
+			"classes":["logs\\tickets\\unlock"],
+			"file":"logs/tickets/unlock.php"
 		}
 	]
 }
