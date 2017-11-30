@@ -436,9 +436,16 @@ class ticketing extends controller{
 			);
 			try {
 				$inputs = $this->checkinputs($inputsRules);
-
+				$parameters = ['oldData' => ['message' => $ticket_message]];
 				$ticket_message->text = $inputs['text'];
 				$ticket_message->save();
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->title = translator::trans("ticketing.logs.edit", ['ticket_id' => $ticket_message->ticket->id]);
+				$log->type = logs\tickets\edit::class;
+				$log->parameters = $parameters;
+				$log->save();
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url('ticketing/view/'.$ticket_message->ticket->id));
 			}catch(inputValidation $error){
@@ -718,10 +725,19 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\close");
 		$view->setTicket($ticket);
 		$this->response->setStatus(false);
+		$parameters = ['oldData' => ['status' => $ticket->status]];
 		$ticket->status = ticket::closed;
 		$ticket->save();
 		$event = new events\tickets\close($ticket);
 		$event->trigger();
+
+		$log = new log();
+		$log->user = authentication::getID();
+		$log->title = translator::trans("ticketing.logs.edit", ['ticket_id' => $ticket->id]);
+		$log->type = logs\tickets\edit::class;
+		$log->parameters = $parameters;
+		$log->save();
+
 		$this->response->setStatus(true);
 		$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		$this->response->setView($view);
@@ -748,10 +764,19 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\inprogress");
 		$view->setTicket($ticket);
 		$this->response->setStatus(false);
+		$parameters = ['oldData' => ['status' => $ticket->status]];
 		$ticket->status = ticket::in_progress;
 		$ticket->save();
 		$event = new events\tickets\inprogress($ticket);
 		$event->trigger();
+
+		$log = new log();
+		$log->user = authentication::getID();
+		$log->title = translator::trans("ticketing.logs.edit", ['ticket_id' => $ticket->id]);
+		$log->type = logs\tickets\edit::class;
+		$log->parameters = $parameters;
+		$log->save();
+
 		$this->response->setStatus(true);
 		$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
 		$this->response->setView($view);

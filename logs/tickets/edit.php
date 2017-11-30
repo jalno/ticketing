@@ -73,6 +73,13 @@ class edit extends logs{
 				$html .= "</div>";
 				unset($oldData['priority']);
 			}
+			if(isset($oldData['message'])){
+				$html .= '<div class="form-group">';
+				$html .= '<label class="col-xs-4 control-label">'.translator::trans("message").': </label>';
+				$html .= '<div class="col-xs-8 ltr">#'.$oldData['message']->id.'</div>';
+				$html .= "</div>";
+				unset($oldData['message']);
+			}
 			foreach($oldData as $field => $val){
 				$html .= '<div class="form-group">';
 				$html .= '<label class="col-xs-4 control-label">'.translator::trans("ticket.{$field}").': </label>';
