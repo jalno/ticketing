@@ -125,6 +125,11 @@
 		"ticketing.logs.lock": "تیکت #{ticket_id} را قفل کرد ",
 		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد ",
 		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد ",
-		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد"
+		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد",
+		"ticketing.logs.settings.departments.edit": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را ویرایش کرد",
+		"ticketing.logs.settings.departments.information": "مشخصات دپارتمان",
+		"ticketing.logs.settings.departments.worktimes": "ساعات کاری دپارتمان",
+		"ticketing.logs.settings.departments.edit.time.am": "{time} صبح",
+		"ticketing.logs.settings.departments.edit.time.pm": "{time} بعداز ظهر"
 	}
 }

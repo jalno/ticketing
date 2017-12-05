@@ -222,6 +222,10 @@
 		{
 			"classes":["logs\\settings\\departments\\add"],
 			"file":"logs/settings/departments/add.php"
+		},
+		{
+			"classes":["logs\\settings\\departments\\edit"],
+			"file":"logs/settings/departments/edit.php"
 		}
 	]
 }

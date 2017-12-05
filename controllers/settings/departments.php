@@ -208,17 +208,40 @@ class departments extends controller{
 				}else{
 					throw new inputValidation("day");
 				}
-				if(isset($inputs['title'])){
+				
+				$parameters = ['oldData' => []];
+				if(isset($inputs['title']) and $department->title != $inputs['title']){
+					$parameters['oldData']['title'] = $department->title;
 					$department->title = $inputs['title'];
 				}
 				foreach($department->worktimes as $work){
 					$input = $inputs['day'][$work->day];
+
+					if(!isset($input['message'])){
+						$input['message'] = "";
+					}
+					
+					if(
+						$work->time_start != $input['worktime']['start'] or
+						$work->time_end != $input['worktime']['end'] or
+						$work->message != $input['message']
+					){
+						$parameters['oldData']['worktimes'][] = $work;
+					}
 					$work->time_start = $input['worktime']['start'];
 					$work->time_end = $input['worktime']['end'];
-					$work->message = isset($input['message']) ? $input['message'] : '';
+					$work->message = $input['message'];
 					$work->save();
 				}
 				$department->save();
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->type = logs\settings\departments\edit::class;
+				$log->title = translator::trans("ticketing.logs.settings.departments.edit", ["department_id" => $department->id, "department_title" => $department->title]);
+				$log->parameters = $parameters;
+				$log->save();
+
 				$this->response->setStatus(true);
 			}catch(inputValidation $error){
 				$view->setFormError(FormError::fromException($error));
