@@ -130,6 +130,7 @@
 		"ticketing.logs.settings.departments.information": "مشخصات دپارتمان",
 		"ticketing.logs.settings.departments.worktimes": "ساعات کاری دپارتمان",
 		"ticketing.logs.settings.departments.edit.time.am": "{time} صبح",
-		"ticketing.logs.settings.departments.edit.time.pm": "{time} بعداز ظهر"
+		"ticketing.logs.settings.departments.edit.time.pm": "{time} بعداز ظهر",
+		"ticketing.logs.settings.departments.delete": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را حذف کرد"
 	}
 }

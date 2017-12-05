@@ -81,6 +81,14 @@ class departments extends controller{
 				if($ticket->has()){
 					throw new ticketDependencies();
 				}
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->type = logs\settings\departments\delete::class;
+				$log->title = translator::trans("ticketing.logs.settings.departments.delete", ["department_id" => $department->id, "department_title" => $department->title]);
+				$log->parameters = ["department" => $department];
+				$log->save();
+
 				$department->delete();
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url("settings/departments"));
@@ -220,7 +228,7 @@ class departments extends controller{
 					if(!isset($input['message'])){
 						$input['message'] = "";
 					}
-					
+
 					if(
 						$work->time_start != $input['worktime']['start'] or
 						$work->time_end != $input['worktime']['end'] or

@@ -226,6 +226,10 @@
 		{
 			"classes":["logs\\settings\\departments\\edit"],
 			"file":"logs/settings/departments/edit.php"
+		},
+		{
+			"classes":["logs\\settings\\departments\\delete"],
+			"file":"logs/settings/departments/delete.php"
 		}
 	]
 }
