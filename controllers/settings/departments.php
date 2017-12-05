@@ -1,22 +1,9 @@
 <?php
 namespace packages\ticketing\controllers\settings;
-use \packages\base\db;
-use \packages\base\http;
-use \packages\base\NotFound;
-use \packages\base\translator;
-use \packages\base\view\error;
-use \packages\base\utility\safe;
-use \packages\base\views\FormError;
-use \packages\base\inputValidation;
+use \packages\base\{db, http, NotFound, translator, view\error, utility\safe, views\FormError, inputValidation};
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
-use \packages\ticketing\controller;
-use \packages\ticketing\authorization;
-use \packages\userpanel\authentication;
-use \packages\ticketing\ticket;
-use \packages\ticketing\view;
-use \packages\ticketing\department;
+use \packages\userpanel\{user, date, log};
+use \packages\ticketing\{controller, authorization, authentication, ticket, view, department, logs};
 class departments extends controller{
 	protected $authentication = true;
 	public function listview(){
@@ -150,9 +137,7 @@ class departments extends controller{
 				}else{
 					throw new inputValidation("day");
 				}
-				if(isset($inputs['title'])){
-					$department->title = $inputs['title'];
-				}
+				$department->title = $inputs['title'];
 				$department->save();
 				foreach($department->worktimes as $work){
 					$input = $inputs['day'][$work->day];
@@ -161,6 +146,13 @@ class departments extends controller{
 					$work->message = isset($input['message']) ? $input['message'] : '';
 					$work->save();
 				}
+
+				$log = new log();
+				$log->user = authentication::getID();
+				$log->type = logs\settings\departments\add::class;
+				$log->title = translator::trans("ticketing.logs.settings.departments.add", ["department_id" => $department->id, "department_title" => $department->title]);
+				$log->save();
+
 				$this->response->setStatus(true);
 				$this->response->Go(userpanel\url("settings/departments/edit/".$department->id));
 			}catch(inputValidation $error){

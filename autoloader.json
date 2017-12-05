@@ -218,6 +218,10 @@
 		{
 			"classes":["logs\\tickets\\delete"],
 			"file":"logs/tickets/delete.php"
+		},
+		{
+			"classes":["logs\\settings\\departments\\add"],
+			"file":"logs/settings/departments/add.php"
 		}
 	]
 }

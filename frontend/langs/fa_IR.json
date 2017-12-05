@@ -124,6 +124,7 @@
 		"ticketing.logs.ticket.information": "مشخصات ویرایش شده",
 		"ticketing.logs.lock": "تیکت #{ticket_id} را قفل کرد ",
 		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد ",
-		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد "
+		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد ",
+		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد"
 	}
 }
