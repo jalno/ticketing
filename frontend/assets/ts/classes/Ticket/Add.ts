@@ -47,10 +47,12 @@ export default class Add{
 		$("select[name=department]", Add.$form).trigger('change');
 	}
 	private static runServicesListener(){
-		$("select[name=product], input[name=client]").change(function() {
+		const $services = $("select[name=service]", Add.$form);
+		const $formGroup = $services.parents(".form-group");
+		const $alert = $(".alert-service", Add.$form);
+		$("select[name=product], input[name=client]").on("change", function() {
 			let product:string = $('select[name=product]').val().toString();
 			if(product.length){
-				$("select[name=service]").parents(".form-group").show("slow");
 				let user:string;
 				if($("input[name=client]", Add.$form).length){
 					user = $("input[name=client]").val() as string;
@@ -62,21 +64,26 @@ export default class Add{
 						return ;
 					}
 				}
-				$('select[name=service]').html('');
+				$services.html("");
 				AjaxRequest({
-					url: '/fa/userpanel/ticketing/getservices',
-					data:{
+					url: "userpanel/ticketing/getservices",
+					data: {
 						ajax: 1,
 						client: user,
-						product: product
+						product: product,
 					},
 					success: (data: webuilder.AjaxResponse) => {
-						for (let i = 0; i < data.items.length; i++) {
-							$('select[name=service]').append($('<option>',{
-								value: data.items[i].id,
-								text : data.items[i].title
-							}));
-
+						const length = data.items.length;
+						if (length) {
+							$formGroup.show();
+							for (let i = 0; i < length; i++) {
+								$services.append($('<option>',{
+									value: data.items[i].id,
+									text : data.items[i].title
+								}));
+							}
+						} else {
+							$formGroup.hide();
 						}
 					},
 					error: function(error:webuilder.AjaxError){

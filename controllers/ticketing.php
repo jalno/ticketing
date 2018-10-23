@@ -190,24 +190,19 @@ class ticketing extends controller{
 				if(!$inputs['client']){
 					throw new inputValidation("client");
 				}
-				if(isset($inputs['product'])){
-					if($inputs['product']){
-						$inputs['product'] = products::getOne($inputs['product']);
-						if(!$inputs['product']){
+				if (isset($inputs["product"], $inputs["service"])) {
+					if ($inputs["product"] and $inputs["service"]) {
+						$inputs["product"] = products::getOne($inputs["product"]);
+						if (!$inputs["product"]) {
 							throw new inputValidation("product");
 						}
-					}else{
-						unset($inputs['product']);
-					}
-				}
-				if(isset($inputs['product'])){
-					if(isset($inputs['service']) and $inputs['service']){
-						$inputs['service'] = $inputs['product']->getServiceById($inputs['client'],$inputs['service']);
-						if(!$inputs['service']){
+						$inputs["service"] = $inputs["product"]->getServiceById($inputs["client"], $inputs["service"]);
+						if (!$inputs["service"]) {
 							throw new inputValidation("service");
 						}
-					}else{
-						throw new inputValidation("service");
+					} else {
+						unset($inputs["service"]);
+						unset($inputs["product"]);
 					}
 				}
 				if(isset($inputs['file'])){
@@ -251,13 +246,9 @@ class ticketing extends controller{
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
 				$ticket->status = ((authentication::getID() == $inputs['client']->id) ? ticket::unread : ticket::answered);
-				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
-					$ticket->setParam('product', $inputs['product']->getName());
-					$ticket->setParam('service', $inputs['service']->getId());
-				}
-				if(isset($inputs['product'], $inputs['service']) and $inputs['product'] and $inputs['service']){
-					$ticket->setParam('product', $inputs['product']->getName());
-					$ticket->setParam('service', $inputs['service']->getId());
+				if (isset($inputs["product"], $inputs["service"])) {
+					$ticket->setParam("product", $inputs["product"]->getName());
+					$ticket->setParam("service", $inputs["service"]->getId());
 				}
 				$message = new ticket_message();
 				if(isset($inputs['file'])){

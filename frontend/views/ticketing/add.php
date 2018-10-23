@@ -69,17 +69,17 @@ class add extends ticketadd{
 	protected function getpriortyForSelect(){
 		return array(
 			array(
-	            'title' => translator::trans('instantaneous'),
-	            'value' => ticket::instantaneous
+	            "title" => translator::trans("ordinary"),
+	            "value" => ticket::ordinary
         	),
 			array(
-	            'title' => translator::trans('important'),
-	            'value' => ticket::important
+	            "title" => translator::trans("important"),
+	            "value" => ticket::important
         	),
 			array(
-	            'title' => translator::trans('ordinary'),
-	            'value' => ticket::ordinary
-        	)
+	            "title" => translator::trans("instantaneous"),
+	            "value" => ticket::instantaneous
+        	),
 		);
 	}
 	protected function products(){
