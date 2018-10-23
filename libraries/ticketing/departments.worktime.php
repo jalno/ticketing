@@ -1,6 +1,7 @@
 <?php
 namespace packages\ticketing\department;
-use \packages\base\db\dbObject;
+use packages\base\db\dbObject;
+
 class worktime extends dbObject{
 	const saturday = 6;
 	const sunday = 7;
@@ -9,6 +10,9 @@ class worktime extends dbObject{
 	const wednesday = 3;
 	const thursday = 4;
 	const friday = 5;
+	public static function getDays(): array {
+		return array(self::saturday, self::sunday, self::monday, self::tuesday, self::wednesday, self::thursday, self::friday);
+	}
 	protected $dbTable = "ticketing_departments_worktimes";
 	protected $primaryKey = "id";
 	protected $dbFields = array(

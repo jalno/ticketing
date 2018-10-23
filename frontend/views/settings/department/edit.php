@@ -16,9 +16,9 @@ class edit extends departmentEdit{
 	function __beforeLoad(){
 		$this->department = $this->getDepartment();
 		$this->setTitle(array(
-			translator::trans('settings'),
-			translator::trans('departments'),
-			translator::trans('department_edit')
+			translator::trans("settings"),
+			translator::trans("departments"),
+			translator::trans("department_edit")
 		));
 		navigation::active("settings/departments/list");
 	}
@@ -41,18 +41,25 @@ class edit extends departmentEdit{
 		}
 	}
 	protected function sortedDays(){
-		if(date::getCanlenderName() == 'jdate'){
-			$times = $this->department->worktimes;
-			usort($times, function($a, $b){
-				if($a->day > $b->day){
-					return 1;
-				}elseif($b->day > $a->day){
-					return -1;
-				}
-				return 0;
-			});
-			return array_merge(array_slice($times, 5,2),array_slice($times, 0,5));
+		if (date::getCanlenderName() == "jdate") {
+			return array(
+				array("day" => worktime::saturday),
+				array("day" => worktime::sunday),
+				array("day" => worktime::monday),
+				array("day" => worktime::tuesday),
+				array("day" => worktime::wednesday),
+				array("day" => worktime::thursday),
+				array("day" => worktime::friday),
+			);
 		}
-		return $this->department->worktimes;
+		return array(
+			array("day" => worktime::monday),
+			array("day" => worktime::tuesday),
+			array("day" => worktime::wednesday),
+			array("day" => worktime::thursday),
+			array("day" => worktime::friday),
+			array("day" => worktime::saturday),
+			array("day" => worktime::sunday),
+		);
 	}
 }

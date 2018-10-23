@@ -147,11 +147,17 @@ class departments extends controller{
 				}
 				$department->title = $inputs['title'];
 				$department->save();
-				foreach($department->worktimes as $work){
-					$input = $inputs['day'][$work->day];
-					$work->time_start = $input['worktime']['start'];
-					$work->time_end = $input['worktime']['end'];
-					$work->message = isset($input['message']) ? $input['message'] : '';
+				foreach (department\worktime::getDays() as $day) {
+					if (!isset($inputs["day"][$day])) {
+						continue;
+					}
+					$input = $inputs["day"][$day];
+					$work = new department\worktime();
+					$work->day = $day;
+					$work->department = $department->id;
+					$work->time_start = $input["worktime"]["start"];
+					$work->time_end = $input["worktime"]["end"];
+					$work->message = isset($input["message"]) ? $input["message"] : null;
 					$work->save();
 				}
 
@@ -222,26 +228,42 @@ class departments extends controller{
 					$parameters['oldData']['title'] = $department->title;
 					$department->title = $inputs['title'];
 				}
-				foreach($department->worktimes as $work){
-					$input = $inputs['day'][$work->day];
-
-					if(!isset($input['message'])){
-						$input['message'] = "";
+				$department->save();
+				$days = department\worktime::getDays();
+				foreach ($days as $key => $day) {
+					$input = null;
+					$work = new department\worktime();
+					$work->where("day", $day);
+					$work->where("department", $department->id);
+					if ($work = $work->getOne()) {
+						if (isset($inputs["day"][$day])) {
+							$input = $inputs["day"][$day];
+							if (
+								$work->time_start != $input["worktime"]["start"] or
+								$work->time_end != $input["worktime"]["end"] or
+								$work->message != $input["message"]
+							) {
+								$parameters["oldData"]["worktimes"][] = $work;
+							}
+						} else {
+							$work->delete();
+							continue;
+						}
+					} else {
+						if (isset($inputs["day"][$day])) {
+							$input = $inputs["day"][$day];
+							$work = new department\worktime();
+							$work->day = $day;
+							$work->department = $department->id;
+						} else {
+							continue;
+						}
 					}
-
-					if(
-						$work->time_start != $input['worktime']['start'] or
-						$work->time_end != $input['worktime']['end'] or
-						$work->message != $input['message']
-					){
-						$parameters['oldData']['worktimes'][] = $work;
-					}
-					$work->time_start = $input['worktime']['start'];
-					$work->time_end = $input['worktime']['end'];
-					$work->message = $input['message'];
+					$work->time_start = $input["worktime"]["start"];
+					$work->time_end = $input["worktime"]["end"];
+					$work->message = $input["message"];
 					$work->save();
 				}
-				$department->save();
 
 				$log = new log();
 				$log->user = authentication::getID();
