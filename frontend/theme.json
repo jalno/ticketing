@@ -18,6 +18,7 @@
 		{"type":"package", "name":"bootstrap-inputmsg"},
 		{"type":"package", "name":"webuilder"},
 		{"type":"package", "name":"ion-rangeslider"},
+		{"type":"package", "name":"jquery-inputlimiter"},
 		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.css"},
 		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.skinHTML5.css"},
 		{"type":"less", "file":"assets/less/ticket-layout.less"},

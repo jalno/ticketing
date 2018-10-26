@@ -93,8 +93,6 @@
 		"department.title": "عنوان",
 		"department_add": "اضافه کردن دپارتمان",
 		"department_edit": "ویرایش دپارتمان",
-		"shortcut.tickets.title" : "تیکت ها",
-		"shortcut.tickets.text" : "شاید در تیکت ها پاسخی ارسال شده و شما آن راباید هر چه سریع تر بررسی کنید.",
 		"shortcut.tickets.link" : "لیست تیکت ها",
 		"days": "روزها",
 		"worktimes": "ساعات کاری",
@@ -131,6 +129,9 @@
 		"ticketing.logs.settings.departments.worktimes": "ساعات کاری دپارتمان",
 		"ticketing.logs.settings.departments.edit.time.am": "{time} صبح",
 		"ticketing.logs.settings.departments.edit.time.pm": "{time} بعداز ظهر",
-		"ticketing.logs.settings.departments.delete": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را حذف کرد"
+		"ticketing.logs.settings.departments.delete": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را حذف کرد",
+		"shortcut.tickets.not.answered": "تیکت نیاز به ارسال پاسخ دارند",
+		"shortcut.tickets.has.question": "سوالی دارید؟",
+		"shortcut.tickets.send.ticket": "ارسال تیکت"
 	}
 }
