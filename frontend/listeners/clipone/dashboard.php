@@ -20,7 +20,7 @@ class dashboard{
 			} else {
 				$ticket->where("userpanel_users.id", authentication::getID());
 			}
-			$ticket->where("ticketing_tickets.status", ticket::answered, "!=");
+			$ticket->where("ticketing_tickets.status", array(ticket::answered, ticket::closed), "NOT IN");
 			$tickets = $ticket->count();
 			$shortcut = new shortcut("tickets");
 			$shortcut->icon = "clip-user-6";
