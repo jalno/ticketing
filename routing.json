@@ -55,11 +55,23 @@
 	},
 	{
 		"path": ["userpanel","settings", "departments", "add"],
-		"controller": "controllers\\settings\\departments@add"
+		"controller": "controllers\\settings\\departments@add",
+		"method": "get"
+	},
+	{
+		"path": ["userpanel","settings", "departments", "add"],
+		"controller": "controllers\\settings\\departments@store",
+		"method": "post"
 	},
 	{
 		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\settings\\departments@edit"
+		"controller": "controllers\\settings\\departments@edit",
+		"method": "get"
+	},
+	{
+		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\settings\\departments@update",
+		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],

@@ -132,6 +132,8 @@
 		"ticketing.logs.settings.departments.delete": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را حذف کرد",
 		"shortcut.tickets.not.answered": "تیکت نیاز به ارسال پاسخ دارند",
 		"shortcut.tickets.has.question": "سوالی دارید؟",
-		"shortcut.tickets.send.ticket": "ارسال تیکت"
+		"shortcut.tickets.send.ticket": "ارسال تیکت",
+		"ticketing.department.day.works": "ساعات کاری دپارتمان",
+		"ticketing.department.users": "اپراتور ها"
 	}
 }

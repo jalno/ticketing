@@ -18,7 +18,7 @@ class edit extends logs{
 		$worktimes = isset($oldData['worktimes']) ? $oldData['worktimes'] : [];
 		unset($oldData['worktimes']);
 
-		if(!empty($oldData)){
+		if(!empty($oldData) and isset($oldData['title'])){
 			$panel = new panel('ticketing.logs.settings.departments.edit');
 			$panel->icon = 'fa fa-external-link-square';
 			$panel->size = 6;
