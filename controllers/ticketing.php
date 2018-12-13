@@ -44,20 +44,28 @@ class ticketing extends controller{
 	public function index(){
 		authorization::haveOrFail('list');
 		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
+		$departments = department::get();
 		$ticket = new ticket();
 		$types = authorization::childrenTypes();
-		if ($types) {
-			db::join("ticketing_departments", "`ticketing_departments`.`id`=`ticketing_tickets`.`department`", "INNER");
-			$parenthesis = new parenthesis();
-			$parenthesis->where("JSON_SEARCH(`ticketing_departments`.`users`, 'one', " . authentication::getID() . ") ", null, "IS NOT");
-			$parenthesis->orWhere("ticketing_departments.users ", null, "IS");
-			db::joinWhere("ticketing_departments", $parenthesis);
-		}
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		if ($types){
 			$ticket->where("userpanel_users.type", $types, 'in');
 		} else {
 			$ticket->where("userpanel_users.id", authentication::getID());
+		}
+		if ($types) {
+			$accessed = array();
+			$me = authentication::getID();
+			foreach ($departments as $department) {
+				if ($department->users) {
+					if (in_array($me, $department->users)) {
+						$accessed[] = $department->id;
+					}
+				} else {
+					$accessed[] = $department->id;
+				}
+			}
+			$ticket->where("ticketing_tickets.department", $accessed, "IN");
 		}
 		$inputsRules = array(
 			'id' => array(
@@ -132,7 +140,7 @@ class ticketing extends controller{
 		$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
 		$view->setDataList($tickets);
 		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
-		$view->setDepartment(department::get());
+		$view->setDepartment($departments);
 		$this->response->setStatus(true);
 		$this->response->setView($view);
 		return $this->response;
