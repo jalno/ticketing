@@ -134,6 +134,7 @@
 		"shortcut.tickets.has.question": "سوالی دارید؟",
 		"shortcut.tickets.send.ticket": "ارسال تیکت",
 		"ticketing.department.day.works": "ساعات کاری دپارتمان",
-		"ticketing.department.users": "اپراتور ها"
+		"ticketing.department.users": "اپراتور ها",
+		"ticketing.settings.department.notfound": "دپارتمانی برای نمایش یافت نشد."
 	}
 }
