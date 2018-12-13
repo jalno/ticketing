@@ -20,6 +20,8 @@ class add extends departmentAdd{
 		$this->setNavigation();
 		$this->setDaysValue();
 		navigation::active("settings/departments/list");
+		$this->addBodyClass("departments");
+		$this->addBodyClass("departments-add");
 	}
 	private function setNavigation(){
 		$item = navigation::getByName("settings");

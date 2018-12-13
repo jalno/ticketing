@@ -7,8 +7,10 @@ class department extends dbObject{
 	protected $dbTable = "ticketing_departments";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
-        'title' => array('type' => 'text', 'required' => true)
+		'title' => array('type' => 'text', 'required' => true),
+		"users" => array("type" => "text"),
     );
+	protected $jsonFields = ["users"];
 	protected $relations = array(
 		'worktimes' => array('hasMany', 'packages\\ticketing\\department\\worktime', 'department')
 	);

@@ -7,7 +7,7 @@ use \packages\ticketing\{controller, authorization, authentication, view, ticket
 
 class ticketing extends controller{
 	protected $authentication = true;
-	private function checkTicket(int $ticketID){
+	private function checkTicket(int $ticketID) {
 		$types = authorization::childrenTypes();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "LEFT");
 		if($types){
@@ -17,36 +17,44 @@ class ticketing extends controller{
 		}
 		$ticket = new ticket();
 		$ticket->where("ticketing_tickets.id", $ticketID);
+		$ticket->with("department");
 		$ticket = $ticket->getOne('ticketing_tickets.*');
-		if(!$ticket){
+		if(!$ticket or ($ticket->department->users and !in_array(authorization::getID(), $ticket->department->users))){
 			throw new NotFound;
 		}
 		return $ticket;
 	}
-	private function checkTicketMessage($messageID){
+	private function checkTicketMessage($messageID) {
 		$types = authorization::childrenTypes();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets_msgs.user", "LEFT");
+		$message = new ticket_message();
 		if($types){
-			db::where("userpanel_users.type", $types, 'in');
+			$message->where("userpanel_users.type", $types, "in");
 		}else{
-			db::where("userpanel_users.id", authentication::getID());
+			$message->where("userpanel_users.id", authentication::getID());
 		}
-		db::where("ticketing_tickets_msgs.id", $messageID);
-		$ticket_message = new ticket_message(db::getOne("ticketing_tickets_msgs", "ticketing_tickets_msgs.*"));
-		if(!$ticket_message->id){
+		$message->where("ticketing_tickets_msgs.id", $messageID);
+		$message->with("ticket");
+		$message = $message->getOne("ticketing_tickets_msgs.*");
+		if(!$message or ($message->ticket->department->users and !in_array(authentication::getID(), $message->ticket->department->users))){
 			throw new NotFound;
 		}
-		return $ticket_message;
+		return $message;
 	}
 	public function index(){
 		authorization::haveOrFail('list');
 		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
 		$ticket = new ticket();
 		$types = authorization::childrenTypes();
+		db::join("ticketing_departments", "`ticketing_departments`.`id`=`ticketing_tickets`.`department`", "INNER");
+		$parenthesis = new parenthesis();
+		$parenthesis->where("JSON_SEARCH(`ticketing_departments`.`users`, 'one', " . authentication::getID() . ") ", null, "IS NOT");
+		$parenthesis->orWhere("ticketing_departments.users ", null, "IS");
+		db::joinWhere("ticketing_departments", $parenthesis);
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
-		if($types){
+		if ($types){
 			$ticket->where("userpanel_users.type", $types, 'in');
-		}else{
+		} else {
 			$ticket->where("userpanel_users.id", authentication::getID());
 		}
 		$inputsRules = array(
@@ -93,42 +101,37 @@ class ticketing extends controller{
 				'optional' => true
 			)
 		);
-		$this->response->setStatus(true);
-		try{
-			$inputs = $this->checkinputs($inputsRules);
-			foreach(array('id', 'title', 'status', 'client', 'title', 'priority', 'department') as $item){
-				if(isset($inputs[$item]) and $inputs[$item]){
-					$comparison = $inputs['comparison'];
-					if(in_array($item, array('id', 'status', 'client'))){
-						$comparison = 'equals';
-					}
-					$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
+		$inputs = $this->checkinputs($inputsRules);
+		foreach(array('id', 'title', 'status', 'client', 'title', 'priority', 'department') as $item){
+			if(isset($inputs[$item]) and $inputs[$item]){
+				$comparison = $inputs['comparison'];
+				if(in_array($item, array('id', 'status', 'client'))){
+					$comparison = 'equals';
 				}
+				$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
 			}
-			if(isset($inputs['word']) and $inputs['word']){
-				$parenthesis = new parenthesis();
-				foreach(array('title') as $item){
-					if(!isset($inputs[$item]) or !$inputs[$item]){
-						$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
-					}
-				}
-				$parenthesis->where("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison'], 'OR');
-				$parenthesis->where("ticketing_files.name", $inputs['word'], $inputs['comparison'], 'OR');
-				$ticket->where($parenthesis);
-				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
-				db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
-				$ticket->setQueryOption("DISTINCT");
-			}
-			$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
-			$ticket->pageLimit = $this->items_per_page;
-			$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
-			$view->setDataList($tickets);
-			$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
-			$view->setDepartment(department::get());
-		}catch(inputValidation $error){
-			$view->setFormError(FormError::fromException($error));
-			$this->response->setStatus(false);
 		}
+		if(isset($inputs['word']) and $inputs['word']){
+			$parenthesis = new parenthesis();
+			foreach(array('title') as $item){
+				if(!isset($inputs[$item]) or !$inputs[$item]){
+					$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
+				}
+			}
+			$parenthesis->where("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison'], 'OR');
+			$parenthesis->where("ticketing_files.name", $inputs['word'], $inputs['comparison'], 'OR');
+			$ticket->where($parenthesis);
+			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
+			db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
+			$ticket->setQueryOption("DISTINCT");
+		}
+		$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
+		$ticket->pageLimit = $this->items_per_page;
+		$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
+		$view->setDataList($tickets);
+		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
+		$view->setDepartment(department::get());
+		$this->response->setStatus(true);
 		$this->response->setView($view);
 		return $this->response;
 	}

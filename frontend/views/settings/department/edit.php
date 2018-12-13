@@ -21,6 +21,8 @@ class edit extends departmentEdit{
 			translator::trans("department_edit")
 		));
 		navigation::active("settings/departments/list");
+		$this->addBodyClass("departments");
+		$this->addBodyClass("departments-add");
 	}
 	protected function getTranslatDays($day){
 		switch($day){

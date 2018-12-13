@@ -36,7 +36,7 @@ export default class Managements{
 		});
 	}
 	private static EnabledjQRangeSlider(){
-		$("input[type=checkbox]", Managements.$form).on('change', function(){
+		$(".panel-day-works input[type=checkbox]", Managements.$form).on('change', function(){
 			const tr = $(this).parents('tr');
 			const disabled = (!$(this).prop('checked'));
 			Managements.disableListener(tr, disabled);
@@ -87,10 +87,18 @@ export default class Managements{
 		Managements.runjQRangeSlider();
 		Managements.EnabledjQRangeSlider();
 		Managements.runSubmitFormListener();
+		Managements.AllUserSelectListener();
 	}
 	public static initIfNeeded(){
 		if(Managements.$form.length){
 			Managements.init();
 		}
+	}
+	protected static AllUserSelectListener() {
+		const $panel = $(".panel.panel-users", Managements.$form);
+		$('input[name="allUsers"]', $panel).on("change", function() {
+			const $users = $(".panel-body input", $panel);
+			$users.prop("disabled", $(this).prop("checked"))
+		});
 	}
 }
