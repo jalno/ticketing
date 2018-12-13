@@ -23,27 +23,23 @@ class add extends event implements notifiable{
 			'ticket_message' => $this->getMessage()
 		];
 	}
-	public function getTargetUsers():array{
-		$users = [];
-		if($this->message->ticket->client->id == $this->message->user->id){
+	public function getTargetUsers(): array {
+		if ($this->message->ticket->client->id == $this->message->user->id) {
+			$users = $this->message->ticket->department->users;
 			$parents = $this->message->ticket->client->parentTypes();
-			if($parents){
-				$user = new user();
-				$user->where("type", $parents, 'in');
-				$users = array_merge($users, array_column($user->get(null, ['id']), 'id'));
+			if (empty($users) and empty($parents)) {
+				return array();
 			}
-		}else{
-			$users[] = $this->message->ticket->client->id;
+			$user = new user();
+			if ($users) {
+				$user->where("id", $users, "IN");
+			}
+			if ($parents) {
+				$user->where("type", $parents, "IN");
+			}
+			return $user->get();
+		} else {
+			return user::where("id", $this->message->ticket->client->id)->get();
 		}
-
-		$users = array_unique($users);
-		$selfUser = array_search($this->message->user->id, $users);
-		if($selfUser !== false){
-			unset($users[$selfUser]);
-		}
-		if($users){
-			$users = user::where("id", array_values($users), 'in')->get();
-		}
-		return $users;
 	}
 }
