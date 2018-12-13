@@ -17,6 +17,8 @@ class edit extends form {
 			foreach ($department->users as $user) {
 				$this->setDataForm($user, "users[{$user}]");
 			}
+		} else {
+			$this->setDataForm("all", "allUsers");
 		}
 	}
 	public function getDepartment() {

@@ -115,7 +115,9 @@ class departments extends controller{
 				"type" => "string"
 			),
 			"day" => array(),
-			"users" => array(),
+			"users" => array(
+				"optional" => true
+			),
 		);
 		$inputs = $this->checkinputs($inputsRules);
 		$view->setUsers($usersForSelect = $this->getUsersForSelect());
