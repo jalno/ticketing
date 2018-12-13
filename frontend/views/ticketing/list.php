@@ -15,7 +15,7 @@ class listview extends ticketListView{
 	function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing'),
-			translator::trans('list')
+			translator::trans("tickets")
 		));
 		$this->setButtons();
 		$this->onSourceLoad();
