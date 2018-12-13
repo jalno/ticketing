@@ -46,11 +46,13 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
 		$ticket = new ticket();
 		$types = authorization::childrenTypes();
-		db::join("ticketing_departments", "`ticketing_departments`.`id`=`ticketing_tickets`.`department`", "INNER");
-		$parenthesis = new parenthesis();
-		$parenthesis->where("JSON_SEARCH(`ticketing_departments`.`users`, 'one', " . authentication::getID() . ") ", null, "IS NOT");
-		$parenthesis->orWhere("ticketing_departments.users ", null, "IS");
-		db::joinWhere("ticketing_departments", $parenthesis);
+		if ($types) {
+			db::join("ticketing_departments", "`ticketing_departments`.`id`=`ticketing_tickets`.`department`", "INNER");
+			$parenthesis = new parenthesis();
+			$parenthesis->where("JSON_SEARCH(`ticketing_departments`.`users`, 'one', " . authentication::getID() . ") ", null, "IS NOT");
+			$parenthesis->orWhere("ticketing_departments.users ", null, "IS");
+			db::joinWhere("ticketing_departments", $parenthesis);
+		}
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		if ($types){
 			$ticket->where("userpanel_users.type", $types, 'in');
