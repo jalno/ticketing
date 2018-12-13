@@ -347,17 +347,16 @@ class departments extends controller{
 		return $this->response;
 	}
 	protected function getUsersForSelect(): array {
-		$types = authorization::childrenTypes();
-		db::join("userpanel_usertypes_permissions", "`userpanel_usertypes_permissions`.`type`=`userpanel_users`.`type`", "LEFT");
+		$priority = db::subQuery();
+		$priority->setQueryOption("DISTINCT");
+		$priority->get("userpanel_usertypes_priorities", null, "parent");
+		$permission = db::subQuery();
+		$permission->where("name", "ticketing_view");
+		$permission->get("userpanel_usertypes_permissions", null, "type");
 		$user = new user();
-		$parenthesis = new parenthesis();
-		if ($types) {
-			$parenthesis->where("userpanel_users.type", $types, "IN");
-		}
-		$parenthesis->orWhere("userpanel_users.id", authentication::getID());
-		$user->where($parenthesis);
-		$user->where("userpanel_usertypes_permissions.name", "ticketing_view");
-		return $user->get(null, "userpanel_users.*");
+		$user->where("type", $priority, "IN");
+		$user->where("type", $permission, "IN");
+		return $user->get();
 	}
 }
 class ticketDependencies extends \Exception{}
