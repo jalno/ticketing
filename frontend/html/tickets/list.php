@@ -42,8 +42,8 @@ $this->the_header();
 							<?php
 							foreach($this->getTickets() as $row){
 								$messageread = true;
-								foreach($row->message as $status){
-									if($status->status == 0){
+								foreach ($row->message as $message) {
+									if ($message->status == 0 and $message->user->id !== $row->client->id) {
 										$messageread = false;
 										break;
 									}

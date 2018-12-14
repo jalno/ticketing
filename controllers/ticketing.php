@@ -256,12 +256,13 @@ class ticketing extends controller{
 						}
 					}
 				}
+				$me = authentication::getID();
 				$ticket = new ticket();
 				$ticket->title	= $inputs['title'];
 				$ticket->priority = $inputs['priority'];
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
-				$ticket->status = ((authentication::getID() == $inputs['client']->id) ? ticket::unread : ticket::answered);
+				$ticket->status = $me == $inputs['client']->id ? ticket::unread : ticket::answered;
 				if (isset($inputs["product"], $inputs["service"])) {
 					$ticket->setParam("product", $inputs["product"]->getName());
 					$ticket->setParam("service", $inputs["service"]->getId());
@@ -276,7 +277,7 @@ class ticketing extends controller{
 				$message->ticket = $ticket->id;
 				$message->text = $inputs['text'];
 				$message->user = authentication::getID();
-				$message->status = ticket_message::unread;
+				$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
 				$message->save();
 				$event = new events\tickets\add($message);
 				$event->trigger();
@@ -375,7 +376,7 @@ class ticketing extends controller{
 				$ticket_message->date = date::time();
 				$ticket_message->user = authentication::getID();
 				$ticket_message->text = $inputs['text'];
-				$ticket_message->status = ticket_message::unread;
+				$ticket_message->status = authentication::getID() == $ticket->client->id ? ticket_message::read : ticket_message::unread;
 				if(isset($inputs['file'])){
 					foreach($inputs['file'] as $file){
 						$ticket_message->addFile($file);
