@@ -9,52 +9,49 @@ class ticketing extends controller{
 	protected $authentication = true;
 	private function checkTicket(int $ticketID) {
 		$types = authorization::childrenTypes();
+		$me = authentication::getID();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "LEFT");
 		if($types){
 			db::where("userpanel_users.type", $types, 'in');
 		}else{
-			db::where("userpanel_users.id", authentication::getID());
+			db::where("userpanel_users.id", $me);
 		}
 		$ticket = new ticket();
 		$ticket->where("ticketing_tickets.id", $ticketID);
 		$ticket->with("department");
 		$ticket = $ticket->getOne('ticketing_tickets.*');
-		if(!$ticket or ($ticket->department->users and !in_array(authorization::getID(), $ticket->department->users))){
+		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array(authentication::getID(), $ticket->department->users))){
 			throw new NotFound;
 		}
 		return $ticket;
 	}
 	private function checkTicketMessage($messageID) {
 		$types = authorization::childrenTypes();
+		$me = authentication::getID();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets_msgs.user", "LEFT");
 		$message = new ticket_message();
 		if($types){
 			$message->where("userpanel_users.type", $types, "in");
 		}else{
-			$message->where("userpanel_users.id", authentication::getID());
+			$message->where("userpanel_users.id", $me);
 		}
 		$message->where("ticketing_tickets_msgs.id", $messageID);
 		$message->with("ticket");
 		$message = $message->getOne("ticketing_tickets_msgs.*");
-		if(!$message or ($message->ticket->department->users and !in_array(authentication::getID(), $message->ticket->department->users))){
+		if (!$message or ($message->ticket->client->id != $me and $message->ticket->department->users and !in_array(authentication::getID(), $message->ticket->department->users))){
 			throw new NotFound;
 		}
 		return $message;
 	}
 	public function index(){
 		authorization::haveOrFail('list');
-		$view = view::byName("\\packages\\ticketing\\views\\ticketlist");
+		$this->response->setView($view = view::byName("\\packages\\ticketing\\views\\ticketlist"));
 		$departments = department::get();
+		$view->setDepartment($departments);
 		$ticket = new ticket();
 		$types = authorization::childrenTypes();
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
-		if ($types){
-			$ticket->where("userpanel_users.type", $types, 'in');
-		} else {
-			$ticket->where("userpanel_users.id", authentication::getID());
-		}
+		$accessed = array();
 		if ($types) {
-			$accessed = array();
 			$me = authentication::getID();
 			foreach ($departments as $department) {
 				if ($department->users) {
@@ -65,7 +62,15 @@ class ticketing extends controller{
 					$accessed[] = $department->id;
 				}
 			}
-			$ticket->where("ticketing_tickets.department", $accessed, "IN");
+			if (!empty($accessed)) {
+				$ticket->where("ticketing_tickets.department", $accessed, "IN");
+			}
+		}
+		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+		if ($types and $accessed){
+			$ticket->where("userpanel_users.type", $types, 'in');
+		} else {
+			$ticket->where("userpanel_users.id", authentication::getID());
 		}
 		$inputsRules = array(
 			'id' => array(
@@ -140,9 +145,7 @@ class ticketing extends controller{
 		$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
 		$view->setDataList($tickets);
 		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
-		$view->setDepartment($departments);
 		$this->response->setStatus(true);
-		$this->response->setView($view);
 		return $this->response;
 	}
 	public function add(){
@@ -253,12 +256,13 @@ class ticketing extends controller{
 						}
 					}
 				}
+				$me = authentication::getID();
 				$ticket = new ticket();
 				$ticket->title	= $inputs['title'];
 				$ticket->priority = $inputs['priority'];
 				$ticket->client = $inputs['client']->id;
 				$ticket->department = $inputs['department']->id;
-				$ticket->status = ((authentication::getID() == $inputs['client']->id) ? ticket::unread : ticket::answered);
+				$ticket->status = $me == $inputs['client']->id ? ticket::unread : ticket::answered;
 				if (isset($inputs["product"], $inputs["service"])) {
 					$ticket->setParam("product", $inputs["product"]->getName());
 					$ticket->setParam("service", $inputs["service"]->getId());
@@ -273,7 +277,7 @@ class ticketing extends controller{
 				$message->ticket = $ticket->id;
 				$message->text = $inputs['text'];
 				$message->user = authentication::getID();
-				$message->status = ticket_message::unread;
+				$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
 				$message->save();
 				$event = new events\tickets\add($message);
 				$event->trigger();
@@ -372,7 +376,7 @@ class ticketing extends controller{
 				$ticket_message->date = date::time();
 				$ticket_message->user = authentication::getID();
 				$ticket_message->text = $inputs['text'];
-				$ticket_message->status = ticket_message::unread;
+				$ticket_message->status = authentication::getID() == $ticket->client->id ? ticket_message::read : ticket_message::unread;
 				if(isset($inputs['file'])){
 					foreach($inputs['file'] as $file){
 						$ticket_message->addFile($file);
