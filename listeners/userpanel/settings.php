@@ -8,7 +8,7 @@ use \packages\ticketing\controllers\userpanel\settings as controller;
 class settings{
 	public function settings_list(settingsEvent $settings){
 		$tuning = new settingsEvent\tuning("ticketing");
-		$tuning->setController(controller::class."@store");
+		$tuning->setController(controller::class);
 		$tuning->addInput([
 			'name' => 'ticketing_editor',
 			'type' => 'string',
