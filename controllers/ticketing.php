@@ -790,4 +790,18 @@ class ticketing extends controller{
 		$this->response->setView($view);
 		return $this->response;
 	}
+	public function department($data) {
+		authorization::haveOrFail('add');
+		$department = department::byId($data['department']);
+		if (!$department) {
+			throw new NotFound();
+		}
+		$this->response->setStatus(true);
+		$data = $department->toArray();
+		if ($currentWork = $department->currentWork()) {
+			$data["currentWork"] =  $currentWork->toArray();
+		}
+		$this->response->setData($data, "department");
+		return $this->response;
+	}
 }

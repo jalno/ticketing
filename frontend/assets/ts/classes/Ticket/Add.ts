@@ -14,7 +14,7 @@ export default class Add{
 			let department:string = $(this).val().toString();
 			if(isWorking == 0){
 				AjaxRequest({
-					url: 'userpanel/settings/departments/edit/' + department,
+					url: 'userpanel/ticketing/new/department/' + department,
 					data:{},
 					success: (data: webuilder.AjaxResponse) => {
 						if(data.department.currentWork.message){

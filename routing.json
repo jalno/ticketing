@@ -9,6 +9,11 @@
 		"controller": "controllers\\ticketing@add"
 	},
 	{
+		"path": ["userpanel","ticketing", "new", "department", {"type":"dynamic","name":"department", "regex":"/^\\d+$/"}],
+		"controller": "controllers\\ticketing@department",
+		"method": "get"
+	},
+	{
 		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@view"
 	},
