@@ -32,10 +32,6 @@
 			"file":"libraries/users/authentication.php"
 		},
 		{
-			"classes":["log"],
-			"file":"libraries/logging/logs.php"
-		},
-		{
 			"classes":["controllers\\ticketing"],
 			"file":"controllers/ticketing.php"
 		},

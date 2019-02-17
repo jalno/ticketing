@@ -1,23 +1,8 @@
 {
 	"files":[
 		{
-			"classes":[
-				"view",
-				"viewTrait"
-			],
-			"file":"libraries/mvc/view.php"
-		},
-		{
-			"classes":["listTrait"],
-			"file":"libraries/mvc/views/list.php"
-		},
-		{
 			"classes":["views\\ticketing\\add"],
 			"file":"views/ticketing/add.php"
-		},
-		{
-			"classes":["formTrait"],
-			"file":"libraries/mvc/views/form.php"
 		},
 		{
 			"classes":["views\\ticketing\\listview"],
