@@ -186,8 +186,8 @@ class ticketing extends controller{
 				),
 				'file' => array(
 					'type' => 'file',
-					'optional' =>true,
-					'empty' => true
+					'optional' => true,
+					'multiple' => true
 				)
 			);
 			if($children){
@@ -323,8 +323,8 @@ class ticketing extends controller{
 				),
 				'file' => array(
 					'type' => 'file',
-					'optional' =>true,
-					'empty' => true
+					'optional' => true,
+					'multiple' => true
 				)
 			);
 			$this->response->setStatus(false);
