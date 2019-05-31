@@ -85,6 +85,16 @@ $hasTicket = ! empty($tickets);
 				"label" => translator::trans("ticket.department"),
 				"options" => $this->getDepartmentsForSelect()
 			));
+			if ($this->multiuser) {
+				$this->createField(array(
+					"name" => "client",
+					"type" => "hidden",
+				));
+				$this->createField(array(
+					"name" => "client_name",
+					"label" => translator::trans("ticket.client"),
+				));
+			}
 			$this->createField(array(
 				"name" => "word",
 				"label" => translator::trans("ticketing.ticket.keyword"),
@@ -132,7 +142,6 @@ foreach ($tickets as $ticket) {
 						"in_progress" => ticket::in_progress,
 						"closed" => ticket::closed
 					]);
-
 				?>
 					<i class="<?php echo $statusClass; ?> tooltips" title="<?php echo translator::trans($statusTxt); ?>"></i>
 				<?php } ?>
