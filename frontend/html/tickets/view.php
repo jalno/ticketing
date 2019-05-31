@@ -11,9 +11,9 @@ $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
 ?>
 <div class="row">
-<?php if($childrenType or $product){ ?>
+<?php if($childrenType or $product or $this->canEdit){ ?>
 	<div class="col-md-4 col-md-pull-8">
-		<?php if($childrenType){ ?>
+	<?php if ($childrenType) { ?>
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
@@ -52,12 +52,35 @@ $childrenType = (bool)authorization::childrenTypes();
 				</div>
 			</div>
 		</div>
-		<?php
-		}
-		if($product){
-			echo $product->generateRows();
-		}
-		?>
+	<?php
+	}
+	if($product){
+		echo $product->generateRows();
+	}
+	if ($this->canEdit) {
+	?>
+		<form id="set-operator-form" data-department="<?php echo $this->ticket->department->id; ?>" action="<?php echo userpanel\url("ticketing/edit/{$this->ticket->id}"); ?>" method="POST">
+	<?php
+		$this->createField(array(
+			"name" => "operator",
+			"type" => "hidden",
+		));
+		$this->createField(array(
+			"name" => "operator_name",
+			"label" => "اپراتور",
+			"input-group" => array(
+				"right" => array(
+					array(
+						"type" => "submit",
+						"class" => "btn btn-default",
+						"text" => "ثبت",
+					),
+				),
+			),
+		));
+	}
+	?>
+		</form>
 	</div>
 <?php } ?>
 	<div class="<?php echo (($childrenType or $product) ? 'col-md-8 col-md-push-4' : 'col-sm-12'); ?>">
@@ -170,7 +193,7 @@ $childrenType = (bool)authorization::childrenTypes();
 		<h4 class="modal-title"><?php echo translator::trans('ticket.edit.notice.title'); ?></h4>
 	</div>
 	<div class="modal-body ticket_edit">
-		<form id="editForm" class="form-horizontal create_form" action="<?php echo userpanel\url("ticketing/edit/".$this->ticket->id); ?>" method="POST">
+		<form  data-department="<?php echo $this->ticket->department->id; ?>" id="editForm" class="form-horizontal create_form" action="<?php echo userpanel\url("ticketing/edit/".$this->ticket->id); ?>" method="POST">
 			<?php
 			$this->setHorizontalForm('sm-3','sm-9');
 			$feilds = [
@@ -203,7 +226,15 @@ $childrenType = (bool)authorization::childrenTypes();
 					'type' => 'select',
 					'label' => translator::trans("ticket.department"),
 					'options' => $this->getDepartmentForSelect()
-				]
+				],
+				array(
+					"name" => "operator",
+					"type" => "hidden",
+				),
+				array(
+					"name" => "operator_name",
+					"label" => "اپراتور",
+				),
 			];
 			foreach($feilds as $input){
 				$this->createField($input);

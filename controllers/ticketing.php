@@ -476,6 +476,7 @@ class ticketing extends controller{
 		$ticket = $this->checkTicket($data['ticket']);
 		$view->setDepartment(department::get());
 		$view->setTicket($ticket);
+		$users = $ticket->department->users;
 		if(http::is_post()){
 			$this->response->setStatus(false);
 			try {
@@ -507,9 +508,28 @@ class ticketing extends controller{
 							ticket::closed
 						),
 						'optional' => true
-					)
+					),
+					"operator" => array(
+						"type" => user::class,
+						"optional" => true,
+						"query" => function($query) {
+							$priority = db::subQuery();
+							$priority->setQueryOption("DISTINCT");
+							$priority->get("userpanel_usertypes_priorities", null, "parent");
+							$permission = db::subQuery();
+							$permission->where("name", "ticketing_view");
+							$permission->get("userpanel_usertypes_permissions", null, "type");
+							$query->where("type", $priority, "IN");
+							$query->where("type", $permission, "IN");
+						}
+					),
 				);
 				$inputs = $this->checkinputs($inputsRules);
+				if (isset($inputs["operator"]) and $users) {
+					if (! in_array($inputs["operator"]->id, $users)) {
+						throw new inputValidationException("operator");
+					}
+				}
 				if(isset($inputs['client'])){
 					if(!$inputs['client'] = user::byId($inputs['client'])){
 						throw new inputValidation("client");
@@ -538,6 +558,12 @@ class ticketing extends controller{
 							$parameters['oldData'][$item] = $ticket->$item;
 							$ticket->$item = $inputs[$item]->id;
 						}
+					}
+				}
+				if (isset($inputs["operator"])) {
+					if ($inputs["operator"]->id !== $ticket->operator_id) {
+						$parameters['oldData']["operator"] = $ticket->operator_id;
+						$ticket->operator_id = $inputs["operator"]->id;
 					}
 				}
 				$ticket->save();

@@ -226,6 +226,10 @@
 		{
 			"classes":["logs\\settings\\departments\\delete"],
 			"file":"logs/settings/departments/delete.php"
+		},
+		{
+			"classes":["controllers/Userpanel"],
+			"file":"controllers/Userpanel.php"
 		}
 	]
 }

@@ -62,6 +62,12 @@ class view extends ticketView{
 				$this->setDataForm($user->getFullName(), 'client_name');
 			}
 		}
+		if($user = $this->getDataForm("operator_id")){
+			if ($user = userpanel\user::byId($user)) {
+				$this->setDataForm($user->getFullName(), "operator_name");
+				$this->setDataForm($user->id, "operator");
+			}
+		}
 		if($error = $this->getFormErrorsByInput('client')){
 			$error->setInput('client_name');
 			$this->setFormError($error);

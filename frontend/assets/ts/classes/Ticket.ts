@@ -7,6 +7,7 @@ import Close from "./Ticket/Close";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "jquery.growl";
 import "bootstrap/js/modal";
+import "./jquery.ticketOperatorAutoComplete";
 
 export default class Ticket{
 	private static closeTicketListener(){
@@ -73,9 +74,11 @@ export default class Ticket{
 				$('i', $(this)).removeClass('fa-spin');
 			});
 		});
-		$('#settings #editForm').on('submit', function(e){
+		const $editForm = $("#settings #editForm");
+		$editForm.on('submit', function(e){
 			e.preventDefault();
-			$(this).formAjax({
+			const form = this as HTMLFormElement;
+			$(form).formAjax({
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
 						title:"موفق",
@@ -86,7 +89,7 @@ export default class Ticket{
 				},
 				error: function(error:webuilder.AjaxError){
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
-						let $input = $('[name='+error.input+']');
+						let $input = $(`[name="${error.input}"]`, form);
 						let $params = {
 							title: 'خطا',
 							message:''
@@ -108,6 +111,46 @@ export default class Ticket{
 				}
 			});
 		});
+		const $setOperatorForm = $("#set-operator-form");
+		$setOperatorForm.on("submit", function(e) {
+			e.preventDefault();
+			const form = this as HTMLFormElement;
+			if (! $("input[name=operator]", form).val()) {
+				return false;
+			}
+			$(form).formAjax({
+				success: () => {
+					$.growl.notice({
+						title: "موفق",
+						message: "اپراتور با موفقیت ثبت شد."
+					});
+				},
+				error: (error:webuilder.AjaxError) => {
+					if (error.error == "data_duplicate" || error.error == "data_validation") {
+						const $input = $(`[name="${error.input}"]`, form);
+						const $params = {
+							title: "خطا",
+							message:""
+						};
+						if (error.error == "data_validation") {
+							$params.message = "داده وارد شده معتبر نیست";
+						}
+						if ($input.length) {
+							$input.inputMsg($params);
+						} else {
+							$.growl.error($params);
+						}
+					} else {
+						$.growl.error({
+							title:"خطا",
+							message:"درخواست شما توسط سرور قبول نشد"
+						});
+					}
+				}
+			});
+		});
+		$("input[name=operator_name]", $setOperatorForm).ticketOperatorAutoComplete($setOperatorForm.data("department"));
+		$("input[name=operator_name]", $editForm).ticketOperatorAutoComplete($editForm.data("department"));
 	}
 	public static init(){
 		if($('#ticket-close').length){

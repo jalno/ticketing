@@ -97,5 +97,10 @@
 		"path": ["userpanel","ticketing", "inprogress", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
 		"controller": "controllers\\ticketing@inProgress",
 		"method": "post"
+	},
+	{
+		"path": "userpanel/ticketing/:department/operators",
+		"controller": "controllers/Userpanel@operators",
+		"method": "get"
 	}
 ]
