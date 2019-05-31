@@ -10,18 +10,22 @@ class ticketing extends controller{
 	private function checkTicket(int $ticketID) {
 		$types = authorization::childrenTypes();
 		$me = authentication::getID();
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "LEFT");
-		if($types){
-			db::where("userpanel_users.type", $types, 'in');
-		}else{
-			db::where("userpanel_users.id", $me);
-		}
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
 		$ticket = new ticket();
-		$ticket->where("ticketing_tickets.id", $ticketID);
+		$ticket->with("client");
 		$ticket->with("department");
-		$ticket = $ticket->getOne('ticketing_tickets.*');
-		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array(authentication::getID(), $ticket->department->users))){
+		$ticket->where("ticketing_tickets.id", $ticketID);
+		if ($types) {
+			$ticket->where("userpanel_users.type", $types, "in");
+		} else {
+			$ticket->where("userpanel_users.id", $me);
+		}
+		$ticket = $ticket->getOne();
+		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array($me, $ticket->department->users))){
 			throw new NotFound;
+		}
+		if ($ticket->data["operator"]) {
+			$ticket->operator = new user($ticket->data["operator"]);
 		}
 		return $ticket;
 	}
@@ -48,8 +52,9 @@ class ticketing extends controller{
 		$this->response->setView($view = view::byName("\\packages\\ticketing\\views\\ticketlist"));
 		$departments = department::get();
 		$view->setDepartment($departments);
-		$ticket = new ticket();
 		$types = authorization::childrenTypes();
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
+		$ticket = new ticket();
 		$accessed = array();
 		if ($types) {
 			$me = authentication::getID();
@@ -66,11 +71,12 @@ class ticketing extends controller{
 				$ticket->where("ticketing_tickets.department", $accessed, "IN");
 			}
 		}
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
-		if ($types and $accessed){
-			$ticket->where("userpanel_users.type", $types, 'in');
+		$ticket->with("client");
+		$ticket->with("department");
+		if ($types) {
+			$ticket->where("userpanel_users.type", $types, "in");
 		} else {
-			$ticket->where("userpanel_users.id", authentication::getID());
+			$ticket->where("userpanel_users.id", $me);
 		}
 		$inputsRules = array(
 			'id' => array(
@@ -146,7 +152,12 @@ class ticketing extends controller{
 		}
 		$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
 		$ticket->pageLimit = $this->items_per_page;
-		$tickets = $ticket->paginate($this->page, 'ticketing_tickets.*');
+		$tickets = $ticket->paginate($this->page);
+		foreach ($tickets as $ticket) {
+			if ($ticket->data["operator"]) {
+				$ticket->operator = new user($ticket->data["operator"]);
+			}
+		}
 		$view->setDataList($tickets);
 		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
 		$this->response->setStatus(true);
