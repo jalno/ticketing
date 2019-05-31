@@ -89,10 +89,10 @@ class ticketing extends controller{
 				'empty' => true
 			),
 			'status' => array(
-				'type' => 'number',
-				'values' => array(ticket::unread, ticket::read, ticket::in_progress, ticket::closed, ticket::answered),
+				'type' => 'string',
 				'optional' => true,
-				'empty' => true
+				'empty' => true,
+				"default" => implode(",", array(ticket::unread, ticket::read, ticket::answered)),
 			),
 			'priority' => array(
 				'type' => 'number',
@@ -117,7 +117,11 @@ class ticketing extends controller{
 			)
 		);
 		$inputs = $this->checkinputs($inputsRules);
-		foreach(array('id', 'title', 'status', 'client', 'title', 'priority', 'department') as $item){
+		if (isset($inputs["status"]) and $inputs["status"]) {
+			$ticket->where("ticketing_tickets.status", explode(",", $inputs["status"]), "IN");
+			$view->setDataForm($inputs["status"], "status");
+		}
+		foreach(array('id', 'title', 'client', 'title', 'priority', 'department') as $item){
 			if(isset($inputs[$item]) and $inputs[$item]){
 				$comparison = $inputs['comparison'];
 				if(in_array($item, array('id', 'status', 'client'))){

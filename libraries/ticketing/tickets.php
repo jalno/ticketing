@@ -1,7 +1,8 @@
 <?php
 namespace packages\ticketing;
-use \packages\base\db;
-use \packages\base\db\dbObject;
+use packages\userpanel\user;
+use packages\base\{db, db\dbObject};
+
 class ticket extends dbObject{
 	const unread = 1;
 	const read = 2;
@@ -15,26 +16,28 @@ class ticket extends dbObject{
 	protected $dbTable = "ticketing_tickets";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
-        'create_at' => array('type' => 'int', 'required' => true),
-        'reply_at' => array('type' => 'int', 'required' => true),
-        'title' => array('type' => 'text', 'required' => true),
-		'priority' => array('type' => 'int', 'required' => true),
-		'department' => array('type' => 'int', 'required' => true),
-		'client' => array('type' => 'int', 'required' => true),
-		'status' => array('type' => 'int', 'required' => true)
+        "create_at" => array("type" => "int", "required" => true),
+        "reply_at" => array("type" => "int", "required" => true),
+        "title" => array("type" => "text", "required" => true),
+		"priority" => array("type" => "int", "required" => true),
+		"department" => array("type" => "int", "required" => true),
+		"client" => array("type" => "int", "required" => true),
+		"operator_id" => array("type" => "int"),
+		"status" => array("type" => "int", "required" => true)
     );
 	protected $relations = array(
-		'message' => array('hasMany', 'packages\\ticketing\\ticket_message', 'ticket'),
-		'params' => array('hasMany', 'packages\\ticketing\\ticket_param', 'ticket'),
-		'client' => array('hasOne', 'packages\\userpanel\\user', 'client'),
-		'department' => array('hasOne', 'packages\\ticketing\\department', 'department')
+		"message" => array("hasMany", "packages\\ticketing\\ticket_message", "ticket"),
+		"params" => array("hasMany", "packages\\ticketing\\ticket_param", "ticket"),
+		"client" => array("hasOne", user::class, "client"),
+		"department" => array("hasOne", "packages\\ticketing\\department", "department"),
+		"operator" => array("hasOne", user::class, "operator_id"),
 	);
 	protected function preLoad($data){
-		if(!isset($data['create_at'])){
-			$data['create_at'] = time();
+		if(!isset($data["create_at"])){
+			$data["create_at"] = time();
 		}
-		if(!isset($data['reply_at'])){
-			$data['reply_at'] = time();
+		if(!isset($data["reply_at"])){
+			$data["reply_at"] = time();
 		}
 		return $data;
 	}
@@ -77,8 +80,8 @@ class ticket extends dbObject{
 		}
 		if(!$param){
 			$param = new ticket_param(array(
-				'name' => $name,
-				'value' => $value
+				"name" => $name,
+				"value" => $value
 			));
 		}else{
 			$param->value = $value;
@@ -115,5 +118,18 @@ class ticket extends dbObject{
 			$file->delete();
 		}
 		parent::delete();
+	}
+	public function getMessageCount(): int {
+		$message = new ticket_message();
+		$message->where("ticket", $this->id);
+		return max($message->count() - 1, 0);
+	}
+	public function hasUnreadMessage(): bool {
+		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
+		db::joinWhere("ticketing_tickets", "ticketing_tickets.id", $this->id);
+		$message = new ticket_message();
+		$message->where("ticketing_tickets_msgs.status", ticket_message::unread);
+		$message->where("ticketing_tickets_msgs.user", "ticketing_tickets.client", "!=");
+		return $message->has();
 	}
 }

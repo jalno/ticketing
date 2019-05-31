@@ -1,15 +1,15 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\userpanel;
-use \packages\base\translator;
-use \packages\base\view\error;
-use \themes\clipone\viewTrait;
-use \themes\clipone\navigation;
-use \themes\clipone\views\listTrait;
-use \themes\clipone\views\formTrait;
-use \themes\clipone\navigation\menuItem;
-use \packages\ticketing\ticket;
-use \packages\ticketing\views\ticketlist as ticketListView;
+use packages\userpanel;
+use packages\base\translator;
+use packages\base\view\error;
+use themes\clipone\viewTrait;
+use themes\clipone\navigation;
+use themes\clipone\views\listTrait;
+use themes\clipone\views\formTrait;
+use themes\clipone\navigation\menuItem;
+use packages\ticketing\{ticket, views\ticketlist as ticketListView, authentication, authorization};
+
 class listview extends ticketListView{
 	use viewTrait, listTrait, formTrait;
 	function __beforeLoad(){
@@ -20,9 +20,7 @@ class listview extends ticketListView{
 		$this->setButtons();
 		$this->onSourceLoad();
 		navigation::active("ticketing/list");
-		if(empty($this->getTickets())){
-			$this->addNotFoundError();
-		}
+		$this->addBodyClass("tickets-search");
 	}
 	private function addNotFoundError(){
 		$error = new error();
@@ -94,34 +92,6 @@ class listview extends ticketListView{
 			)
 		);
 	}
-	protected function getStatusForSelect(){
-		return array(
-			array(
-				'title' => translator::trans("choose"),
-				"value" => ''
-			),
-			array(
-				'title' => translator::trans("unread"),
-				'value' => ticket::unread
-			),
-			array(
-				'title' => translator::trans("read"),
-				'value' => ticket::read
-			),
-			array(
-				'title' => translator::trans("answered"),
-				'value' => ticket::answered
-			),
-			array(
-				'title' => translator::trans("in_progress"),
-				'value' => ticket::in_progress
-			),
-			array(
-				'title' => translator::trans("closed"),
-				'value' => ticket::closed
-			)
-		);
-	}
 	protected function getComparisonsForSelect(){
 		return array(
 			array(
@@ -137,5 +107,60 @@ class listview extends ticketListView{
 				'value' => 'startswith'
 			)
 		);
+	}
+	protected function isActive($item = "all"): bool {
+		$status = $this->getDataForm("status");
+		if ($status) {
+			$status = explode(",", $status);
+		} else {
+			$status = array();
+		}
+		if ($item == "all") {
+			return empty(array_diff(array(
+				ticket::unread,
+				ticket::read,
+				ticket::in_progress,
+				ticket::answered,
+				ticket::closed,
+			), $status));
+		}
+		if ($item == "active") {
+			return empty(array_diff($status, array(
+				ticket::unread,
+				ticket::read,
+				ticket::answered,
+			)));
+		}
+		if ($item == "inProgress") {
+			return empty(array_diff($status, array(
+				ticket::in_progress,
+			)));
+		}
+		if ($item == "closed") {
+			return empty(array_diff($status, array(
+				ticket::closed,
+			)));
+		}
+	}
+	protected function getOrderedTickets(): array {
+		$tickets = $this->getTickets();
+		if (! $tickets) {
+			$tickets = array();
+		}
+		if (! authorization::childrenTypes()) {
+			return $tickets;
+		}
+		$ordered = array();
+		$user = authentication::getUser();
+		foreach ($tickets as $key => $ticket) {
+			if ($ticket->operator_id == $user->id) {
+				$ordered[] = $ticket;
+				unset($tickets[$key]);
+			}
+		}
+		foreach ($tickets as $ticket) {
+			$ordered[] = $ticket;
+		}
+		return $ordered;
 	}
 }

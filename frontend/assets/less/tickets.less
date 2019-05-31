@@ -1,0 +1,128 @@
+.tickets-search {
+	.ticket-status-search {
+		ul {
+			display: block;
+			overflow: hidden;
+			list-style: none;
+			padding-right: 0;
+			margin-bottom: 0;
+			font-family: yekan;
+			li {
+				float: right;
+				display: flex;
+				a {
+					padding: 10px 10px 11px;
+					font-size: 14px;
+					line-height: 28px;
+					color: #707070;
+					border-bottom: 2px solid transparent;
+					white-space: nowrap;
+					text-decoration: none;
+					&:hover {
+						border-bottom-color: #c4c4c4;
+					}
+				}
+				&.active {
+					a {
+						border-bottom-color: #ffa200;
+						color: #000;
+						font-weight: 600;
+						&:hover {
+							border-bottom-color: #ffa200;
+						}
+					}
+				}
+			}
+		}
+		.btn {
+			margin-top: 5px;
+			@media (max-width: 768px) {
+				display: block;
+				float: none !important;
+				margin-bottom: 12px;
+			}
+		}
+	}
+	.ticket-advanced-search {
+		background: #fafafa;
+		padding: 16px;
+		border-top: 1px solid #eaeaea;
+		border-bottom: 1px solid #eaeaea;
+		.form-group {
+			input {
+				border-radius: 0;
+			}
+			.btn {
+				border-radius: 0;
+				i {
+					vertical-align: middle;
+				}
+			}
+			margin-bottom: 0;
+		}
+		.more-field {
+			display: none;
+			margin-top: 15px;
+			.form-group {
+				margin-bottom: 15px;
+			}
+		}
+	}
+	.tickets-list {
+		.text-primary {
+			color: #337ab7;
+		}
+		.text-info {
+			color: #5bc0de;
+		}
+		.text-inverse {
+			color: #555;
+		}
+		.ticket {
+			padding: 10px 0 10px 16px;
+			position: relative;
+			display: block;
+			border-bottom: 1px solid #f0f0f0;
+			a {
+				color: #2e2e2e;
+				&.client {
+					color: #2e2e2e;
+				}
+				&.has-unread-message {
+					font-weight: 700;
+				}
+			}
+			span {
+				display: inline;
+				font-weight: 400;
+				color: #707070;
+				&.label {
+					color: #fff;
+				}
+				&.has-unread-message {
+					color: #d9534f;
+				}
+			}
+			.ticket-info {
+				text-align: left;
+				@media (max-width: 768px) {
+					p {
+						display: inline;
+						&:first-child {
+							float: left;
+						}
+						&:last-child {
+							float: right;
+						}
+					}
+				}
+			}
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+	}
+	.alert {
+		margin-top: 15px;
+	}
+}

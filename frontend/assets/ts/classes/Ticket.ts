@@ -1,3 +1,4 @@
+import * as $ from "jquery";
 import List from "./Ticket/List";
 import Add from "./Ticket/Add";
 import Reply from "./Ticket/Reply";
@@ -6,6 +7,7 @@ import Close from "./Ticket/Close";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "jquery.growl";
 import "bootstrap/js/modal";
+
 export default class Ticket{
 	private static closeTicketListener(){
 		$('#ticket-close').on('click', function(e){
