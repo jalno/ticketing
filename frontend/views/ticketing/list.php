@@ -13,6 +13,7 @@ use packages\ticketing\{ticket, views\ticketlist as ticketListView, authenticati
 class listview extends ticketListView{
 	use viewTrait, listTrait, formTrait;
 	protected $multiuser;
+	protected $hasAccessToUsers = false;
 	public function __beforeLoad(){
 		$this->setTitle(array(
 			translator::trans('ticketing'),
@@ -23,6 +24,7 @@ class listview extends ticketListView{
 		navigation::active("ticketing/list");
 		$this->addBodyClass("tickets-search");
 		$this->multiuser = (bool) authorization::childrenTypes();
+		$this->hasAccessToUsers = authorization::is_accessed("users_list", "userpanel");
 	}
 	private function addNotFoundError(){
 		$error = new error();

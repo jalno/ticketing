@@ -176,7 +176,7 @@ foreach ($tickets as $ticket) {
 				if ($ticket->operator_id) {
 				?>
 					<span>
-						<a href="<?php echo userpanel\url("users", array("id" => $ticket->operator_id)); ?>" class="tooltips" title="<?php echo $ticket->operator->getFullName(); ?>">
+						<a target="_blank" href="<?php echo $this->hasAccessToUsers ? userpanel\url("users", array("id" => $ticket->operator_id)) : "javascript::void()"; ?>" class="tooltips" title="<?php echo $ticket->operator->getFullName(); ?>">
 							<img class="img-circle" src="<?php echo $ticket->operator->getAvatar(16, 16); ?>" alt="<?php echo $ticket->operator->getFullName(); ?>">
 						</a>
 					</span>
