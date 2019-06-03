@@ -94,7 +94,7 @@ class ticketing extends controller{
 			'status' => array(
 				'type' => 'string',
 				'optional' => true,
-				"default" => implode(",", array(ticket::unread, ticket::read, ticket::answered)),
+				"default" => implode(",", array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress)),
 			),
 			'priority' => array(
 				'type' => 'number',
