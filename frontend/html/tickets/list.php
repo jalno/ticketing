@@ -96,10 +96,6 @@ $hasTicket = ! empty($tickets);
 				));
 			}
 			$this->createField(array(
-				"name" => "word",
-				"label" => translator::trans("ticketing.ticket.keyword"),
-			));
-			$this->createField(array(
 				"type" => "select",
 				"label" => translator::trans("search.comparison"),
 				"name" => "comparison",

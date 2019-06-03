@@ -82,39 +82,32 @@ class ticketing extends controller{
 			'id' => array(
 				'type' => 'number',
 				'optional' => true,
-				'empty' => true
 			),
 			'title' => array(
 				'type' => 'string',
 				'optional' =>true,
-				'empty' => true
 			),
 			'client' => array(
 				'type' => 'number',
 				'optional' => true,
-				'empty' => true
 			),
 			'status' => array(
 				'type' => 'string',
 				'optional' => true,
-				'empty' => true,
 				"default" => implode(",", array(ticket::unread, ticket::read, ticket::answered)),
 			),
 			'priority' => array(
 				'type' => 'number',
 				'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary),
 				'optional' => true,
-				'empty' => true
 			),
 			'department' => array(
 				'type' => 'number',
 				'optional' => true,
-				'empty' => true
 			),
 			'word' => array(
 				'type' => 'string',
 				'optional' => true,
-				'empty' => true
 			),
 			'comparison' => array(
 				'values' => array('equals', 'startswith', 'contains'),
@@ -143,16 +136,22 @@ class ticketing extends controller{
 					$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
 				}
 			}
-			$parenthesis->where("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison'], 'OR');
-			$parenthesis->where("ticketing_files.name", $inputs['word'], $inputs['comparison'], 'OR');
-			$ticket->where($parenthesis);
 			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
 			db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
+			$parenthesis->orWhere("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison']);
+			$parenthesis->orWhere("ticketing_files.name", $inputs['word'], $inputs['comparison']);
+			$ticket->where($parenthesis);
 			$ticket->setQueryOption("DISTINCT");
+			$view->setDataForm($inputs['word'], "word");
 		}
 		$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
 		$ticket->pageLimit = $this->items_per_page;
-		$tickets = $ticket->paginate($this->page);
+		$tickets = $ticket->paginate($this->page, array(
+			"ticketing_tickets.*",
+			"operator.*",
+			"userpanel_users.*",
+			"ticketing_departments.*",
+		));
 		foreach ($tickets as $ticket) {
 			if ($ticket->data["operator"]) {
 				$ticket->operator = new user($ticket->data["operator"]);
