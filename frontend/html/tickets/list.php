@@ -193,7 +193,7 @@ foreach ($tickets as $ticket) {
 				<?php $messageCount = $ticket->getMessageCount(); ?>
 					<span><?php echo $messageCount; ?> <i class="fa fa-comments-o"></i></span>
 				</p>
-			<?php if ($ticket->reply_at) { ?>
+			<?php if ($ticket->reply_at and $ticket->reply_at != $ticket->create_at) { ?>
 				<p>
 					<span>آخرین پاسخ <span class="tooltips" title="<?php echo date::format("Y/m/d H:i", $ticket->reply_at); ?>"><?php echo date::relativeTime($ticket->reply_at); ?></span></span>
 				</p>
