@@ -118,7 +118,16 @@ $hasTicket = ! empty($tickets);
 <?php if ($hasTicket) { ?>
 <div class="tickets-list">
 <?php
-$activeAll = $this->isActive("all");
+$showStatus = $this->isActive("all");
+if (! $showStatus and $this->isActive("active")) {
+	$lastStatus = $tickets[0]->status;
+	foreach ($tickets as $ticket) {
+		if ($lastStatus != $ticket->status) {
+			$showStatus = true;
+			break;
+		}
+	}
+}
 foreach ($tickets as $ticket) {
 ?>
 	<div class="ticket">
@@ -127,7 +136,7 @@ foreach ($tickets as $ticket) {
 			<?php $hasUnreadMessage = $ticket->hasUnreadMessage(); ?>
 				<p>
 				<?php
-				if ($activeAll) {
+				if ($showStatus) {
 					$statusClass = utility::switchcase($ticket->status, [
 						"fa fa-info-circle text-primary" => ticket::unread,
 						"fa fa-eye text-info" => ticket::read,
