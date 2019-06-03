@@ -21,7 +21,7 @@ $hasTicket = ! empty($tickets);
 		<div class="col-sm-8 col-sm-push-4 col-xs-12">
 			<ul role="tablist">
 				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url("ticketing", array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread)))); ?>">فعال</a>
+					<a href="<?php echo userpanel\url("ticketing", array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
 					<a href="<?php echo userpanel\url("ticketing", array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>

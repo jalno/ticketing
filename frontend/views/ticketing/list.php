@@ -116,34 +116,46 @@ class listview extends ticketListView{
 		$status = $this->getDataForm("status");
 		if ($status) {
 			$status = explode(",", $status);
+			sort($status);
 		} else {
 			$status = array();
 		}
 		if ($item == "all") {
-			return empty(array_diff(array(
-				ticket::unread,
-				ticket::read,
-				ticket::in_progress,
-				ticket::answered,
-				ticket::closed,
-			), $status));
-		}
-		if ($item == "active") {
-			return empty(array_diff($status, array(
-				ticket::unread,
-				ticket::read,
-				ticket::answered,
-			)));
+			static $allStatus;
+			if (! $allStatus) {
+				$allStatus = array(
+					ticket::unread,
+					ticket::read,
+					ticket::in_progress,
+					ticket::answered,
+					ticket::closed,
+				);
+				sort($allStatus);
+			}
+			return $status == $allStatus;
 		}
 		if ($item == "inProgress") {
-			return empty(array_diff($status, array(
+			return $status == array(
 				ticket::in_progress,
-			)));
+			);
+		}
+		if ($item == "active") {
+			static $activeStatus;
+			if (! $activeStatus) {
+				$activeStatus = array(
+					ticket::unread,
+					ticket::read,
+					ticket::answered,
+					ticket::in_progress,
+				);
+				sort($activeStatus);
+			}
+			return $status == $activeStatus;
 		}
 		if ($item == "closed") {
-			return empty(array_diff($status, array(
+			return $status == array(
 				ticket::closed,
-			)));
+			);
 		}
 	}
 	protected function getOrderedTickets(): array {
