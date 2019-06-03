@@ -56,8 +56,8 @@ class ticketing extends controller{
 		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
 		$ticket = new ticket();
 		$accessed = array();
+		$me = authentication::getID();
 		if ($types) {
-			$me = authentication::getID();
 			foreach ($departments as $department) {
 				if ($department->users) {
 					if (in_array($me, $department->users)) {
