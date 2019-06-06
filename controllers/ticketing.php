@@ -3,23 +3,34 @@ namespace packages\ticketing\controllers;
 use \packages\base\{IO, db, http, packages, NotFound, view\error, db\parenthesis, views\FormError, inputValidation, response\file as responsefile, translator};
 use \packages\userpanel;
 use \packages\userpanel\{user, date, log};
-use \packages\ticketing\{controller, authorization, authentication, view, ticket, department, ticket_message, ticket_param, products, ticket_file, events, logs};
+use \packages\ticketing\{controller, authorization, authentication, view, ticket, department, ticket_message, ticket_param, products, ticket_file, events, logs, views};
 
 class ticketing extends controller{
 	protected $authentication = true;
-	private function checkTicket(int $ticketID) {
+	private function getTicket(int $ticketID) {
+		$unassignedTickets = authorization::is_accessed("unassigned");
 		$types = authorization::childrenTypes();
 		$me = authentication::getID();
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", $unassignedTickets ? "LEFT" : "INNER");
 		$ticket = new ticket();
 		$ticket->with("client");
 		$ticket->with("department");
 		$ticket->where("ticketing_tickets.id", $ticketID);
+		$parenthesis = new parenthesis();
 		if ($types) {
-			$ticket->where("userpanel_users.type", $types, "in");
+			$parenthesis->orWhere("userpanel_users.type", $types, "IN");
 		} else {
-			$ticket->where("userpanel_users.id", $me);
+			$parenthesis->orWhere("ticketing_tickets.client", $me);
 		}
+		if ($unassignedTickets) {
+			$parenthesis->orWhere("ticketing_tickets.operator_id", null, "IS");
+		}
+		if ($types) {
+			$parenthesis->orWhere("operator.type", $types, "IN");
+		} else {
+			$parenthesis->orWhere("ticketing_tickets.operator_id", $me);
+		}
+		$ticket->where($parenthesis);
 		$ticket = $ticket->getOne();
 		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array($me, $ticket->department->users))){
 			throw new NotFound;
@@ -29,7 +40,7 @@ class ticketing extends controller{
 		}
 		return $ticket;
 	}
-	private function checkTicketMessage($messageID) {
+	private function getTicketMessage($messageID) {
 		$types = authorization::childrenTypes();
 		$me = authentication::getID();
 		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets_msgs.user", "LEFT");
@@ -49,43 +60,18 @@ class ticketing extends controller{
 	}
 	public function index(){
 		authorization::haveOrFail('list');
-		$this->response->setView($view = view::byName("\\packages\\ticketing\\views\\ticketlist"));
+		$view = view::byName(views\ticketlist::class);
+		$this->response->setView($view);
 		$departments = department::get();
 		$view->setDepartment($departments);
-		$types = authorization::childrenTypes();
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
-		$ticket = new ticket();
-		$accessed = array();
-		$me = authentication::getID();
-		if ($types) {
-			foreach ($departments as $department) {
-				if ($department->users) {
-					if (in_array($me, $department->users)) {
-						$accessed[] = $department->id;
-					}
-				} else {
-					$accessed[] = $department->id;
-				}
-			}
-			if (!empty($accessed)) {
-				$ticket->where("ticketing_tickets.department", $accessed, "IN");
-			}
-		}
-		$ticket->with("client");
-		$ticket->with("department");
-		if ($types) {
-			$ticket->where("userpanel_users.type", $types, "in");
-		} else {
-			$ticket->where("userpanel_users.id", $me);
-		}
-		$inputsRules = array(
+		$inputs = $this->checkinputs(array(
 			'id' => array(
 				'type' => 'number',
 				'optional' => true,
 			),
 			'title' => array(
 				'type' => 'string',
-				'optional' =>true,
+				'optional' => true,
 			),
 			'client' => array(
 				'type' => 'number',
@@ -114,9 +100,50 @@ class ticketing extends controller{
 				'default' => 'contains',
 				'optional' => true
 			)
-		);
-		$inputs = $this->checkinputs($inputsRules);
+		));
+		$types = authorization::childrenTypes();
+		$unassignedTickets = authorization::is_accessed("unassigned");
+		$me = authentication::getID();
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", $unassignedTickets ? "LEFT" : "INNER");
+		$ticket = new ticket();
+		$ticket->with("client");
+		$ticket->with("department");
+		if ($types) {
+			$accessed = array();
+			foreach ($departments as $department) {
+				if ($department->users) {
+					if (in_array($me, $department->users)) {
+						$accessed[] = $department->id;
+					}
+				} else {
+					$accessed[] = $department->id;
+				}
+			}
+			if (! empty($accessed)) {
+				$ticket->where("ticketing_tickets.department", $accessed, "IN");
+			}
+		}
+		$parenthesis = new parenthesis();
+		if ($types) {
+			$parenthesis->orWhere("userpanel_users.type", $types, "IN");
+		} else {
+			$parenthesis->orWhere("ticketing_tickets.client", $me);
+		}
+		if ($unassignedTickets) {
+			$parenthesis->orWhere("ticketing_tickets.operator_id", null, "IS");
+		}
+		if ($types) {
+			$parenthesis->orWhere("operator.type", $types, "IN");
+		} else {
+			$parenthesis->orWhere("ticketing_tickets.operator_id", $me);
+		}
+		$ticket->where($parenthesis);
 		if (isset($inputs["status"]) and $inputs["status"]) {
+			foreach (explode(",", $inputs["status"]) as $status) {
+				if (! in_array($status, array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress, ticket::closed))) {
+					throw new inputValidation("status");
+				}
+			}
 			$ticket->where("ticketing_tickets.status", explode(",", $inputs["status"]), "IN");
 			$view->setDataForm($inputs["status"], "status");
 		}
@@ -317,7 +344,7 @@ class ticketing extends controller{
 	public function view($data){
 		$view = view::byName("\\packages\\ticketing\\views\\view");
 		authorization::haveOrFail('view');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicket($ticket);
 		if(!$ticket->department->isWorking()){
 			$work = $ticket->department->currentWork();
@@ -431,7 +458,7 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\message_delete");
 		authorization::haveOrFail('message_delete');
 
-		$ticket_message = $this->checkTicketMessage($data['ticket']);
+		$ticket_message = $this->getTicketMessage($data['ticket']);
 		$view->setMessageData($ticket_message);
 		if(http::is_post()){
 			$ticket = $ticket_message->ticket;
@@ -447,7 +474,7 @@ class ticketing extends controller{
 	public function message_edit($data){
 		$view = view::byName("\\packages\\ticketing\\views\\message_edit");
 		authorization::haveOrFail('message_edit');
-		$ticket_message = $this->checkTicketMessage($data['ticket']);
+		$ticket_message = $this->getTicketMessage($data['ticket']);
 		$view->setMessageData($ticket_message);
 		if(http::is_post()){
 			$this->response->setStatus(false);
@@ -483,7 +510,7 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\edit");
 		authorization::haveOrFail('edit');
 
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		$view->setDepartment(department::get());
 		$view->setTicket($ticket);
 		$users = $ticket->department->users;
@@ -624,7 +651,7 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\lock");
 		authorization::haveOrFail('lock');
 
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -648,7 +675,7 @@ class ticketing extends controller{
 		$view = view::byName("\\packages\\ticketing\\views\\unlock");
 		authorization::haveOrFail('unlock');
 
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -672,7 +699,7 @@ class ticketing extends controller{
 	public function delete($data){
 		$view = view::byName("\\packages\\ticketing\\views\\delete");
 		authorization::haveOrFail('delete');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -754,7 +781,7 @@ class ticketing extends controller{
 	}
 	public function confirmClose(array $data){
 		authorization::haveOrFail('close');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
 			throw new NotFound();
 		}
@@ -766,7 +793,7 @@ class ticketing extends controller{
 	}
 	public function close(array $data){
 		authorization::haveOrFail('close');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
 			throw new NotFound();
 		}
@@ -793,7 +820,7 @@ class ticketing extends controller{
 	}
 	public function confirmInProgress(array $data){
 		authorization::haveOrFail('edit');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		if($ticket->status == ticket::in_progress){
 			throw new NotFound();
 		}
@@ -805,7 +832,7 @@ class ticketing extends controller{
 	}
 	public function inProgress(array $data){
 		authorization::haveOrFail('edit');
-		$ticket = $this->checkTicket($data['ticket']);
+		$ticket = $this->getTicket($data['ticket']);
 		if($ticket->status == ticket::in_progress){
 			throw new NotFound();
 		}

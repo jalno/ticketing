@@ -85,6 +85,7 @@
 		"usertype.permissions.ticketing_department_edit": "ویرایش دپارتمان های پشتیبانی",
 		"usertype.permissions.ticketing_department_delete": "حذف دپارتمان های پشتیبانی",
 		"usertype.permissions.ticketing_department_add": "افزودن دپارتمان های پشتیبانی",
+		"usertype.permissions.ticketing_unassigned": "تیکت های بدون اپراتور",
 		"department.edit":"ویرایش",
 		"department.delete":"حذف",
 		"departments" : "دپارتمان ها",

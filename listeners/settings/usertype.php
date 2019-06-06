@@ -13,6 +13,7 @@ class usertype{
 			'unlock',
 			'delete',
 			'close',
+			"unassigned",
 
 			'message_delete',
 			'message_edit',
