@@ -1,9 +1,9 @@
 CREATE TABLE `ticketing_departments` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`title` varchar(255) COLLATE utf8_persian_ci NOT NULL,
-	`users` text COLLATE utf8_persian_ci,
+	`title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+	`users` text COLLATE utf8mb4_general_ci,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `ticketing_departments_worktimes` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -16,14 +16,14 @@ CREATE TABLE `ticketing_departments_worktimes` (
 	UNIQUE KEY `department_2` (`department`,`day`),
 	KEY `department` (`department`),
 	CONSTRAINT `ticketing_departments_worktimes_ibfk_1` FOREIGN KEY (`department`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `ticketing_tickets` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`operator_id` int(11) DEFAULT NULL,
 	`create_at` int(11) NOT NULL,
 	`reply_at` int(11) NOT NULL,
-	`title` varchar(255) COLLATE utf8_persian_ci NOT NULL,
+	`title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
 	`priority` int(11) NOT NULL,
 	`department` int(11) NOT NULL,
 	`client` int(11) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `ticketing_tickets` (
 	CONSTRAINT `ticketing_tickets_ibfk_1` FOREIGN KEY (`client`) REFERENCES `userpanel_users` (`id`) ON DELETE CASCADE,
 	CONSTRAINT `ticketing_tickets_ibfk_2` FOREIGN KEY (`department`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE,
 	CONSTRAINT `ticketing_tickets_ibfk_3` FOREIGN KEY (`operator_id`) REFERENCES `userpanel_users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `ticketing_tickets_params` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -45,22 +45,22 @@ CREATE TABLE `ticketing_tickets_params` (
 	PRIMARY KEY (`id`),
 	KEY `ticket` (`ticket`),
 	CONSTRAINT `ticketing_tickets_params_ibfk_1` FOREIGN KEY (`ticket`) REFERENCES `ticketing_tickets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `ticketing_tickets_msgs` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`ticket` int(11) NOT NULL,
 	`date` int(11) NOT NULL,
 	`user` int(11) NOT NULL,
-	`text` text COLLATE utf8_persian_ci NOT NULL,
-	`format` varchar(15) COLLATE utf8_persian_ci NOT NULL,
+	`text` text COLLATE utf8mb4_general_ci NOT NULL,
+	`format` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
 	`status` int(11) NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `ticket` (`ticket`),
 	KEY `user` (`user`),
 	CONSTRAINT `ticketing_tickets_msgs_ibfk_1` FOREIGN KEY (`user`) REFERENCES `userpanel_users` (`id`) ON DELETE CASCADE,
 	CONSTRAINT `ticketing_tickets_msgs_ibfk_2` FOREIGN KEY (`ticket`) REFERENCES `ticketing_tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_persian_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `ticketing_files` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -71,4 +71,4 @@ CREATE TABLE `ticketing_files` (
 	PRIMARY KEY (`id`),
 	KEY `message` (`message`),
 	CONSTRAINT `ticketing_files_ibfk_1` FOREIGN KEY (`message`) REFERENCES `ticketing_tickets_msgs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
