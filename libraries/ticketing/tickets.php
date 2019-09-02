@@ -13,6 +13,18 @@ class ticket extends dbObject{
 	const important = 2;
 	const ordinary = 3;
 	const canSendMessage = 0;
+	const STATUSES = array(
+		self::unread,
+		self::read,
+		self::in_progress,
+		self::answered,
+		self::closed,
+	);
+	const PRIORITIES = array(
+		self::instantaneous,
+		self::important,
+		self::ordinary,
+	);
 	protected $dbTable = "ticketing_tickets";
 	protected $primaryKey = "id";
 	protected $dbFields = array(

@@ -1,11 +1,12 @@
 <?php
 namespace packages\ticketing\controllers;
-use \packages\base\{IO, db, http, packages, NotFound, view\error, db\parenthesis, views\FormError, inputValidation, response\file as responsefile, translator};
-use \packages\userpanel;
-use \packages\userpanel\{user, date, log};
-use \packages\ticketing\{controller, authorization, authentication, view, ticket, department, ticket_message, ticket_param, products, ticket_file, events, logs, views};
 
-class ticketing extends controller{
+use packages\base\{IO, db, http, packages, NotFound, view\error, db\parenthesis, views\FormError, inputValidation, response\file as responsefile, translator};
+use packages\Userpanel;
+use packages\userpanel\{Date, Log, User};
+use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
+
+class Ticketing extends Controller {
 	protected $authentication = true;
 	private function getTicket(int $ticketID) {
 		$unassignedTickets = authorization::is_accessed("unassigned");
@@ -506,147 +507,129 @@ class ticketing extends controller{
 		$this->response->setView($view);
 		return $this->response;
 	}
-	public function edit($data){
-		$view = view::byName("\\packages\\ticketing\\views\\edit");
-		authorization::haveOrFail('edit');
-
+	public function edit($data) {
+		$view = View::byName(Views\Edit::class);
+		Authorization::haveOrFail('edit');
 		$ticket = $this->getTicket($data['ticket']);
-		$view->setDepartment(department::get());
+		$view->setDepartment(Department::get());
 		$view->setTicket($ticket);
-		$users = $ticket->department->users;
-		if(http::is_post()){
-			$this->response->setStatus(false);
-			try {
-				$inputsRules = array(
-					'title' => array(
-						'type' => 'string',
-						'optional' => true
-					),
-					'priority' => array(
-						'type' => 'number',
-						'values' => array(ticket::instantaneous, ticket::important, ticket::ordinary),
-						'optional' => true
-					),
-					'department' => array(
-						'type' => 'number',
-						'optional' => true
-					),
-					'client' => array(
-						'type' => 'number',
-						'optional' => true
-					),
-					'status' => array(
-						'type' => 'number',
-						'values' => array(
-							ticket::unread,
-							ticket::read,
-							ticket::answered,
-							ticket::in_progress,
-							ticket::closed
-						),
-						'optional' => true
-					),
-					"operator" => array(
-						"type" => user::class,
-						"optional" => true,
-						"query" => function($query) {
-							$priority = db::subQuery();
-							$priority->setQueryOption("DISTINCT");
-							$priority->get("userpanel_usertypes_priorities", null, "parent");
-							$permission = db::subQuery();
-							$permission->where("name", "ticketing_view");
-							$permission->get("userpanel_usertypes_permissions", null, "type");
-							$query->where("type", $priority, "IN");
-							$query->where("type", $permission, "IN");
-						}
-					),
-				);
-				$inputs = $this->checkinputs($inputsRules);
-				if (isset($inputs["operator"]) and $users) {
-					if (! in_array($inputs["operator"]->id, $users)) {
-						throw new inputValidationException("operator");
-					}
-				}
-				if(isset($inputs['client'])){
-					if(!$inputs['client'] = user::byId($inputs['client'])){
-						throw new inputValidation("client");
-					}
-				}
-				if(isset($inputs['department'])){
-					if(!$inputs['department'] = department::byId($inputs['department'])){
-						throw new inputValidation("department");
-					}
-				}
-				$parameters = ['oldData' => []];
-				if(isset($inputs['status'])){
-					$inputs['oldStatus'] = $ticket->status;
-				}
-				foreach(['title', 'priority', 'status'] as $item){
-					if(isset($inputs[$item])){
-						if($inputs[$item] != $ticket->$item){
-							$parameters['oldData'][$item] = $ticket->$item;
-							$ticket->$item = $inputs[$item];
-						}
-					}
-				}
-				foreach(['department', 'client'] as $item){
-					if(isset($inputs[$item])){
-						if($inputs[$item]->id != $ticket->$item->id){
-							$parameters['oldData'][$item] = $ticket->$item;
-							$ticket->$item = $inputs[$item]->id;
-						}
-					}
-				}
-				if (isset($inputs["operator"])) {
-					if ($inputs["operator"]->id !== $ticket->operator_id) {
-						$parameters['oldData']["operator"] = $ticket->operator_id;
-						$ticket->operator_id = $inputs["operator"]->id;
-					}
-				}
-				$ticket->save();
-				if(isset($inputs['oldStatus'])){
-					if($inputs['oldStatus'] != $ticket->status){
-						if($ticket->status == ticket::closed){
-							$event = new events\tickets\close($ticket);
-							$event->trigger();
-						}elseif($ticket->status == ticket::in_progress){
-							$event = new events\tickets\inprogress($ticket);
-							$event->trigger();
-						}
-					}
-				}
-
-				$log = new log();
-				$log->user = authentication::getID();
-				$log->title = translator::trans("ticketing.logs.edit", ['ticket_id' => $ticket->id]);
-				$log->type = logs\tickets\edit::class;
-				$log->parameters = $parameters;
-				$log->save();
-
-				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id ));
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
+		$this->response->setView($view);		
+		$inputs = $this->checkinputs(array(
+			'close' => array(
+				'type' => 'string',
+				'optional' => true,
+			)));
+		if(isset($inputs['close'])){
+			if(strtolower($inputs['close']) == 'yes'){
+				$view->setDataForm(ticket::closed, 'status');
 			}
-		}else{
-			$inputsRules = array(
-				'close' => array(
-					'type' => 'string',
-					'optional' => true,
-					'empty' => true
-				)
-			);
-			$inputs = $this->checkinputs($inputsRules);
-			if(isset($inputs['close']) and $inputs['close']){
-				if(strtolower($inputs['close']) == 'yes'){
-					$view->setDataForm(ticket::closed, 'status');
-				}
-			}
-			$this->response->setStatus(true);
 		}
-		$this->response->setView($view);
+		$this->response->setStatus(true);
 		return $this->response;
 	}
+
+	public function update($data) {
+		$view = View::byName(Views\Edit::class);
+		Authorization::haveOrFail('edit');
+		$ticket = $this->getTicket($data['ticket']);
+		$view->setDepartment(Department::get());
+		$view->setTicket($ticket);
+		$this->response->setView($view);
+		$users = $ticket->department->users;
+		$inputs = $this->checkinputs(array(
+			'title' => array(
+				'type' => 'string',
+				'optional' => true
+			),
+			'priority' => array(
+				'type' => 'number',
+				'values' => Ticket::PRIORITIES,
+				'optional' => true
+			),
+			'department' => array(
+				'type' => Department::class,
+				'optional' => true
+			),
+			'client' => array(
+				'type' => User::class,
+				'optional' => true
+			),
+			'status' => array(
+				'type' => 'number',
+				'values' => Ticket::STATUSES,
+				'optional' => true
+			),
+			"operator" => array(
+				"type" => User::class,
+				"optional" => true,
+				"query" => function($query) {
+					$priority = db::subQuery();
+					$priority->setQueryOption("DISTINCT");
+					$priority->get("userpanel_usertypes_priorities", null, "parent");
+					$permission = db::subQuery();
+					$permission->where("name", "ticketing_view");
+					$permission->get("userpanel_usertypes_permissions", null, "type");
+					$query->where("type", $priority, "IN");
+					$query->where("type", $permission, "IN");
+				}
+			),
+		));
+		if (isset($inputs["operator"]) and $users) {
+			if (! in_array($inputs["operator"]->id, $users)) {
+				throw new InputValidationException("operator");
+			}
+		}
+		$parameters = array('oldData' => array());
+		if (isset($inputs['status'])) {
+			$inputs['oldStatus'] = $ticket->status;
+		}
+		foreach (array('title', 'priority', 'status') as $item) {
+			if (isset($inputs[$item])){
+				if ($inputs[$item] != $ticket->$item){
+					$parameters['oldData'][$item] = $ticket->$item;
+					$ticket->$item = $inputs[$item];
+				}
+			}
+		}
+		foreach (array('department', 'client') as $item){
+			if (isset($inputs[$item])) {
+				if ($inputs[$item]->id != $ticket->$item->id) {
+					$parameters['oldData'][$item] = $ticket->$item;
+					$ticket->$item = $inputs[$item]->id;
+				}
+			}
+		}
+		if (isset($inputs['operator'])) {
+			if ($inputs['operator']->id !== $ticket->operator_id) {
+				$parameters['oldData']['operator'] = $ticket->operator_id;
+				$ticket->operator_id = $inputs['operator']->id;
+			}
+		}
+		$ticket->save();
+		if (isset($inputs['oldStatus'])) {
+			if ($inputs['oldStatus'] != $ticket->status) {
+				if ($ticket->status == Ticket::closed) {
+					$event = new events\tickets\Close($ticket);
+					$event->trigger();
+				} elseif ($ticket->status == Ticket::in_progress) {
+					$event = new events\tickets\Inprogress($ticket);
+					$event->trigger();
+				}
+			}
+		}
+
+		$log = new Log();
+		$log->user = Authentication::getID();
+		$log->title = t("ticketing.logs.edit", array('ticket_id' => $ticket->id));
+		$log->type = logs\tickets\Edit::class;
+		$log->parameters = $parameters;
+		$log->save();
+
+		$this->response->setStatus(true);
+		$this->response->Go(userpanel\url('ticketing'));
+		return $this->response;
+	}
+
 	public function lock($data){
 		$view = view::byName("\\packages\\ticketing\\views\\lock");
 		authorization::haveOrFail('lock');
