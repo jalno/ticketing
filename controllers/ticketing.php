@@ -11,7 +11,7 @@ class ticketing extends controller{
 		$unassignedTickets = authorization::is_accessed("unassigned");
 		$types = authorization::childrenTypes();
 		$me = authentication::getID();
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", $unassignedTickets ? "LEFT" : "INNER");
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
 		$ticket = new ticket();
 		$ticket->with("client");
 		$ticket->with("department");
@@ -104,7 +104,7 @@ class ticketing extends controller{
 		$types = authorization::childrenTypes();
 		$unassignedTickets = authorization::is_accessed("unassigned");
 		$me = authentication::getID();
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", $unassignedTickets ? "LEFT" : "INNER");
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
 		$ticket = new ticket();
 		$ticket->with("client");
 		$ticket->with("department");
