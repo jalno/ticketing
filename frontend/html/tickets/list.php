@@ -6,7 +6,7 @@ use packages\base\translator;
 use packages\ticketing\ticket;
 $this->the_header();
 $tickets = $this->getOrderedTickets();
-$hasTicket = ! empty($tickets);
+$hasTicket = !empty($tickets);
 ?>
 <div class="ticket-status-search">
 	<div class="row">
@@ -21,96 +21,133 @@ $hasTicket = ! empty($tickets);
 		<div class="col-sm-8 col-sm-push-4 col-xs-12">
 			<ul role="tablist">
 				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url("ticketing", array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
+					<a href="<?php echo userpanel\url($this->getPath(), array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url("ticketing", array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>
+					<a href="<?php echo userpanel\url($this->getPath(), array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("closed") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url("ticketing", array("status" => ticket::closed)); ?>">بسته شده</a>
+					<a href="<?php echo userpanel\url($this->getPath(), array("status" => ticket::closed)); ?>">بسته شده</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive() ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url("ticketing", array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>">همه</a>
+					<a href="<?php echo userpanel\url($this->getPath(), array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>">همه</a>
 				</li>
 			</ul>
 		</div>
 	</div>
 </div>
-<div class="ticket-advanced-search row">
-	<form id="tickets-search" action="<?php echo userpanel\url("ticketing"); ?>">
-	<?php $this->createField(array(
-		"name" => "word",
-		"placeholder" => translator::trans("ticketing.ticket.keyword"),
-		"input-group" => array(
-			"left" => array(
-				array(
-					"type" => "button",
-					"class" => "btn btn-default advanced-search",
-					"text" => "جستجو پیشرفته",
-					"icon" => "fa fa-search-plus",
-				),
-			),
-		),
-	)); ?>
-		<div class="row more-field">
-			<div class="col-sm-6 col-xs-12">
-			<?php
-			$this->createField(array(
-				"name" => "status",
-				"type" => "hidden",
-			));
-			$this->createField(array(
-				"name" => "id",
-				"type" => "number",
-				"ltr" => true,
-				"label" => translator::trans("ticket.id"),
-			));
-			$this->createField(array(
-				"name" => "title",
-				"label" => translator::trans("ticket.title"),
-			));
-			$this->createField(array(
-				"name" => "priority",
-				"type" => "select",
-				"label" => translator::trans("ticket.priority"),
-				"options" => $this->getPriortyForSelect(),
-			));
-			?>
-			</div>
-			<div class="col-sm-6 col-xs-12">
-			<?php
-			$this->createField(array(
-				"name" => "department",
-				"type" => "select",
-				"label" => translator::trans("ticket.department"),
-				"options" => $this->getDepartmentsForSelect()
-			));
-			if ($this->multiuser) {
+<div class="row">
+	<div class="col-xs-12">
+		<div class="ticket-advanced-search">
+			<form id="tickets-search" action="<?php echo userpanel\url($this->getPath()); ?>">
+				<?php
 				$this->createField(array(
-					"name" => "client",
-					"type" => "hidden",
+					"name" => "word",
+					"placeholder" => t("ticketing.ticket.keyword"),
+					"input-group" => array(
+						"left" => array(
+							array(
+								"type" => "button",
+								"class" => "btn btn-default advanced-search",
+								"text" => "جستجو پیشرفته",
+								"icon" => "fa fa-search-plus",
+							),
+						),
+					),
 				));
-				$this->createField(array(
-					"name" => "client_name",
-					"label" => translator::trans("ticket.client"),
-				));
-			}
-			$this->createField(array(
-				"type" => "select",
-				"label" => translator::trans("search.comparison"),
-				"name" => "comparison",
-				"options" => $this->getComparisonsForSelect()
-			));
-			?>
-
-				<button class="btn btn-default pull-left" type="submit">
-					<div class="btn-icons"> <i class="fa fa-search"></i> </div>
-					جستجو
-				</button>
-			</div>
+				?>
+				<div class="row more-field">
+					<div class="col-sm-6 col-xs-12">
+						<?php
+						$this->createField(array(
+							"name" => "status",
+							"type" => "hidden",
+						));
+						$this->createField(array(
+							"name" => "id",
+							"type" => "number",
+							"ltr" => true,
+							"label" => t("ticket.id"),
+						));
+						$this->createField(array(
+							"name" => "title",
+							"label" => t("ticket.title"),
+						));
+						if (!$this->isTab) {
+							$this->createField(array(
+								"name" => "priority",
+								"type" => "select",
+								"label" => t("ticket.priority"),
+								"options" => $this->getPriortyForSelect(),
+							));
+						}
+						?>
+					</div>
+					<div class="col-sm-6 col-xs-12">
+						<?php
+						$this->createField(array(
+							"name" => "department",
+							"type" => "select",
+							"label" => t("ticket.department"),
+							"options" => $this->getDepartmentsForSelect()
+						));
+						if ($this->multiuser and !$this->isTab) {
+							$this->createField(array(
+								"name" => "client",
+								"type" => "hidden",
+							));
+							$this->createField(array(
+								"name" => "client_name",
+								"label" => t("ticket.client"),
+							));
+						}
+						?>
+						<?php if ($this->isTab) { ?>
+						<div class="row">
+							<div class="col-sm-6">
+								<?php
+								$this->createField(array(
+									"name" => "priority",
+									"type" => "select",
+									"label" => t("ticket.priority"),
+									"options" => $this->getPriortyForSelect(),
+								));
+								?>
+							</div>
+							<div class="col-sm-6">
+								<?php
+								$this->createField(array(
+									"type" => "select",
+									"label" => t("search.comparison"),
+									"name" => "comparison",
+									"options" => $this->getComparisonsForSelect()
+								));
+								?>
+							</div>
+						</div>
+						<?php
+							} else { 
+								$this->createField(array(
+									"type" => "select",
+									"label" => t("search.comparison"),
+									"name" => "comparison",
+									"options" => $this->getComparisonsForSelect()
+								));
+							}
+						?>
+					</div>
+					<div class="col-xs-12">
+						<button class="btn btn-default pull-left" type="submit">
+							<div class="btn-icons"> <i class="fa fa-search"></i> </div>
+							جستجو
+						</button>
+					</div>
+				</div>
+			</form>
 		</div>
-	</form>
+	</div>
 </div>
+
 <?php if ($hasTicket) { ?>
 <div class="tickets-list">
 <?php
@@ -148,7 +185,7 @@ foreach ($tickets as $ticket) {
 						"closed" => ticket::closed
 					]);
 				?>
-					<i class="<?php echo $statusClass; ?> tooltips" title="<?php echo translator::trans($statusTxt); ?>"></i>
+					<i class="<?php echo $statusClass; ?> tooltips" title="<?php echo t($statusTxt); ?>"></i>
 				<?php } ?>
 					<a class="btn-link<?php echo $hasUnreadMessage > 0 ? " has-unread-message" : ""; ?>" href="<?php echo $this->canView ? userpanel\url("ticketing/view/{$ticket->id}") : "javascript:void();"; ?>">
 					<?php echo $ticket->title; ?>
@@ -189,7 +226,7 @@ foreach ($tickets as $ticket) {
 					"ordinary" => ticket::ordinary,
 				));
 				?>
-					<span class="<?php echo $priorityClass; ?>"><?php echo translator::trans($priorityTxt); ?></span>
+					<span class="<?php echo $priorityClass; ?>"><?php echo t($priorityTxt); ?></span>
 				<?php $messageCount = $ticket->getMessageCount(); ?>
 					<span><?php echo $messageCount; ?> <i class="fa fa-comments-o"></i></span>
 				</p>
@@ -203,13 +240,17 @@ foreach ($tickets as $ticket) {
 	</div>
 <?php } ?>
 </div>
+<div class="row">
+	<div class="col-xs-10 pull-left">
+		<?php $this->paginator(); ?>
+	</div>
+</div>
 <?php
-$this->paginator();
 } else {
 ?>
 	<div class="alert alert-info">
 		<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>
-	<?php echo translator::trans("error.ticketing.ticket.notfound"); ?>
+	<?php echo t("error.ticketing.ticket.notfound"); ?>
 	</div>
 <?php } ?>
 <?php

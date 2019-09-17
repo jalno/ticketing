@@ -1,16 +1,20 @@
 <?php
 namespace packages\ticketing\views;
-use \packages\financial\views\listview as list_view;
-use \packages\base\views\traits\form as formTrait;
-use \packages\ticketing\authorization;
-class ticketlist extends list_view{
-	use formTrait;
+
+use packages\financial\views\listview as list_view;
+use packages\base\views\traits\form as formTrait;
+use packages\ticketing\authorization;
+
+class ticketlist extends list_view {
 	protected $canAdd;
 	protected $canView;
 	protected $canEdit;
 	protected $canDel;
 	protected $multiuser;
+	protected $customPath;
+	protected $isTab = false;
 	static protected $navigation;
+	
 	function __construct(){
 		$this->canAdd = authorization::is_accessed('add');
 		$this->canView = authorization::is_accessed('view');
@@ -29,5 +33,11 @@ class ticketlist extends list_view{
 	}
 	public static function onSourceLoad(){
 		self::$navigation = authorization::is_accessed('list');
+	}
+	public function setCustomPath(string $path): void {
+		$this->customPath = $path;
+	}
+	public function isTab(bool $isTab = true): void {
+		$this->isTab = $isTab;
 	}
 }
