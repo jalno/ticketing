@@ -4,7 +4,9 @@ use themes\clipone\utility;
 use packages\userpanel\date;
 use packages\base\translator;
 use packages\ticketing\ticket;
-$this->the_header();
+if (!$this->isTab) {
+	$this->the_header();
+}
 $tickets = $this->getOrderedTickets();
 $hasTicket = !empty($tickets);
 ?>
@@ -254,4 +256,6 @@ foreach ($tickets as $ticket) {
 	</div>
 <?php } ?>
 <?php
-$this->the_footer();
+if (!$this->isTab) {
+	$this->the_footer();
+}
