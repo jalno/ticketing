@@ -23,16 +23,16 @@ $hasTicket = !empty($tickets);
 		<div class="col-sm-8 col-sm-push-4 col-xs-12">
 			<ul role="tablist">
 				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url($this->getPath(), array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
+					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url($this->getPath(), array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>
+					<a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("closed") ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url($this->getPath(), array("status" => ticket::closed)); ?>">بسته شده</a>
+					<a href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>">بسته شده</a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive() ? "active" : ""; ?>">
-					<a href="<?php echo userpanel\url($this->getPath(), array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>">همه</a>
+					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>">همه</a>
 				</li>
 			</ul>
 		</div>
@@ -41,7 +41,7 @@ $hasTicket = !empty($tickets);
 <div class="row">
 	<div class="col-xs-12">
 		<div class="ticket-advanced-search">
-			<form id="tickets-search" action="<?php echo userpanel\url($this->getPath()); ?>">
+			<form id="tickets-search" action="">
 				<?php
 				$this->createField(array(
 					"name" => "word",

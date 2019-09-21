@@ -11,7 +11,6 @@ class ticketlist extends list_view {
 	protected $canEdit;
 	protected $canDel;
 	protected $multiuser;
-	protected $customPath;
 	protected $isTab = false;
 	static protected $navigation;
 	
@@ -33,9 +32,6 @@ class ticketlist extends list_view {
 	}
 	public static function onSourceLoad(){
 		self::$navigation = authorization::is_accessed('list');
-	}
-	public function setCustomPath(string $path): void {
-		$this->customPath = $path;
 	}
 	public function isTab(bool $isTab = true): void {
 		$this->isTab = $isTab;

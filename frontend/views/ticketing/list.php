@@ -181,11 +181,8 @@ class listview extends ticketListView {
 		}
 		return $ordered;
 	}
-	protected function getPath(): string {
-		if ($this->customPath) {
-			return $this->customPath;
-		}
-		return "ticketing";
+	protected function getPath($params = []): string {
+		return "?" . http_build_query($params);
 	}
 	/**
 	 * Ouput the html file.
