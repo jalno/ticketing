@@ -1,30 +1,32 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use packages\userpanel;
-use packages\base\translator;
-use packages\base\view\error;
-use themes\clipone\viewTrait;
-use themes\clipone\navigation;
-use themes\clipone\views\listTrait;
-use themes\clipone\views\formTrait;
-use themes\clipone\navigation\menuItem;
-use packages\ticketing\{ticket, views\ticketlist as ticketListView, authentication, authorization};
 
-class listview extends ticketListView{
-	use viewTrait, listTrait, formTrait;
+use packages\userpanel;
+use packages\base\{view\Error, views\traits\Form, Translator};
+use themes\clipone\{navigation\menuItem, Navigation, ViewTrait};
+use themes\clipone\views\{FormTrait, ListTrait, TabTrait};
+use packages\ticketing\{Authentication, Authorization, Ticket, views\ticketlist as ticketListView};
+
+class listview extends ticketListView {
+	use form, viewTrait, listTrait, formTrait, TabTrait;
 	protected $multiuser;
 	protected $hasAccessToUsers = false;
+
 	public function __beforeLoad(){
 		$this->setTitle(array(
-			translator::trans('ticketing'),
-			translator::trans("tickets")
+			t('ticketing'),
+			t("tickets")
 		));
 		$this->setButtons();
 		$this->onSourceLoad();
-		navigation::active("ticketing/list");
+		if ($this->isTab) {
+			Navigation::active("users");
+		} else {
+			Navigation::active("ticketing/list");
+		}
 		$this->addBodyClass("tickets-search");
-		$this->multiuser = (bool) authorization::childrenTypes();
-		$this->hasAccessToUsers = authorization::is_accessed("users_list", "userpanel");
+		$this->multiuser = (bool) Authorization::childrenTypes();
+		$this->hasAccessToUsers = Authorization::is_accessed("users_list", "userpanel");
 	}
 	private function addNotFoundError(){
 		$error = new error();
@@ -178,5 +180,21 @@ class listview extends ticketListView{
 			$ordered[] = $ticket;
 		}
 		return $ordered;
+	}
+	protected function getPath($params = []): string {
+		return "?" . http_build_query($params);
+	}
+	/**
+	 * Ouput the html file.
+	 * 
+	 * @return void
+	 */
+	public function output() {
+		if ($this->isTab) {
+
+			$this->outputTab();
+		} else {
+			parent::output();
+		}
 	}
 }
