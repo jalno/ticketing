@@ -15,6 +15,7 @@
     "jquery.growl": "^1.3.1",
     "rangeslider.js": "^2.3.0",
     "webuilder": "^1.0.6",
-    "jquery-inputlimiter": "^1.3.2"
+    "jquery-inputlimiter": "^1.3.2",
+    "@jalno/translator": "^1.0.4"
   }
 }

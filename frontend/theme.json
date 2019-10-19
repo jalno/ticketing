@@ -19,6 +19,7 @@
 		{"type":"package", "name":"bootstrap-inputmsg", "version": "^1.0.0"},
 		{"type":"package", "name":"webuilder", "version": "^1.0.6"},
 		{"type":"package", "name":"ion-rangeslider", "version": "=2.2.0"},
+		{"type":"package", "name":"@jalno/translator", "version": ="^1.0.4"},
 		{"type":"package", "name":"jquery-inputlimiter", "version": "^1.3.2"},
 		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.css"},
 		{"type":"css", "file":"node_modules/ion-rangeslider/css/ion.rangeSlider.skinHTML5.css"},

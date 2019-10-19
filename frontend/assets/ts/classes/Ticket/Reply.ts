@@ -1,3 +1,4 @@
+import "@jalno/translator";
 import * as $ from "jquery";
 import { webuilder } from "webuilder";
 import "jquery.growl";
@@ -13,8 +14,8 @@ export default class Reply{
 				processData: false,
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"ارسال شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message.sent"),
 					});
 					window.location.href = data.redirect;
 				},
@@ -22,11 +23,11 @@ export default class Reply{
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
 						let $input = $('[name='+error.input+']');
 						let $params = {
-							title: 'خطا',
+							title: t("ticketing.request.response.error"),
 							message:''
 						};
 						if(error.error == 'data_validation'){
-							$params.message = 'داده وارد شده معتبر نیست';
+							$params.message = t("ticketing.request.response.error.message.data_validation");
 						}
 						if($input.length){
 							$input.inputMsg($params);
@@ -35,8 +36,8 @@ export default class Reply{
 						}
 					}else{
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				}

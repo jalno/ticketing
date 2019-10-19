@@ -1,3 +1,4 @@
+import "@jalno/translator";
 import * as $ from "jquery";
 import List from "./Ticket/List";
 import Add from "./Ticket/Add";
@@ -20,16 +21,16 @@ export default class Ticket{
 				type: 'post',
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"انجام شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message"),
 					});
 					$(this).remove();
 				},
 				error: function(error:webuilder.AjaxError){
 					$('i', $(this)).attr('class', 'fa fa-times');
 					$.growl.error({
-						title:"خطا",
-						message:'درخواست شما توسط سرور قبول نشد'
+						title: t("ticketing.request.response.error"),
+						message: t("ticketing.request.response.error.message"),
 					});
 				}
 			});
@@ -45,16 +46,16 @@ export default class Ticket{
 				type: 'post',
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"انجام شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message"),
 					});
 					$(this).remove();
 				},
 				error: function(error:webuilder.AjaxError){
 					$('i', $(this)).attr('class', 'fa fa-tasks');
 					$.growl.error({
-						title:"خطا",
-						message:'درخواست شما توسط سرور قبول نشد'
+						title: t("ticketing.request.response.error"),
+						message: t("ticketing.request.response.error.message"),
 					});
 				}
 			});
@@ -81,8 +82,8 @@ export default class Ticket{
 			$(form).formAjax({
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"تیکت با موفقیت ویرایش شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message.ticket.edit"),
 					});
 					$(this).parents('.modal').modal('hide');
 					window.location.href = data.redirect;
@@ -91,11 +92,11 @@ export default class Ticket{
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
 						let $input = $(`[name="${error.input}"]`, form);
 						let $params = {
-							title: 'خطا',
-							message:''
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						};
 						if(error.error == 'data_validation'){
-							$params.message = 'داده وارد شده معتبر نیست';
+							$params.message = t("ticketing.request.response.error.message.data_validation");
 						}
 						if($input.length){
 							$input.inputMsg($params);
@@ -104,8 +105,8 @@ export default class Ticket{
 						}
 					}else{
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				}
@@ -121,19 +122,19 @@ export default class Ticket{
 			$(form).formAjax({
 				success: () => {
 					$.growl.notice({
-						title: "موفق",
-						message: "اپراتور با موفقیت ثبت شد."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message.ticket.operator.edit"),
 					});
 				},
 				error: (error:webuilder.AjaxError) => {
 					if (error.error == "data_duplicate" || error.error == "data_validation") {
 						const $input = $(`[name="${error.input}"]`, form);
 						const $params = {
-							title: "خطا",
+							title: t("ticketing.request.response.error"),
 							message:""
 						};
 						if (error.error == "data_validation") {
-							$params.message = "داده وارد شده معتبر نیست";
+							$params.message = t("ticketing.request.response.error.message.data_validation");
 						}
 						if ($input.length) {
 							$input.inputMsg($params);
@@ -142,8 +143,8 @@ export default class Ticket{
 						}
 					} else {
 						$.growl.error({
-							title:"خطا",
-							message:"درخواست شما توسط سرور قبول نشد"
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				}
