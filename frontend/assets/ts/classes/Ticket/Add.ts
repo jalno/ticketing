@@ -1,3 +1,4 @@
+import "@jalno/translator";
 import * as $ from "jquery";
 import "../jquery.userAutoComplete";
 import { AjaxRequest, Router , webuilder } from "webuilder";
@@ -33,8 +34,8 @@ export default class Add{
 					},
 					error: function(error:webuilder.AjaxError){
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				});
@@ -58,8 +59,8 @@ export default class Add{
 					user = $("input[name=client]").val() as string;
 					if(!user){
 						$.growl.error({
-							title:"خطا",
-							message:'کاربر مشخص نشده ، لطفا کاربر را مشخص کنید .'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.ticket.add.user_not_entered"),
 						});
 						return ;
 					}
@@ -88,8 +89,8 @@ export default class Add{
 					},
 					error: function(error:webuilder.AjaxError){
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				});
@@ -113,8 +114,8 @@ export default class Add{
 				processData: false,
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"انجام شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message"),
 					});
 					window.location.href = data.redirect;
 				},
@@ -122,11 +123,11 @@ export default class Add{
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
 						let $input = $('[name='+error.input+']');
 						let $params = {
-							title: 'خطا',
+							title: t("ticketing.request.response.error"),
 							message:''
 						};
 						if(error.error == 'data_validation'){
-							$params.message = 'داده وارد شده معتبر نیست';
+							$params.message = t("ticketing.request.response.error.message.data_validation");
 						}
 						if($input.length){
 							$input.inputMsg($params);
@@ -135,8 +136,8 @@ export default class Add{
 						}
 					}else{
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				}

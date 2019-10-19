@@ -42,9 +42,9 @@ class edit extends logs{
 			$html .= '<table class="table table-striped">';
 			$html .= "<thead><tr>";
 			$html .= "<th>#</th>";
-			$html .= "<th>ساعت شروع کاری</th>";
-			$html .= "<th>ساعت پایان کاری</th>";
-			$html .= "<th>پیام</th>";
+			$html .= "<th>" . t("ticketing.logs.department.start_hour") . "</th>";
+			$html .= "<th>" . t("ticketing.logs.department.end_hour") . "</th>";
+			$html .= "<th>" . t("ticketing.logs.department.message") . "</th>";
 			$html .= "</tr></thead>";
 			$html .= "<tbody>";
 			foreach($worktimes as $work){

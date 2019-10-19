@@ -1,3 +1,4 @@
+import "@jalno/translator";
 import * as $ from "jquery";
 import "ion-rangeslider";
 import { AjaxRequest, Router , webuilder } from "webuilder";
@@ -30,7 +31,7 @@ export default class Managements{
 				to: to,
 				min_interval: 1,
 				onChange: valuesChangingListener,
-				prefix: 'ساعت '
+				prefix: t("ticketing.ion_range_slider.prefix.hour"),
 			});
 			Managements.disableListener($(this).parents('tr'), disabled);
 		});
@@ -51,8 +52,8 @@ export default class Managements{
 				processData: false,
 				success: (data: webuilder.AjaxResponse) => {
 					$.growl.notice({
-						title:"موفق",
-						message:"اطلاعات دپارتمان ذخیره شد ."
+						title: t("ticketing.request.response.successful"),
+						message: t("ticketing.request.response.successful.message.department"),
 					});
 					if(data.redirect){
 						window.location.href = data.redirect;
@@ -62,11 +63,11 @@ export default class Managements{
 					if(error.error == 'data_duplicate' || error.error == 'data_validation'){
 						let $input = $('[name='+error.input+']');
 						let $params = {
-							title: 'خطا',
+							title: t("ticketing.request.response.error"),
 							message:''
 						};
 						if(error.error == 'data_validation'){
-							$params.message = 'داده وارد شده معتبر نیست';
+							$params.message = t("ticketing.request.response.error.message.data_validation");
 						}
 						if($input.length){
 							$input.inputMsg($params);
@@ -75,8 +76,8 @@ export default class Managements{
 						}
 					}else{
 						$.growl.error({
-							title:"خطا",
-							message:'درخواست شما توسط سرور قبول نشد'
+							title: t("ticketing.request.response.error"),
+							message: t("ticketing.request.response.error.message"),
 						});
 					}
 				}
