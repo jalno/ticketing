@@ -6,9 +6,9 @@
 			list-style: none;
 			padding-right: 0;
 			margin-bottom: 0;
-			font-family: yekan;
+			padding-left: 0px;
 			li {
-				float: right;
+				float: left;
 				display: flex;
 				a {
 					padding: 10px 10px 11px;
@@ -42,6 +42,10 @@
 				margin-bottom: 12px;
 			}
 		}
+		.pull-right {
+			float: right;
+		}
+
 	}
 	.ticket-advanced-search {
 		background: #fafafa;
@@ -104,7 +108,7 @@
 				}
 			}
 			.ticket-info {
-				text-align: left;
+				text-align: right;
 				@media (max-width: 768px) {
 					p {
 						display: inline;
@@ -124,5 +128,22 @@
 	}
 	.alert {
 		margin-top: 15px;
+	}
+}
+body.rtl {
+	.ticket-status-search {
+		ul {
+			font-family: yekan;
+			li {
+				float: right;
+			}
+		}
+	}
+	.tickets-list {
+		.ticket {
+			.ticket-info {
+				text-align: left;
+			}
+		}
 	}
 }

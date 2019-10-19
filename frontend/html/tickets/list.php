@@ -12,15 +12,7 @@ $hasTicket = !empty($tickets);
 ?>
 <div class="ticket-status-search">
 	<div class="row">
-	<?php if ($this->canAdd) { ?>
-		<div class="col-sm-4 col-sm-pull-8 col-xs-12">
-			<a href="<?php echo userpanel\url('ticketing/new'); ?>" class="btn btn-success pull-left">
-				<div class="btn-icons"> <i class="fa fa-message"></i> </div>
-				تیکت جدید
-			</a>
-		</div>
-	<?php } ?>
-		<div class="col-sm-8 col-sm-push-4 col-xs-12">
+		<div class="col-sm-8  col-xs-12">
 			<ul role="tablist">
 				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
 					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>"><?php echo t("ticketing.ticket.status.active"); ?></a>
@@ -36,6 +28,14 @@ $hasTicket = !empty($tickets);
 				</li>
 			</ul>
 		</div>
+		<?php if ($this->canAdd) { ?>
+			<div class="col-sm-4  col-xs-12">
+				<a href="<?php echo userpanel\url('ticketing/new'); ?>" class="btn btn-success pull-<?php echo ((bool)translator::getLang()->isRTL()) ? "left" : "right"; ?>">
+					<div class="btn-icons"> <i class="fa fa-message"></i> </div>
+					<?php echo t("ticketing.add"); ?>
+				</a>
+			</div>
+		<?php } ?>
 	</div>
 </div>
 <div class="row">
