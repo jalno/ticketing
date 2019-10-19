@@ -67,13 +67,13 @@ $childrenType = (bool)authorization::childrenTypes();
 		));
 		$this->createField(array(
 			"name" => "operator_name",
-			"label" => "اپراتور",
+			"label" => t("ticketing.ticket.operator"),
 			"input-group" => array(
 				"right" => array(
 					array(
 						"type" => "submit",
 						"class" => "btn btn-default",
-						"text" => "ثبت",
+						"text" => t("submit"),
 					),
 				),
 			),
@@ -233,7 +233,7 @@ $childrenType = (bool)authorization::childrenTypes();
 				),
 				array(
 					"name" => "operator_name",
-					"label" => "اپراتور",
+					"label" => t("ticketing.ticket.operator"),
 				),
 			];
 			foreach($feilds as $input){

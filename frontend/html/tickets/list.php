@@ -23,16 +23,16 @@ $hasTicket = !empty($tickets);
 		<div class="col-sm-8 col-sm-push-4 col-xs-12">
 			<ul role="tablist">
 				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>">فعال</a>
+					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>"><?php echo t("ticketing.ticket.status.active"); ?></a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>">در حال پیگیری</a>
+					<a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><?php echo t("ticket.inprogress"); ?></a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive("closed") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>">بسته شده</a>
+					<a href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>"><?php echo t("closed"); ?></a>
 				</li>
 				<li role="presentation" class="<?php echo $this->isActive() ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>">همه</a>
+					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>"><?php echo t("ticketing.ticket.all"); ?></a>
 				</li>
 			</ul>
 		</div>
@@ -51,7 +51,7 @@ $hasTicket = !empty($tickets);
 							array(
 								"type" => "button",
 								"class" => "btn btn-default advanced-search",
-								"text" => "جستجو پیشرفته",
+								"text" => t("ticketing.search.advance_search"),
 								"icon" => "fa fa-search-plus",
 							),
 						),
@@ -141,7 +141,7 @@ $hasTicket = !empty($tickets);
 					<div class="col-xs-12">
 						<button class="btn btn-default pull-left" type="submit">
 							<div class="btn-icons"> <i class="fa fa-search"></i> </div>
-							جستجو
+							<?php echo t("search"); ?>
 						</button>
 					</div>
 				</div>
@@ -198,11 +198,11 @@ foreach ($tickets as $ticket) {
 					<span><span class="tooltips" title="<?php echo date::format("Y/m/d H:i", $ticket->create_at); ?>"><?php echo date::relativeTime($ticket->create_at); ?></span></span>
 				<?php if ($this->multiuser) { ?>
 					<span>
-						توسط
+						<?php echo t("ticketing.ticket.list.info.create.create_by"); ?>
 						<a class="client" href="<?php echo userpanel\url("users", array("id" => $ticket->client->id)); ?>"><?php echo $ticket->client->getFullName(); ?></a>
 					</span>
 				<?php } ?>
-					<span>در دپارتمان <?php echo $ticket->department->title; ?></span>
+					<span><?php echo t("ticketing.ticket.list.info.create.in_department") . " " . $ticket->department->title . " "; ?></span>
 				</p>
 			</div>
 			<div class="col-sm-4 col-xs-12 ticket-info">
@@ -234,7 +234,7 @@ foreach ($tickets as $ticket) {
 				</p>
 			<?php if ($ticket->reply_at and $ticket->reply_at != $ticket->create_at) { ?>
 				<p>
-					<span>آخرین پاسخ <span class="tooltips" title="<?php echo date::format("Y/m/d H:i", $ticket->reply_at); ?>"><?php echo date::relativeTime($ticket->reply_at); ?></span></span>
+					<span> <?php echo t("ticketing.ticket.list.info.last_answer"); ?> <span class="tooltips" title="<?php echo date::format("Y/m/d H:i", $ticket->reply_at); ?>"><?php echo date::relativeTime($ticket->reply_at); ?></span></span>
 				</p>
 			<?php } ?>
 			</div>
@@ -251,7 +251,7 @@ foreach ($tickets as $ticket) {
 } else {
 ?>
 	<div class="alert alert-info">
-		<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>
+		<h4 class="alert-heading"><i class="fa fa-info-circle"></i> <?php echo t("attention"); ?> </h4>
 	<?php echo t("error.ticketing.ticket.notfound"); ?>
 	</div>
 <?php } ?>

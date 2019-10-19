@@ -55,7 +55,7 @@ $this->the_header();
 													"name" => "allUsers",
 													"options" => array(
 														array(
-															"label" => "همه اپراتور ها",
+															"label" => t("ticketing.departments.operators.all_operators"),
 															"value" => "all",
 														),
 													),
