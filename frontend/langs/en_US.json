@@ -139,7 +139,7 @@
 		"ticketing.logs.settings.departments.edit.time.pm": "{time} PM.",
 		"ticketing.logs.settings.departments.delete": "Deleted ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
 		"shortcut.tickets.not.answered": "Tickets need your reply.",
-		"shortcut.tickets.has.question": "Do you any questions?",
+		"shortcut.tickets.has.question": "Do you have any question?",
 		"shortcut.tickets.send.ticket": "New Ticket",
 		"ticketing.department.day.works": "Department working hours",
 		"ticketing.department.users": "Operators",
