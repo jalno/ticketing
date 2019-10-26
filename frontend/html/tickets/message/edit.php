@@ -23,7 +23,7 @@ $this->the_header();
 						</div>
 						<div class="row">
 							<div class="col-sm-3">
-								<a href="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('ticket.return'); ?></a>
+								<a href="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('ticket.return'); ?></a>
 								<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("ticket.update") ?></button>
 							</div>
 						</div>

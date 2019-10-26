@@ -26,8 +26,8 @@ $this->the_header();
 					<?php echo translator::trans("message.delete.warning", array('message.id' => $this->getMessageData()->id)); ?>
 				</p>
 				<p>
-					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getMessageData()->ticket); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
-					<button type="submit" class="btn btn-yellow"><i class="fa fa-trash-o"></i> <?php echo translator::trans("ticketing.delete") ?></button>
+					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getMessageData()->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('return'); ?></a>
+					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i> <?php echo translator::trans("ticketing.delete") ?></button>
 				</p>
 			</div>
 		</form>
