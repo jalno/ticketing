@@ -20,11 +20,7 @@ class delete extends departmentDelete{
 	use viewTrait,listTrait;
 	protected $messages;
 	function __beforeLoad(){
-		$this->setTitle(array(
-			translator::trans('department.delete.warning.title'),
-			"#".$this->getDepartmentData()->id
-		));
-		$this->setShortDescription(translator::trans('department.delete.warning.title'));
+		$this->setTitle(t("department.delete.warning.title"));
 		$this->setNavigation();
 		navigation::active("settings/departments/list");
 	}

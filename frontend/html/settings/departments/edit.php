@@ -133,7 +133,7 @@ $this->the_header();
 						</div>
 					</div>
 					<p>
-						<a href="<?php echo userpanel\url("settings/departments"); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
+						<a href="<?php echo userpanel\url("settings/departments"); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('return'); ?></a>
 						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("edit"); ?></button>
 					</p>
 				</form>

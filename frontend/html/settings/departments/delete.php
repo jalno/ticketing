@@ -20,8 +20,8 @@ $this->the_header();
 					<?php echo translator::trans("department.delete.warning", array('department_id' => $this->getDepartmentData()->id)); ?>
 				</p>
 				<p>
-					<a href="<?php echo userpanel\url('settings/departments'); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-right"></i> <?php echo translator::trans('return'); ?></a>
-					<button type="submit" class="btn btn-yellow"><i class="fa fa-trash-o tip"></i> <?php echo translator::trans("department.delete") ?></button>
+					<a href="<?php echo userpanel\url('settings/departments'); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('return'); ?></a>
+					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o tip"></i> <?php echo translator::trans("department.delete") ?></button>
 				</p>
 			</div>
 		</form>

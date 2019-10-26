@@ -12,11 +12,7 @@ use \packages\ticketing\views\settings\department\listview as departmentList;
 class listview extends departmentList{
 	use viewTrait, listTrait, formTrait;
 	function __beforeLoad(){
-		$this->setTitle(array(
-			translator::trans('settings'),
-			translator::trans('departments'),
-			translator::trans('list')
-		));
+		$this->setTitle(t("departments"));
 		$this->setButtons();
 		$this->onSourceLoad();
 		navigation::active("settings/departments/list");

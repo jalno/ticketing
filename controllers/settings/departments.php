@@ -307,35 +307,38 @@ class departments extends controller{
 			$work = new department\worktime();
 			$work->where("day", $day);
 			$work->where("department", $department->id);
-			if ($work = $work->getOne()) {
-				if (isset($inputs["day"][$day])) {
-					$input = $inputs["day"][$day];
-					if (
-						$work->time_start != $input["worktime"]["start"] or
-						$work->time_end != $input["worktime"]["end"] or
-						$work->message != $input["message"]
-					) {
-						$parameters["oldData"]["worktimes"][] = $work;
-					}
-				} else {
-					$work->delete();
-					continue;
-				}
-			} else {
-				if (isset($inputs["day"][$day])) {
-					$input = $inputs["day"][$day];
-					$work = new department\worktime();
-					$work->day = $day;
-					$work->department = $department->id;
-					$parameters["newData"]["worktimes"][] = $work;
-				} else {
-					continue;
-				}
+			if (!$work = $work->getOne()) {
+				continue;
 			}
-			$work->time_start = $input["worktime"]["start"];
-			$work->time_end = $input["worktime"]["end"];
-			$work->message = $input["message"];
+			if (isset($inputs["day"][$day])) {
+				$input = $inputs["day"][$day];
+				if (
+					$work->time_start != $input["worktime"]["start"] or
+					$work->time_end != $input["worktime"]["end"] or
+					$work->message != $input["message"]
+				) {
+					$parameters["oldData"]["worktimes"][] = $work;
+				}
+
+				$work->time_start = $input["worktime"]["start"];
+				$work->time_end = $input["worktime"]["end"];
+				$work->message = $input["message"];
+				$work->save();
+				unset($inputs["day"][$day]);
+			} else {
+				$parameters["oldData"]["worktimes"][] = $work;
+				$work->delete();
+			}
+		}
+		foreach ($inputs["day"] as $day => $item) {
+			$work = new department\worktime();
+			$work->day = $day;
+			$work->department = $department->id;
+			$work->time_start = $item["worktime"]["start"];
+			$work->time_end = $item["worktime"]["end"];
+			$work->message = $item["message"];
 			$work->save();
+			$parameters["newData"]["worktimes"][] = $work;
 		}
 		$log = new log();
 		$log->user = authentication::getID();

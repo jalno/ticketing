@@ -6,18 +6,20 @@ import "jquery.growl";
 import "bootstrap-inputmsg";
 export default class Managements{
 	private static $form = $('#settings-departmetns-management');
-	private static disableListener(tr:JQuery, disable:boolean){
-		let slider = $(".slider", tr).data("ionRangeSlider");
+	private static disableListener($tr:JQuery, disable:boolean) {
+		const slider = $(".slider", $tr).data("ionRangeSlider");
 		slider.update({disable: disable});
+		$("input[name*=start]").val(slider.result.from);
+		$("input[name*=end]").val(slider.result.to);
 	}
 	private static runjQRangeSlider(){
 		$(".slider", Managements.$form).each(function(){
-			let day:number = $(this).data('day');
-			let startWorkTime:JQuery = $("input[name='day[" + day + "][worktime][start]']");
-			let endWorkTime:JQuery = $("input[name='day[" + day + "][worktime][end]']");
-			let from = parseInt(startWorkTime.val() as string);
-			let to = parseInt(endWorkTime.val() as string);
-			let disabled = !$("input[name='day[" + day + "][enable]']").prop('checked');
+			const day: number = $(this).data('day');
+			const startWorkTime = $("input[name='day[" + day + "][worktime][start]']");
+			const endWorkTime = $("input[name='day[" + day + "][worktime][end]']");
+			const from = parseInt(startWorkTime.val() as string);
+			const to = parseInt(endWorkTime.val() as string);
+			const disabled = !$("input[name='day[" + day + "][enable]']").prop('checked');
 			function valuesChangingListener(obj: IonRangeSliderEvent){
 				startWorkTime.val(obj.from);
 				endWorkTime.val(obj.to);

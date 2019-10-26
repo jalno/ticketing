@@ -15,11 +15,7 @@ class edit extends departmentEdit{
 	protected $department;
 	function __beforeLoad(){
 		$this->department = $this->getDepartment();
-		$this->setTitle(array(
-			translator::trans("settings"),
-			translator::trans("departments"),
-			translator::trans("department_edit")
-		));
+		$this->setTitle(t("department_edit"));
 		navigation::active("settings/departments/list");
 		$this->addBodyClass("departments");
 		$this->addBodyClass("departments-add");
