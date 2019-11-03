@@ -3,7 +3,7 @@ namespace packages\ticketing\processes;
 
 use packages\base;
 use packages\base\{log, Options, Process, Response};
-use packages\ticketing\{Events, Ticket};
+use packages\ticketing\{Events, Logs, Ticket};
 use packages\userpanel\{Date, Log as UserpanelLog};
 
 class Tickets extends Process {
@@ -44,8 +44,12 @@ class Tickets extends Process {
 		$log = Log::getInstance();
 		$dryRun = (isset($data['dry-run']));
 		if ($dryRun) {
-			$log->info("Run in dry-run mode");
+			$log->info("dry-run mode: ON");
 		}
+		// $checkExistBefore = (isset($data['check-exist-before']));
+		// if ($checkExistBefore) {
+		// 	$log->info("check this log is exist before: ON");
+		// }
 		$log->info("get all tickets with messages");
 		$tickets = new Ticket();
 		$tickets->with("message");
@@ -56,12 +60,20 @@ class Tickets extends Process {
 			$log->info("ticket: #" . $ticket->id . " has (" . count($ticket->message) . ") message");
 			$firstMessage = true;
 			foreach ($ticket->message as $message) {
-				$log->info("ticket: #" . $ticket->id . " message: #" . $message->id);
+				$log->info("ticket: #" . $ticket->id . " message_id: #" . $message->id);
 				if ($firstMessage) {
 					$log->info("this is first message of ticket and is not reply message, skip...");
 					$firstMessage = false;
 					continue;
 				}
+				// if ($checkExistBefore) {
+				// 	$existBefore = new UserpanelLog();
+				// 	$existBefore = $existBefore->where("type", Logs\tickets\Reply::class)->where("user", $message->user)->where("time", $message->date)->has();
+				// 	if ($existBefore) {
+				// 		$log->info("check-exist-before is ON, this log is exist before, skip...");
+				// 		continue;
+				// 	}
+				// }
 				$userpanelLog = new UserpanelLog();
 				$userpanelLog->user = $message->user;
 				$userpanelLog->time = $message->date;
