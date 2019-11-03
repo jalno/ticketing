@@ -1,13 +1,14 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{IO, db, http, packages, NotFound, view\error, db\parenthesis, views\FormError, inputValidation, response\file as responsefile, translator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
 
 class Ticketing extends Controller {
 	protected $authentication = true;
+
 	private function getTicket(int $ticketID) {
 		$unassignedTickets = authorization::is_accessed("unassigned");
 		$types = authorization::childrenTypes();
@@ -342,117 +343,116 @@ class Ticketing extends Controller {
 		$this->response->setView($view);
 		return $this->response;
 	}
-	public function view($data){
-		$view = view::byName("\\packages\\ticketing\\views\\view");
-		authorization::haveOrFail('view');
+
+	public function view($data) {
+		Authorization::haveOrFail('view');
+		$view = View::byName(Views\View::class);
+		$this->response->setView($view);
 		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicket($ticket);
-		if(!$ticket->department->isWorking()){
+		if (!$ticket->department->isWorking()) {
 			$work = $ticket->department->currentWork();
-			if($work->message){
-				$error = new error;
-				$error->setType(error::NOTICE);
+			if ($work->message) {
+				$error = new Error;
+				$error->setType(Error::NOTICE);
 				$error->setCode("ticketing.department.closed");
 				$error->setMessage($work->message);
 				$view->addError($error);
 			}
 		}
-		$view->setDepartment(department::get());
-		if(http::is_post()){
-			authorization::haveOrFail('reply');
-			$inputsRules = array(
-				'text' => array(
-				),
-				'file' => array(
-					'type' => 'file',
-					'optional' => true,
-					'multiple' => true
-				)
-			);
-			$this->response->setStatus(false);
-			try {
-				if($ticket->param('ticket_lock')){
-					throw new NotFound();
-				}
-				$inputs = $this->checkinputs($inputsRules);
-				if(!$inputs['text'] = strip_tags($inputs['text'])){
-					throw new inputValidation("text");
-				}
-				if(isset($inputs['file'])){
-					if(!is_array($inputs['file'])){
-						throw new inputValidation("file");
-					}
-					if(empty($inputs['file'])){
-						unset($inputs['file']);
-					}
-				}
-				if(isset($inputs['file'])){
-					$files = [];
-					foreach($inputs['file'] as $file){
-						if($file['error'] == 0){
-							$files[] = $file;
-						}elseif($file['error'] != 4){
-							throw new inputValidation("file");
-						}
-					}
-					$inputs['file'] = [];
-					foreach($files as $file){
-						$name = md5_file($file['tmp_name']);
-						$directory = packages::package('ticketing')->getFilePath('storage/private');
-						if(!is_dir($directory)){
-							IO\mkdir($directory);
-						}
-						if(move_uploaded_file($file['tmp_name'], $directory.'/'.$name)){
-							$inputs['file'][] = [
-								'name' => $file['name'],
-								'size' => $file['size'],
-								'path' => 'private/'.$name,
-							];
-						}else{
-							throw new inputValidation("file");
-						}
-					}
-				}
-				$ticket_message = new ticket_message();
-				$ticket_message->ticket = $ticket->id;
-				$ticket_message->date = date::time();
-				$ticket_message->user = authentication::getID();
-				$ticket_message->text = $inputs['text'];
-				$ticket_message->status = authentication::getID() == $ticket->client->id ? ticket_message::read : ticket_message::unread;
-				if(isset($inputs['file'])){
-					foreach($inputs['file'] as $file){
-						$ticket_message->addFile($file);
-					}
-				}
-				$ticket_message->save();
-				$ticket->status = ((authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? ticket::answered : ticket::unread);
-				$ticket->reply_at = date::time();
+		if (Authentication::getID() != $ticket->client->id) {
+			if ($ticket->status == Ticket::unread) {
+				$ticket->status = Ticket::read;
 				$ticket->save();
-				$event = new events\tickets\reply($ticket_message);
-				$event->trigger();
-				$this->response->Go(userpanel\url('ticketing/view/'.$data['ticket']));
-				$this->response->setStatus(true);
-			}catch(inputValidation $e){
-				$view->setFormError(FormError::fromException($e));
 			}
-		}else{
-			$lastMSG = ticket_message::where("ticket", $ticket->id)->orderBy("date", "DESC")->getOne();
-			if(authentication::getID() != $ticket->client->id){
-				if($ticket->status == ticket::unread){
-					$ticket->status = ticket::read;
-					$ticket->save();
-				}
-			}else{
-				foreach($ticket->message as $row){
-					if($row->status == 0){
-						$row->status = 1;
-						$row->save();
-					}
+		} else {
+			foreach($ticket->message as $row){
+				if ($row->status == 0) {
+					$row->status = 1;
+					$row->save();
 				}
 			}
-			$this->response->setStatus(true);
 		}
-		$this->response->setView($view);
+		$this->response->setStatus(true);
+		return $this->response;
+	}
+
+	public function reply($data) {
+		$this->response->setStatus(false);
+		Authorization::haveOrFail('reply');
+		$ticket = $this->getTicket($data['ticket']);
+		if ($ticket->param('ticket_lock')) {
+			throw new NotFound();
+		}
+		$inputs = $this->checkinputs(array(
+			'text' => array(
+				'type' => 'string'
+			),
+			'file' => array(
+				'type' => 'file',
+				'optional' => true,
+				'multiple' => true,
+				'obj' => true,
+			)
+		));
+		if (!$inputs['text'] = strip_tags($inputs['text'])) {
+			throw new InputValidationException('text');
+		}
+		if (isset($inputs['file']) and !$inputs['file']) {
+			throw new InputValidationException('file');
+		}
+		if (!is_array($inputs['file'])) {
+			$inputs['file'] = array(
+				$inputs['file'],
+			);
+		}
+		$files = array();
+		if ($inputs['file']) {
+			foreach ($inputs['file'] as $key => $attachment) {
+				if (!($attachment instanceof IO\file)) {
+					continue;
+				}
+				$md5 = $attachment->md5();
+				$path = "storage/private/" . $md5;
+				$uploadedFile = Packages::package('ticketing')->getFile($path);
+				$dir = $uploadedFile->getDirectory();
+				if (!$dir->exists()) {
+					$dir->make(true);
+				}
+				if (!$attachment->move($uploadedFile)) {
+					throw new InputValidationException('file');
+				}
+				$files[] = array(
+					"name" => $attachment->basename,
+					"size" => $uploadedFile->size(),
+					"path" => "private/" . $md5,
+				);
+			}
+		}
+		$ticket_message = new Ticket_message();
+		$ticket_message->ticket = $ticket->id;
+		$ticket_message->date = Date::time();
+		$ticket_message->user = Authentication::getID();
+		$ticket_message->text = $inputs['text'];
+		$ticket_message->status = ((Authentication::getID() == $ticket->client->id) ? Ticket_message::read : Ticket_message::unread);
+		foreach ($files as $file) {
+			$ticket_message->addFile($file);
+		}
+		$ticket_message->save();
+		$ticket->status = ((Authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? Ticket::answered : Ticket::unread);
+		$ticket->reply_at = Date::time();
+		$ticket->save();
+
+		$event = new events\tickets\Reply($ticket_message);
+		$event->trigger();
+		$log = new Log();
+		$log->user = Authentication::getID();
+		$log->title = t("ticketing.logs.reply", array("ticket_id" => $ticket->id));
+		$log->type = Logs\tickets\Reply::class;
+		$log->save();
+
+		$this->response->Go(userpanel\url("ticketing/view/" . $ticket->id));
+		$this->response->setStatus(true);
 		return $this->response;
 	}
 	public function message_delete($data){

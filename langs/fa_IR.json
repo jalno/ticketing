@@ -81,6 +81,8 @@
 		"ticketing.usersettings.message.editor.type.html": "متن ساده",
 		"ticketing.usersettings.message.editor.type.markdown": "فرمت Markdown",
 		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی",
-		"cronjob.task.name.ticketing_tickets_autoclose": "بستن خودکار تیکت های پاسخ داده شده"
+		"cronjob.task.name.ticketing_tickets_autoclose": "بستن خودکار تیکت های پاسخ داده شده",
+
+		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد"
 	}
 }

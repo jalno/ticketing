@@ -15,7 +15,13 @@
 	},
 	{
 		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@view"
+		"controller": "controllers\\ticketing@view",
+		"method": "get"
+	},
+	{
+		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
+		"controller": "controllers\\ticketing@reply",
+		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "delete", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
