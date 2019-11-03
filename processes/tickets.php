@@ -1,14 +1,13 @@
 <?php
 namespace packages\ticketing\processes;
-use \packages\base\log;
-use \packages\base\options;
-use \packages\base\process;
-use \packages\base\response;
-use \packages\base\NotFound;
-use \packages\userpanel\date;
-use \packages\ticketing\ticket;
-use \packages\ticketing\events;
-class tickets extends process{
+
+use packages\base;
+use packages\base\{log, Options, Process, Response};
+use packages\ticketing\{Events, Ticket};
+use packages\userpanel\{Date, Log as UserpanelLog};
+
+class Tickets extends Process {
+
 	public function autoClose($data):response{
 		$log = log::getInstance();
 		$response = new response();
@@ -38,5 +37,43 @@ class tickets extends process{
 		$response->setStatus(true);
 
 		return $response;
+	}
+
+	public function makeReplyLog($data) {
+		Log::setLevel("debug");
+		$log = Log::getInstance();
+		$dryRun = (isset($data['dry-run']));
+		if ($dryRun) {
+			$log->info("Run in dry-run mode");
+		}
+		$log->info("get all tickets with messages");
+		$tickets = new Ticket();
+		$tickets->with("message");
+		$tickets = $tickets->get();
+		$log->reply(count($tickets), " Found!");
+		$log->info("get each ticket messages to make reply log for it");
+		foreach ($tickets as $ticket) {
+			$log->info("ticket: #" . $ticket->id . " has (" . count($ticket->message) . ") message");
+			$firstMessage = true;
+			foreach ($ticket->message as $message) {
+				$log->info("ticket: #" . $ticket->id . " message: #" . $message->id);
+				if ($firstMessage) {
+					$log->info("this is first message of ticket and is not reply message, skip...");
+					$firstMessage = false;
+					continue;
+				}
+				$userpanelLog = new UserpanelLog();
+				$userpanelLog->user = $message->user;
+				$userpanelLog->time = $message->date;
+				$userpanelLog->title = t("ticketing.logs.reply", array("ticket_id" => $ticket->id));
+				$userpanelLog->type = Logs\tickets\Reply::class;
+				if (!$dryRun) {
+					$userpanelLog->save();
+					$log->info("reply log created, Log id: #" . $userpanelLog->id);
+				} else {
+					$log->debug("dry-run: reply log (!)created");
+				}
+			}
+		}
 	}
 }
