@@ -14,7 +14,6 @@ class listview extends ticketListView {
 
 	public function __beforeLoad(){
 		$this->setTitle(array(
-			t('ticketing'),
 			t("tickets")
 		));
 		$this->setButtons();

@@ -34,6 +34,7 @@ export default class Managements{
 				min_interval: 1,
 				onChange: valuesChangingListener,
 				prefix: t("ticketing.ion_range_slider.prefix.hour"),
+				postfix: t("ticketing.ion_range_slider.postfix.hour")
 			});
 			Managements.disableListener($(this).parents('tr'), disabled);
 		});
