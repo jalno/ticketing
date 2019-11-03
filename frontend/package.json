@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@jalno/translator": "^1.0.4",
     "@types/bootstrap": "^3.3.34",
     "@types/ion.rangeslider": "^2.0.29",
     "@types/jqrangeslider": "^5.7.30",
@@ -11,11 +12,10 @@
     "ion-rangeslider": "=2.2.0",
     "jqrangeslider": "^5.7.5",
     "jquery": "^3.2.1",
+    "jquery-inputlimiter": "^1.3.2",
     "jquery-ui": "^1.12.1",
     "jquery.growl": "^1.3.1",
     "rangeslider.js": "^2.3.0",
-    "webuilder": "^1.0.6",
-    "jquery-inputlimiter": "^1.3.2",
-    "@jalno/translator": "^1.0.4"
+    "webuilder": "^1.0.6"
   }
 }

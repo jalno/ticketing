@@ -15,7 +15,8 @@
 		"ticketing.request.response.error.message": "Your request was not accepted by the server.",
 		"ticketing.request.response.error.message.data_validation": "Input data is invalid.",
 		"ticketing.ticket.add.user_not_entered": "User is not defined, please define user.",
-		"ticketing.ion_range_slider.prefix.hour": "Hour",
+		"ticketing.ion_range_slider.prefix.hour": "",
+		"ticketing.ion_range_slider.postfix.hour": ":00",
 
 
 		"cancel": "Cancel",
@@ -27,7 +28,7 @@
 		"ticketing":"Tickets",
 		"list":"List",
 		"ticket.id":"ID",
-		"ticket.title":"Subject",
+		"ticket.title":"Title",
 		"ticket.client":"Client",
 		"ticket.department":"Department",
 		"ticket.create_at":"Create Date",

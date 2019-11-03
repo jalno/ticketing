@@ -16,6 +16,7 @@
 		"ticketing.request.response.error.message.data_validation": "داده وارد شده معتبر نیست",
 		"ticketing.ticket.add.user_not_entered": "کاربر مشخص نشده ، لطفا کاربر را مشخص کنید",
 		"ticketing.ion_range_slider.prefix.hour": "ساعت",
+		"ticketing.ion_range_slider.postfix.hour": "",
 
 		"user.view_profile": "مشاهده پروفایل",
 		"attention": "توجه",
