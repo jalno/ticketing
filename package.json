@@ -2,7 +2,9 @@
 	"permissions": "*",
 	"routing": "routing.json",
 	"frontend":"frontend",
-	"autoload":"autoloader.json",
+	"autoload": {
+		"directories": ["controllers", "libraries", "listeners", "logs", "processes", "views"]
+	},
 	"languages":{
 		"fa_IR" : "langs/fa_IR.json",
 		"en_US" : "langs/en_US.json"

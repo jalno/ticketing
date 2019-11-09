@@ -81,6 +81,9 @@
 		"ticketing.usersettings.message.editor.type.html": "Plain text",
 		"ticketing.usersettings.message.editor.type.markdown": "Markdown",
 		"userpanel.usersettings.packages.ticketing.name": "Ticketing",
-		"cronjob.task.name.ticketing_tickets_autoclose": "Responed tickets auto close"
+		"cronjob.task.name.ticketing_tickets_autoclose": "Responed tickets auto close",
+		
+		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}"
+
 	}
 }
