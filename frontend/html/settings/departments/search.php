@@ -1,11 +1,11 @@
 <?php
-use \packages\base\translator;
-use \packages\userpanel;
+use packages\base\translator;
+use packages\userpanel;
 $this->the_header();
 ?>
 <div class="row">
 	<div class="col-xs-12">
-	<?php if(!empty($this->getDepartments())){ ?>
+	<?php if (!empty($this->getDepartments())) { ?>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-university"></i> <?php echo t('departments'); ?>
@@ -14,7 +14,7 @@ $this->the_header();
 					<?php if($this->canAdd){ ?>
 					<a class="btn btn-xs btn-link tooltips" title="<?php echo t('add'); ?>" href="<?php echo userpanel\url('settings/departments/add'); ?>"><i class="fa fa-plus"></i></a>
 					<?php } ?>
-					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
+					<a class="btn btn-xs btn-link panel-collapse collapses"></a>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -27,6 +27,7 @@ $this->the_header();
 							<tr>
 								<th class="center">#</th>
 								<th><?php echo t('ticket.title'); ?></th>
+								<th><?php echo t('ticketing.departments.status'); ?></th>
 								<?php if($hasButtons){ ?><th></th><?php } ?>
 							</tr>
 						</thead>
@@ -39,6 +40,7 @@ $this->the_header();
 							<tr>
 								<td class="center"><?php echo $department->id; ?></td>
 								<td><?php echo $department->title; ?></td>
+								<td><?php echo $this->getDepartmentStatusLabel($department); ?></td>
 								<?php
 								if($hasButtons){
 									echo("<td class=\"center\">".$this->genButtons()."</td>");
@@ -57,6 +59,7 @@ $this->the_header();
 	<?php } ?>
 	</div>
 </div>
+
 <div class="modal fade" id="search" tabindex="-1" data-show="true" role="dialog">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -66,6 +69,11 @@ $this->the_header();
 		<form id="departmentsearch" class="form-horizontal" action="<?php echo userpanel\url("settings/departments"); ?>" method="GET">
 			<?php
 			$this->setHorizontalForm('sm-3','sm-9');
+			$searchStatuses = $this->getDepartmentStatusForSelect();
+			array_unshift($searchStatuses, array(
+				'title' => '',
+				'value' => '',
+			));
 			$feilds = array(
 				array(
 					'name' => 'id',
@@ -75,6 +83,12 @@ $this->the_header();
 				array(
 					'name' => 'title',
 					'label' => t("department.title")
+				),
+				array(
+					'name' => 'status',
+					'type' => 'select',
+					'label' => t('ticketing.departments.status'),
+					'options' => $searchStatuses,
 				),
 				array(
 					'type' => 'select',

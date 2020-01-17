@@ -1,65 +1,66 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\userpanel;
-use \themes\clipone\navigation;
-use \themes\clipone\navigation\menuItem;
-use \themes\clipone\views\listTrait;
-use \themes\clipone\views\formTrait;
-use \themes\clipone\viewTrait;
-use \packages\base\translator;
-use \packages\base\view\error;
-use \packages\ticketing\views\settings\department\listview as departmentList;
-class listview extends departmentList{
-	use viewTrait, listTrait, formTrait;
-	function __beforeLoad(){
+
+use packages\base;
+use packages\base\view\Error;
+use packages\userpanel;
+use themes\clipone\{navigation\MenuItem, Navigation, ViewTrait};
+use themes\clipone\views\{DepartmentTrait, FormTrait, ListTrait};
+use packages\ticketing\views\settings\department\listview as DepartmentList;
+
+class listview extends DepartmentList {
+	use DepartmentTrait, FormTrait, ListTrait, ViewTrait;
+
+	function __beforeLoad() {
 		$this->setTitle(t("departments"));
 		$this->setButtons();
 		$this->onSourceLoad();
-		navigation::active("settings/departments/list");
-		if(empty($this->getDepartments())){
+		Navigation::active("settings/departments/list");
+		if (empty($this->getDepartments())) {
 			$this->addNotFoundError();
 		}
 	}
-	private function addNotFoundError(){
-		$error = new error();
-		$error->setType(error::NOTICE);
+	private function addNotFoundError() {
+		$error = new Error();
+		$error->setType(Error::NOTICE);
 		$error->setCode('ticketing.settings.department.notfound');
-		if($this->canAdd){
+		$error->setMessage('ticketing.settings.department.notfound');
+		if ($this->canAdd) {
 			$error->setData([
 				[
 					'type' => 'btn-teal',
-					'txt' => translator::trans('add'),
+					'txt' => t('add'),
 					'link' => userpanel\url('settings/departments/add')
 				]
 			], 'btns');
 		}
 		$this->addError($error);
 	}
-	public function setButtons(){
+	public function setButtons() {
 		$this->setButton('edit', $this->canEdit, array(
-			'title' => translator::trans('department.edit'),
+			'title' => t('department.edit'),
 			'icon' => 'fa fa-edit',
 			'classes' => array('btn', 'btn-xs', 'btn-teal')
 		));
 		$this->setButton('delete', $this->canDel, array(
-			'title' => translator::trans('department.delete'),
+			'title' => t('department.delete'),
 			'icon' => 'fa fa-times',
 			'classes' => array('btn', 'btn-xs', 'btn-bricky')
 		));
 	}
 
-	public function getComparisonsForSelect(){
+	public function getComparisonsForSelect() {
 		return array(
 			array(
-				'title' => translator::trans('search.comparison.contains'),
+				'title' => t('search.comparison.contains'),
 				'value' => 'contains'
 			),
 			array(
-				'title' => translator::trans('search.comparison.equals'),
+				'title' => t('search.comparison.equals'),
 				'value' => 'equals'
 			),
 			array(
-				'title' => translator::trans('search.comparison.startswith'),
+				'title' => t('search.comparison.startswith'),
 				'value' => 'startswith'
 			)
 		);
@@ -69,7 +70,7 @@ class listview extends departmentList{
 		if(parent::$navigation){
 			if($item = navigation::getByName("settings")){
 				$departments = new menuItem("departments");
-				$departments->setTitle(translator::trans('departments'));
+				$departments->setTitle(t('departments'));
 				$departments->setURL(userpanel\url('settings/departments'));
 				$departments->setIcon('fa fa-university');
 				$item->addItem($departments);

@@ -1,63 +1,44 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\base\translator;
-use \packages\ticketing\views\settings\department\edit as departmentEdit;
-use \packages\userpanel;
-use \packages\userpanel\date;
-use \themes\clipone\views\formTrait;
-use \themes\clipone\viewTrait;
-use \themes\clipone\navigation;
-use \themes\clipone\breadcrumb;
-use \themes\clipone\navigation\menuItem;
-use \packages\ticketing\department\worktime;
-class edit extends departmentEdit{
-	use viewTrait,formTrait;
+
+use packages\base;
+use packages\ticketing\department\Worktime;
+use packages\ticketing\views\settings\department\Edit as DepartmentEdit;
+use packages\userpanel;
+use packages\userpanel\Date;
+use themes\clipone\views\{DepartmentTrait, FormTrait};
+use themes\clipone\{Breadcrumb, navigation\MenuItem, Navigation, ViewTrait};
+
+class Edit extends DepartmentEdit {
+	use DepartmentTrait, FormTrait, ViewTrait;
 	protected $department;
 	function __beforeLoad(){
 		$this->department = $this->getDepartment();
 		$this->setTitle(t("department_edit"));
-		navigation::active("settings/departments/list");
+		Navigation::active("settings/departments/list");
 		$this->addBodyClass("departments");
 		$this->addBodyClass("departments-add");
 	}
-	protected function getTranslatDays($day){
-		switch($day){
-			case(worktime::saturday):
-				return translator::trans("ticketing.departments.worktime.saturday");
-			case(worktime::sunday):
-				return translator::trans("ticketing.departments.worktime.sunday");
-			case(worktime::monday):
-				return translator::trans("ticketing.departments.worktime.monday");
-			case(worktime::tuesday):
-				return translator::trans("ticketing.departments.worktime.tuesday");
-			case(worktime::wednesday):
-				return translator::trans("ticketing.departments.worktime.wednesday");
-			case(worktime::thursday):
-				return translator::trans("ticketing.departments.worktime.thursday");
-			case(worktime::friday):
-				return translator::trans("ticketing.departments.worktime.friday");
-		}
-	}
 	protected function sortedDays(){
-		if (date::getCanlenderName() == "jdate") {
+		if (Date::getCanlenderName() == "jdate") {
 			return array(
-				array("day" => worktime::saturday),
-				array("day" => worktime::sunday),
-				array("day" => worktime::monday),
-				array("day" => worktime::tuesday),
-				array("day" => worktime::wednesday),
-				array("day" => worktime::thursday),
-				array("day" => worktime::friday),
+				array("day" => Worktime::saturday),
+				array("day" => Worktime::sunday),
+				array("day" => Worktime::monday),
+				array("day" => Worktime::tuesday),
+				array("day" => Worktime::wednesday),
+				array("day" => Worktime::thursday),
+				array("day" => Worktime::friday),
 			);
 		}
 		return array(
-			array("day" => worktime::monday),
-			array("day" => worktime::tuesday),
-			array("day" => worktime::wednesday),
-			array("day" => worktime::thursday),
-			array("day" => worktime::friday),
-			array("day" => worktime::saturday),
-			array("day" => worktime::sunday),
+			array("day" => Worktime::monday),
+			array("day" => Worktime::tuesday),
+			array("day" => Worktime::wednesday),
+			array("day" => Worktime::thursday),
+			array("day" => Worktime::friday),
+			array("day" => Worktime::saturday),
+			array("day" => Worktime::sunday),
 		);
 	}
 }

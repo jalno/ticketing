@@ -1,21 +1,22 @@
 <?php
 namespace themes\clipone\views\ticketing\settings\department;
-use \packages\base\translator;
-use \packages\ticketing\views\settings\department\add as departmentAdd;
-use \packages\userpanel;
-use \packages\userpanel\date;
-use \themes\clipone\viewTrait;
-use \themes\clipone\navigation;
-use \themes\clipone\views\formTrait;
-use \packages\ticketing\department\worktime;
-class add extends departmentAdd{
-	use viewTrait, formTrait;
+
+use packages\base;
+use packages\ticketing\department\worktime;
+use packages\ticketing\views\settings\department\Add as DepartmentAdd;
+use packages\userpanel;
+use packages\userpanel\Date;
+use themes\clipone\{Navigation, ViewTrait};
+use themes\clipone\views\{DepartmentTrait, FormTrait};
+
+class add extends DepartmentAdd {
+	use DepartmentTrait, FormTrait, ViewTrait;
 	protected $days = array();
 	function __beforeLoad(){
 		$this->setTitle(array(
-			translator::trans('settings'),
-			translator::trans('departments'),
-			translator::trans('department_add'),
+			t('settings'),
+			t('departments'),
+			t('department_add'),
 		));
 		$this->setNavigation();
 		$this->setDaysValue();
@@ -26,28 +27,10 @@ class add extends departmentAdd{
 	private function setNavigation(){
 		$item = navigation::getByName("settings");
 		$departments = new navigation\menuItem("departments");
-		$departments->setTitle(translator::trans('departments'));
+		$departments->setTitle(t('departments'));
 		$departments->setURL(userpanel\url('settings/departments'));
 		$departments->setIcon('fa fa-university');
 		$item->addItem($departments);
-	}
-	protected function getTranslatDays($day){
-		switch($day){
-			case(worktime::saturday):
-				return translator::trans("ticketing.departments.worktime.saturday");
-			case(worktime::sunday):
-				return translator::trans("ticketing.departments.worktime.sunday");
-			case(worktime::monday):
-				return translator::trans("ticketing.departments.worktime.monday");
-			case(worktime::tuesday):
-				return translator::trans("ticketing.departments.worktime.tuesday");
-			case(worktime::wednesday):
-				return translator::trans("ticketing.departments.worktime.wednesday");
-			case(worktime::thursday):
-				return translator::trans("ticketing.departments.worktime.thursday");
-			case(worktime::friday):
-				return translator::trans("ticketing.departments.worktime.friday");
-		}
 	}
 	private function setDaysValue(){
 		for($i = 1; $i <= 7; $i++){
