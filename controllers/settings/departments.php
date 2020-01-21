@@ -4,9 +4,9 @@ namespace packages\ticketing\controllers\settings;
 use packages\base\{db, Exception, http, NotFound, translator, view\error, utility\safe, views\FormError, inputValidation, InputValidationException, db\parenthesis, response};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, logs, Ticket, View, Views};
 use packages\userpanel;
-use packages\userpanel\{Date, Log, User};
+use packages\userpanel\{Log, User};
 
-class departments extends Controller {
+class Departments extends Controller {
 
 	protected $authentication = true;
 
@@ -237,6 +237,11 @@ class departments extends Controller {
 			"title" => array(
 				"type" => "string",
 				"optional" => true
+			),
+			"status" => array(
+				"type" => "number",
+				"optional" => true,
+				"values" => Department::STATUSES,
 			),
 			"day" => array(
 				"type" => function ($data, $rule, $input) {
