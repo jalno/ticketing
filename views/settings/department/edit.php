@@ -5,8 +5,8 @@ use packages\ticketing\{views\form, department};
 class edit extends form {
 	public function setDepartment(department $department) {
 		$this->setData($department, "department");
-
-		$this->setDataForm($department->title,"title");
+		$this->setDataForm($department->title, "title");
+		$this->setDataForm($department->status, "status");
 		foreach ($department->worktimes as $work) {
 			$this->setDataForm(($work->time_start or $work->time_end), "day[{$work->day}][enable]");
 			$this->setDataForm($work->time_start, "day[{$work->day}][worktime][start]");

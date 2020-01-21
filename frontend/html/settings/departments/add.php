@@ -19,7 +19,13 @@ $this->the_header();
 						<?php
 							$this->createField(array(
 								'name' => 'title',
-								'label' => translator::trans("department.title")
+								'label' => t("department.title")
+							));
+							$this->createField(array(
+								'name' => 'status',
+								'type' => 'select',
+								'label' => t("ticketing.departments.status"),
+								'options' => $this->getDepartmentStatusForSelect(),
 							));
 						?>
 						</div>

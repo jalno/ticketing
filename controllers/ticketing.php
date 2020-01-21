@@ -192,11 +192,11 @@ class Ticketing extends Controller {
 		return $this->response;
 	}
 	public function add(){
-		$view = view::byName("\\packages\\ticketing\\views\\add");
-		authorization::haveOrFail('add');
-		$children = authorization::childrenTypes();
-		$view->setDepartmentData(department::get());
-		$view->setProducts(products::get());
+		$view = View::byName(Views\Add::class);
+		Authorization::haveOrFail('add');
+		$children = Authorization::childrenTypes();
+		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
+		$view->setProducts(Products::get());
 		$this->response->setStatus(false);
 		if(http::is_post()){
 			$inputsRules = array(
@@ -350,6 +350,7 @@ class Ticketing extends Controller {
 		$this->response->setView($view);
 		$ticket = $this->getTicket($data['ticket']);
 		$view->setTicket($ticket);
+		$view->setDepartment(Department::get());
 		if (!$ticket->department->isWorking()) {
 			$work = $ticket->department->currentWork();
 			if ($work->message) {

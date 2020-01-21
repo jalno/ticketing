@@ -1,35 +1,47 @@
 <?php
 namespace packages\ticketing;
-use \packages\base\db\dbObject;
-use \packages\userpanel\date;
-use \packages\ticketing\department\worktime;
-class department extends dbObject{
+
+use packages\base\db\dbObject;
+use packages\userpanel\Date;
+use packages\ticketing\department\Worktime;
+
+class Department extends dbObject {
+
+	const ACTIVE = 1;
+	const DEACTIVE = 2;
+
+	const STATUSES = array(
+		Self::ACTIVE,
+		Self::DEACTIVE,
+	);
+
 	protected $dbTable = "ticketing_departments";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
 		'title' => array('type' => 'text', 'required' => true),
-		"users" => array("type" => "text"),
+		'users' => array('type' => 'text'),
+		'status' => array('type' => 'int', 'required' => true),
     );
 	protected $jsonFields = ["users"];
 	protected $relations = array(
-		'worktimes' => array('hasMany', 'packages\\ticketing\\department\\worktime', 'department')
+		'worktimes' => array('hasMany', Worktime::class, 'department')
 	);
-	protected function isWorking(){
+	protected function isWorking() {
 		$worktime = $this->currentWork();
 		return($worktime->time_start <= date::format("H") and $worktime->time_end >= date::format("H"));
 	}
-	protected function currentWork(){
-		foreach($this->worktimes as $worktime){
-			if($worktime->day == date::format("N")){
+	protected function currentWork() {
+		foreach ($this->worktimes as $worktime) {
+			if ($worktime->day == Date::format("N")) {
 				return $worktime;
 			}
 		}
 	}
 	protected $addworktimes = array();
-	public function addWorkTimes(){
+	public function addWorkTimes() {
 		$this->data['worktimes'] = array();
-		for($x = 1;$x!=8;$x++){
-			$work = new worktime(array(
+		for ($x = 1; $x != 8; $x++) {
+			$work = new Worktime(array(
 				'department' => $this->id,
 				'day' => $x
 			));
