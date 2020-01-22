@@ -150,7 +150,7 @@ class listview extends ticketListView {
 				);
 				sort($activeStatus);
 			}
-			return ($status == $activeStatus) or in_array(ticket::unread, $status) or in_array(ticket::read, $status) or in_array(ticket::answered, $status);
+			return ($status == $activeStatus or (count($status) == 1 and in_array($status[0], [ticket::unread, ticket::read, ticket::answered])));
 		}
 		if ($item == "closed") {
 			return $status == array(
