@@ -116,7 +116,6 @@ class listview extends ticketListView {
 	protected function isActive($item = "all"): bool {
 		$status = $this->getDataForm("status");
 		if ($status) {
-			$status = explode(",", $status);
 			sort($status);
 		} else {
 			$status = array();
@@ -151,7 +150,7 @@ class listview extends ticketListView {
 				);
 				sort($activeStatus);
 			}
-			return $status == $activeStatus;
+			return ($status == $activeStatus) or in_array(ticket::unread, $status) or in_array(ticket::read, $status) or in_array(ticket::answered, $status);
 		}
 		if ($item == "closed") {
 			return $status == array(
@@ -179,6 +178,35 @@ class listview extends ticketListView {
 			$ordered[] = $ticket;
 		}
 		return $ordered;
+	}
+	protected function getTicketStatusForSelect(): array {
+		return array(
+			array(
+				'title' => t("choose"),
+				'value' => '',
+				'disabled' => true,
+			),
+			array(
+				'title' => t('unread'),
+				'value' => Ticket::unread,
+			),
+			array(
+				'title' => t('read'),
+				'value' => Ticket::read,
+			),
+			array(
+				'title' => t('in_progress'),
+				'value' => Ticket::in_progress,
+			),
+			array(
+				'title' => t('answered'),
+				'value' => Ticket::answered,
+			),
+			array(
+				'title' => t('closed'),
+				'value' => Ticket::closed,
+			),
+		);
 	}
 	protected function getPath($params = []): string {
 		return "?" . http_build_query($params);

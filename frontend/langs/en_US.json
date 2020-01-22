@@ -35,6 +35,7 @@
 		"ticket.reply_at":"Last Reply",
 		"ticket.status":"Status",
 		"ticketing.ticket.status.active": "Active",
+		"ticketing.ticket.status.active.all": "All",
 		"ticketing.ticket.all": "All",
 		"ticketing.ticket.operator": "Operator",
 		"ticket.priority":"Priority",

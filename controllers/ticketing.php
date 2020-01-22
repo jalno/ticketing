@@ -80,9 +80,15 @@ class Ticketing extends Controller {
 				'optional' => true,
 			),
 			'status' => array(
-				'type' => 'string',
+				'type' => function ($data, $rule, $input) {
+					$status = explode(",", $data);
+					if (array_diff($status, Ticket::STATUSES)) {
+						throw new InputValidationException($input);
+					}
+					return $status;
+				},
 				'optional' => true,
-				"default" => implode(",", array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress)),
+				"default" => array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress),
 			),
 			'priority' => array(
 				'type' => 'number',
@@ -141,18 +147,13 @@ class Ticketing extends Controller {
 		}
 		$ticket->where($parenthesis);
 		if (isset($inputs["status"]) and $inputs["status"]) {
-			foreach (explode(",", $inputs["status"]) as $status) {
-				if (! in_array($status, array(ticket::unread, ticket::read, ticket::answered, ticket::in_progress, ticket::closed))) {
-					throw new inputValidation("status");
-				}
-			}
-			$ticket->where("ticketing_tickets.status", explode(",", $inputs["status"]), "IN");
+			$ticket->where("ticketing_tickets.status", $inputs["status"], "IN");
 			$view->setDataForm($inputs["status"], "status");
 		}
 		foreach(array('id', 'title', 'client', 'title', 'priority', 'department') as $item){
 			if(isset($inputs[$item]) and $inputs[$item]){
 				$comparison = $inputs['comparison'];
-				if(in_array($item, array('id', 'status', 'client'))){
+				if(in_array($item, array('id', 'priority', 'department', 'client'))){
 					$comparison = 'equals';
 				}
 				$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
