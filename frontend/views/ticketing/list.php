@@ -2,7 +2,7 @@
 namespace themes\clipone\views\ticketing;
 
 use packages\userpanel;
-use packages\base\{view\Error, views\traits\Form, Translator};
+use packages\base\{view\Error, views\traits\Form, Translator, HTTP};
 use themes\clipone\{navigation\menuItem, Navigation, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait, TabTrait};
 use packages\ticketing\{Authentication, Authorization, Ticket, views\ticketlist as ticketListView};
@@ -209,7 +209,7 @@ class listview extends ticketListView {
 		);
 	}
 	protected function getPath($params = []): string {
-		return "?" . http_build_query($params);
+		return "?" . http_build_query(array_merge(HTTP::$data, $params));
 	}
 	/**
 	 * Ouput the html file.
