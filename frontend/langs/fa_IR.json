@@ -34,6 +34,7 @@
 		"ticket.reply_at":"آخرین پاسخ",
 		"ticket.status":"وضعیت",
 		"ticketing.ticket.status.active": "فعال",
+		"ticketing.ticket.status.active.all": "همه",
 		"ticketing.ticket.all": "همه",
 		"ticket.priority":"الویت",
 		"unread":"خوانده نشده",

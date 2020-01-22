@@ -2,7 +2,7 @@
 namespace themes\clipone\views\ticketing;
 
 use packages\userpanel;
-use packages\base\{view\Error, views\traits\Form, Translator};
+use packages\base\{view\Error, views\traits\Form, Translator, HTTP};
 use themes\clipone\{navigation\menuItem, Navigation, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait, TabTrait};
 use packages\ticketing\{Authentication, Authorization, Ticket, views\ticketlist as ticketListView};
@@ -116,7 +116,6 @@ class listview extends ticketListView {
 	protected function isActive($item = "all"): bool {
 		$status = $this->getDataForm("status");
 		if ($status) {
-			$status = explode(",", $status);
 			sort($status);
 		} else {
 			$status = array();
@@ -151,7 +150,7 @@ class listview extends ticketListView {
 				);
 				sort($activeStatus);
 			}
-			return $status == $activeStatus;
+			return ($status == $activeStatus or (count($status) == 1 and in_array($status[0], [ticket::unread, ticket::read, ticket::answered])));
 		}
 		if ($item == "closed") {
 			return $status == array(
@@ -180,8 +179,37 @@ class listview extends ticketListView {
 		}
 		return $ordered;
 	}
+	protected function getTicketStatusForSelect(): array {
+		return array(
+			array(
+				'title' => t("choose"),
+				'value' => '',
+				'disabled' => true,
+			),
+			array(
+				'title' => t('unread'),
+				'value' => Ticket::unread,
+			),
+			array(
+				'title' => t('read'),
+				'value' => Ticket::read,
+			),
+			array(
+				'title' => t('in_progress'),
+				'value' => Ticket::in_progress,
+			),
+			array(
+				'title' => t('answered'),
+				'value' => Ticket::answered,
+			),
+			array(
+				'title' => t('closed'),
+				'value' => Ticket::closed,
+			),
+		);
+	}
 	protected function getPath($params = []): string {
-		return "?" . http_build_query($params);
+		return "?" . http_build_query(array_merge(HTTP::$data, $params));
 	}
 	/**
 	 * Ouput the html file.

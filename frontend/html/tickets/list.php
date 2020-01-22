@@ -9,22 +9,35 @@ if (!$this->isTab) {
 }
 $tickets = $this->getOrderedTickets();
 $hasTicket = !empty($tickets);
+$status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 ?>
 <div class="ticket-status-search">
 	<div class="row">
 		<div class="col-sm-8  col-xs-12">
-			<ul role="tablist">
-				<li role="presentation" class="<?php echo $this->isActive("active") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>"><?php echo t("ticketing.ticket.status.active"); ?></a>
+			<ul class="search-status-tabs" role="tablist">
+				<li class="status-tab <?php echo $this->isActive("active") ? "active" : ""; ?>">
+					<div class="dropdown">
+						<a class="status-tab-link dropdown-toggle" href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>" type="button" id="dropdown-tab-active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<?php echo t("ticketing.ticket.status.active"); ?>
+						<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="dropdown-tab-active">
+							<li><a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>"><i class="fa fa-check"></i> <?php echo t("ticketing.ticket.status.active.all"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => ticket::read)); ?>"><i class="fa fa-eye"></i> <?php echo t("read"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => ticket::answered)); ?>"><i class="fa fa-reply"></i> <?php echo t("answered"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => ticket::unread)); ?>"><i class="fa fa-eye-slash"></i> <?php echo t("unread"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><i class="fa fa-spinner fa-spin"></i> <?php echo t("in_progress"); ?></a></li>
+						</ul>
+					</div>
 				</li>
-				<li role="presentation" class="<?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><?php echo t("ticket.inprogress"); ?></a>
+				<li class="status-tab <?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><?php echo t("ticket.inprogress"); ?></a>
 				</li>
-				<li role="presentation" class="<?php echo $this->isActive("closed") ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>"><?php echo t("closed"); ?></a>
+				<li class="status-tab <?php echo $this->isActive("closed") ? "active" : ""; ?>">
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>"><?php echo t("closed"); ?></a>
 				</li>
-				<li role="presentation" class="<?php echo $this->isActive() ? "active" : ""; ?>">
-					<a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>"><?php echo t("ticketing.ticket.all"); ?></a>
+				<li class="status-tab <?php echo $this->isActive() ? "active" : ""; ?>">
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>"><?php echo t("ticketing.ticket.all"); ?></a>
 				</li>
 			</ul>
 		</div>
@@ -61,10 +74,10 @@ $hasTicket = !empty($tickets);
 				<div class="row more-field">
 					<div class="col-sm-6 col-xs-12">
 						<?php
-						$this->createField(array(
-							"name" => "status",
-							"type" => "hidden",
-						));
+						 $this->createField(array(
+						 	"name" => "status",
+						 	"type" => "hidden",
+						 ));
 						$this->createField(array(
 							"name" => "id",
 							"type" => "number",
@@ -75,14 +88,14 @@ $hasTicket = !empty($tickets);
 							"name" => "title",
 							"label" => t("ticket.title"),
 						));
-						if (!$this->isTab) {
-							$this->createField(array(
-								"name" => "priority",
-								"type" => "select",
-								"label" => t("ticket.priority"),
-								"options" => $this->getPriortyForSelect(),
-							));
-						}
+						$this->createField(array(
+							"name" => "status_select",
+							"type" => "select",
+							"label" => t("ticket.status"),
+							"multiple" => true,
+							"value" => $status,
+							"options" => $this->getTicketStatusForSelect(),
+						));
 						?>
 					</div>
 					<div class="col-sm-6 col-xs-12">
@@ -104,7 +117,6 @@ $hasTicket = !empty($tickets);
 							));
 						}
 						?>
-						<?php if ($this->isTab) { ?>
 						<div class="row">
 							<div class="col-sm-6">
 								<?php
@@ -127,16 +139,6 @@ $hasTicket = !empty($tickets);
 								?>
 							</div>
 						</div>
-						<?php
-							} else { 
-								$this->createField(array(
-									"type" => "select",
-									"label" => t("search.comparison"),
-									"name" => "comparison",
-									"options" => $this->getComparisonsForSelect()
-								));
-							}
-						?>
 					</div>
 					<div class="col-xs-12">
 						<button class="btn btn-default pull-left" type="submit">
