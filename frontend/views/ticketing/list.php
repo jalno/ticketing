@@ -209,8 +209,9 @@ class listview extends ticketListView {
 		);
 	}
 	protected function getPath($params = []): string {
-		return "?" . http_build_query(array_merge(HTTP::$data, $params));
-	}
+		$params = array_merge(HTTP::$data, $params);
+		unset($params['page']);
+		return "?" . http_build_query($params);	}
 	/**
 	 * Ouput the html file.
 	 * 
