@@ -26,7 +26,7 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 							<li><a href="<?php echo $this->getPath(array("status" => ticket::read)); ?>"><i class="fa fa-eye"></i> <?php echo t("read"); ?></a></li>
 							<li><a href="<?php echo $this->getPath(array("status" => ticket::answered)); ?>"><i class="fa fa-reply"></i> <?php echo t("answered"); ?></a></li>
 							<li><a href="<?php echo $this->getPath(array("status" => ticket::unread)); ?>"><i class="fa fa-eye-slash"></i> <?php echo t("unread"); ?></a></li>
-							<li><a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><i class="fa fa-spinner"></i> <?php echo t("in_progress"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><i class="fa fa-spinner fa-spin"></i> <?php echo t("in_progress"); ?></a></li>
 						</ul>
 					</div>
 				</li>
