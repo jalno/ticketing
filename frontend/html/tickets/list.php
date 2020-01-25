@@ -154,43 +154,29 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 
 <?php if ($hasTicket) { ?>
 <div class="tickets-list">
-<?php
-$showStatus = $this->isActive("all");
-if (! $showStatus and $this->isActive("active")) {
-	$lastStatus = $tickets[0]->status;
-	foreach ($tickets as $ticket) {
-		if ($lastStatus != $ticket->status) {
-			$showStatus = true;
-			break;
-		}
-	}
-}
-foreach ($tickets as $ticket) {
-?>
+<?php foreach ($tickets as $ticket) { ?>
 	<div class="ticket">
 		<div class="row">
 			<div class="col-sm-8 col-xs-12">
 			<?php $hasUnreadMessage = $ticket->hasUnreadMessage(); ?>
 				<p>
 				<?php
-				if ($showStatus) {
-					$statusClass = utility::switchcase($ticket->status, [
-						"fa fa-info-circle text-primary" => ticket::unread,
-						"fa fa-eye text-info" => ticket::read,
-						"fa fa-check-square-o text-success" => ticket::answered,
-						"fa fa-spinner fa-spin text-warning" => ticket::in_progress,
-						"fa fa-window-close text-inverse" => ticket::closed
-					]);
-					$statusTxt = utility::switchcase($ticket->status, [
-						"unread" => ticket::unread,
-						"read" => ticket::read,
-						"answered" => ticket::answered,
-						"in_progress" => ticket::in_progress,
-						"closed" => ticket::closed
-					]);
+				$statusClass = utility::switchcase($ticket->status, [
+					"fa fa-info-circle text-primary" => ticket::unread,
+					"fa fa-eye text-info" => ticket::read,
+					"fa fa-check-square-o text-success" => ticket::answered,
+					"fa fa-spinner fa-spin text-warning" => ticket::in_progress,
+					"fa fa-window-close text-inverse" => ticket::closed
+				]);
+				$statusTxt = utility::switchcase($ticket->status, [
+					"unread" => ticket::unread,
+					"read" => ticket::read,
+					"answered" => ticket::answered,
+					"in_progress" => ticket::in_progress,
+					"closed" => ticket::closed
+				]);
 				?>
 					<i class="<?php echo $statusClass; ?> tooltips" title="<?php echo t($statusTxt); ?>"></i>
-				<?php } ?>
 					<a class="btn-link<?php echo $hasUnreadMessage > 0 ? " has-unread-message" : ""; ?>" href="<?php echo $this->canView ? userpanel\url("ticketing/view/{$ticket->id}") : "javascript:void();"; ?>">
 					<?php echo $ticket->title; ?>
 					</a>
