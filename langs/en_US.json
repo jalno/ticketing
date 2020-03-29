@@ -83,7 +83,10 @@
 		"userpanel.usersettings.packages.ticketing.name": "Ticketing",
 		"cronjob.task.name.ticketing_tickets_autoclose": "Responed tickets auto close",
 		
-		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}"
+		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}",
+
+		"settings.ticketing.autoclose_time": "Time to close tickets",
+		"packaeges.ticketing.hour": "{hour} hour"
 
 	}
 }

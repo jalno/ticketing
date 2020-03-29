@@ -83,6 +83,9 @@
 		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی",
 		"cronjob.task.name.ticketing_tickets_autoclose": "بستن خودکار تیکت های پاسخ داده شده",
 
-		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد"
+		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد",
+
+		"settings.ticketing.autoclose_time": "زمان برای بسته شدن تیکت ها",
+		"packaeges.ticketing.hour": "{hour} ساعت"
 	}
 }

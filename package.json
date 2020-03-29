@@ -30,6 +30,10 @@
 		{
 			"name":"\\packages\\cronjob\\events\\tasks",
 			"listener": "listeners\\cronjob@tasks"
+		},
+		{
+			"name":"packages/userpanel/events/General/Settings",
+			"listener": "listeners/Settings@init"
 		}
 	]
 }
