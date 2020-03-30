@@ -14,6 +14,7 @@
 		"ticketing.request.response.error": "خطا",
 		"ticketing.request.response.error.message": "درخواست شما توسط سرور قبول نشد",
 		"ticketing.request.response.error.message.data_validation": "داده وارد شده معتبر نیست",
+		"ticketing.request.response.error.message.data_validation.file": "فایل ارسال شده قابل قبول نمی‌باشد.",
 		"ticketing.ticket.add.user_not_entered": "کاربر مشخص نشده ، لطفا کاربر را مشخص کنید",
 		"ticketing.ion_range_slider.prefix.hour": "ساعت",
 		"ticketing.ion_range_slider.postfix.hour": "",

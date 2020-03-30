@@ -14,6 +14,7 @@
 		"ticketing.request.response.error": "Error",
 		"ticketing.request.response.error.message": "Your request was not accepted by the server.",
 		"ticketing.request.response.error.message.data_validation": "Input data is invalid.",
+		"ticketing.request.response.error.message.data_validation.file": "File not Valid.",
 		"ticketing.ticket.add.user_not_entered": "User is not defined, please define user.",
 		"ticketing.ion_range_slider.prefix.hour": "",
 		"ticketing.ion_range_slider.postfix.hour": ":00",
