@@ -14,6 +14,11 @@ class Tickets extends Process {
 		$response->setStatus(false);
 		$log->debug('looking for respite close time in options');
 		$respiteTime = options::get('packages.ticketing.close.respitetime');
+		if ($respiteTime <= 0) {
+			$log->reply("disabled");
+			$response->setStatus(true);
+			return $response;
+		}
 		$log->reply($respiteTime, "second ");
 		$log->debug('setting time');
 		$time = date::time();

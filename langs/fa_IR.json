@@ -82,7 +82,10 @@
 		"ticketing.usersettings.message.editor.type.markdown": "فرمت Markdown",
 		"userpanel.usersettings.packages.ticketing.name": "پشتیبانی",
 		"cronjob.task.name.ticketing_tickets_autoclose": "بستن خودکار تیکت های پاسخ داده شده",
-
-		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد"
+		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد",
+		"settings.ticketing.autoclose_time": "زمان برای بسته شدن تیکت ها",
+		"settings.ticketing.autoclose_time.disable": "غیرفعال",
+		"packages.ticketing.hour": "ساعت",
+		"packages.ticketing.autoclose_time.inHours": "{hour} ساعت"
 	}
 }

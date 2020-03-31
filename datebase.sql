@@ -72,3 +72,7 @@ CREATE TABLE `ticketing_files` (
 	KEY `message` (`message`),
 	CONSTRAINT `ticketing_files_ibfk_1` FOREIGN KEY (`message`) REFERENCES `ticketing_tickets_msgs` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+INSERT INTO `options` (`name`, `value`, `autoload`) VALUES ('packages.ticketing.close.respitetime', '86400', '1');
