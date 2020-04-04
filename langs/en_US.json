@@ -86,7 +86,13 @@
 		"settings.ticketing.autoclose_time": "Time to close tickets",
 		"settings.ticketing.autoclose_time.disable": "Disable",
 		"packages.ticketing.hour": "hours",
-		"packages.ticketing.autoclose_time.inHours": "{hour} hours"
-
+		"packages.ticketing.autoclose_time.inHours": "{hour} hours",
+		"ticketing.logs.add": "Added ticket #{ticket_id}.",
+		"ticketing.logs.edit": "Modified ticket #{ticket_id}.",
+		"ticketing.logs.lock": "Locked ticket #{ticket_id}.",
+		"ticketing.logs.unlock": "Unlocked ticket #{ticket_id}.",
+		"ticketing.logs.delete": "Deleted ticket #{ticket_id}.",
+		"ticketing.logs.settings.departments.add": "Added ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
+		"ticketing.logs.settings.departments.edit": "Modified ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>."
 	}
 }
