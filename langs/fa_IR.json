@@ -86,6 +86,13 @@
 		"settings.ticketing.autoclose_time": "زمان برای بسته شدن تیکت ها",
 		"settings.ticketing.autoclose_time.disable": "غیرفعال",
 		"packages.ticketing.hour": "ساعت",
-		"packages.ticketing.autoclose_time.inHours": "{hour} ساعت"
+		"packages.ticketing.autoclose_time.inHours": "{hour} ساعت",
+		"ticketing.logs.add": "تیکت #{ticket_id} را ایجاد کرد ",
+		"ticketing.logs.edit": "تیکت #{ticket_id} را ویرایش کرد ",
+		"ticketing.logs.lock": "تیکت #{ticket_id} را قفل کرد ",
+		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد ",
+		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد ",
+		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد",
+		"ticketing.logs.settings.departments.edit": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را ویرایش کرد"
 	}
 }
