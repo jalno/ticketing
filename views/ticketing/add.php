@@ -1,7 +1,18 @@
 <?php
 namespace packages\ticketing\views;
 
-class add extends \packages\ticketing\views\form{
+use packages\userpanel\User;
+use packages\ticketing\views\Form;
+
+class Add extends Form {
+	public function setClient(User $client) {
+		$this->setData($client, 'client');
+		$this->setDataForm($client->id, 'client');
+		$this->setDataForm($client->getFullName(), 'client_name');
+	}
+	public function getClient() {
+		return $this->getData('client');
+	}
 	public function setMessageData($data){
 		$this->setData($data, 'ticket');
 	}

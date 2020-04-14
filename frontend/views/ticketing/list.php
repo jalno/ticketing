@@ -3,16 +3,29 @@ namespace themes\clipone\views\ticketing;
 
 use packages\userpanel;
 use packages\base\{view\Error, views\traits\Form, Translator, HTTP};
-use themes\clipone\{navigation\menuItem, Navigation, ViewTrait};
+use themes\clipone\{navigation\MenuItem, Navigation, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait, TabTrait};
 use packages\ticketing\{Authentication, Authorization, Ticket, views\ticketlist as ticketListView};
 
-class listview extends ticketListView {
-	use form, viewTrait, listTrait, formTrait, TabTrait;
+class ListView extends TicketListView {
+	use Form, ViewTrait, ListTrait, FormTrait, TabTrait;
+
 	protected $multiuser;
 	protected $hasAccessToUsers = false;
 
-	public function __beforeLoad(){
+	public static function onSourceLoad() {
+		parent::onSourceLoad();
+		if (parent::$navigation) {
+			$item = new MenuItem("ticketing");
+			$item->setTitle(t('ticketing'));
+			$item->setURL(userpanel\url('ticketing'));
+			$item->setIcon('clip-user-6');
+			$item->setPriority(280);
+			Navigation::addItem($item);
+		}
+	}
+
+	public function __beforeLoad() {
 		$this->setTitle(array(
 			t("tickets")
 		));
@@ -27,19 +40,6 @@ class listview extends ticketListView {
 		$this->multiuser = (bool) Authorization::childrenTypes();
 		$this->hasAccessToUsers = Authorization::is_accessed("users_list", "userpanel");
 	}
-	private function addNotFoundError(){
-		$error = new error();
-		$error->setType(error::NOTICE);
-		$error->setCode('ticketing.ticket.notfound');
-		$error->setData([
-			[
-				'type' => 'btn-teal',
-				'txt' => translator::trans('ticketing.add'),
-				'link' => userpanel\url('ticketing/new')
-			]
-		], 'btns');
-		$this->addError($error);
-	}
 	public function setButtons(){
 		$this->setButton('view', $this->canView, array(
 			'title' => translator::trans('ticketing.view'),
@@ -52,16 +52,26 @@ class listview extends ticketListView {
 			'classes' => array('btn', 'btn-xs', 'btn-bricky')
 		));
 	}
-	public static function onSourceLoad(){
-		parent::onSourceLoad();
-		if(parent::$navigation){
-			$item = new menuItem("ticketing");
-			$item->setTitle(translator::trans('ticketing'));
-			$item->setURL(userpanel\url('ticketing'));
-			$item->setIcon('clip-user-6');
-			$item->setPriority(280);
-			navigation::addItem($item);
+	/**
+	 * Ouput the html file.
+	 * 
+	 * @return void
+	 */
+	public function output() {
+		if ($this->isTab) {
+			$this->outputTab();
+		} else {
+			parent::output();
 		}
+	}
+	protected function getNewTicketURL(): string {
+		$newTicketClientID = $this->getNewTicketClientID();
+		$params = array();
+		if ($newTicketClientID) {
+			$params['client'] = $newTicketClientID;
+		}
+		$query = http_build_query($params);
+		return userpanel\url('ticketing/new' . ($query ? '?' . $query : ''));
 	}
 	protected function getDepartmentsForSelect(){
 		$departments = array();
@@ -211,18 +221,19 @@ class listview extends ticketListView {
 	protected function getPath($params = []): string {
 		$params = array_merge(HTTP::$data, $params);
 		unset($params['page']);
-		return "?" . http_build_query($params);	}
-	/**
-	 * Ouput the html file.
-	 * 
-	 * @return void
-	 */
-	public function output() {
-		if ($this->isTab) {
-
-			$this->outputTab();
-		} else {
-			parent::output();
-		}
+		return "?" . http_build_query($params);
+	}
+	private function addNotFoundError(){
+		$error = new error();
+		$error->setType(error::NOTICE);
+		$error->setCode('ticketing.ticket.notfound');
+		$error->setData([
+			[
+				'type' => 'btn-teal',
+				'txt' => translator::trans('ticketing.add'),
+				'link' => userpanel\url('ticketing/new')
+			]
+		], 'btns');
+		$this->addError($error);
 	}
 }

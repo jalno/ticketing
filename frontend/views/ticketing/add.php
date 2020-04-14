@@ -1,52 +1,51 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\base\translator;
-use \packages\ticketing\views\add as ticketadd;
-use \packages\ticketing\ticket;
-use \packages\ticketing\authorization;
-use \packages\userpanel;
-use \packages\userpanel\user;
-use \themes\clipone\viewTrait;
-use \themes\clipone\views\formTrait;
-use \themes\clipone\navigation;
-use \themes\clipone\breadcrumb;
-use \themes\clipone\navigation\menuItem;
-use \themes\clipone\events\addingTicket;
-use \themes\clipone\views\dashboard\box;
-use \themes\clipone\views\dashboard\shortcut;
-class add extends ticketadd{
-	use viewTrait, formTrait;
+
+use packages\ticketing\{Authorization, Ticket};
+use packages\userpanel;
+use packages\userpanel\User;
+use themes\clipone\{Breadcrumb, Navigation, ViewTrait};
+use themes\clipone\events\AddingTicket;
+use themes\clipone\Navigation\MenuItem;
+use themes\clipone\views\FormTrait;
+use themes\clipone\views\dashboard\{Box, Shortcut};
+use packages\ticketing\views\Add as TicketAdd;
+
+class Add extends TicketAdd {
+	use ViewTrait, FormTrait;
+
 	public static $shortcuts = array();
 	public static $boxs = array();
 	protected $multiuser = false;
-	function __beforeLoad(){
+
+	function __beforeLoad() {
 		$this->setTitle(array(
-			translator::trans('ticketing.add')
+			t('ticketing.add')
 		));
 		$this->setNavigation();
 		$this->setUserInput();
-		$initEvent = new addingTicket();
+		$initEvent = new AddingTicket();
 		$initEvent->view = $this;
 		$initEvent->trigger();
-		$this->multiuser = (bool)authorization::childrenTypes();
+		$this->multiuser = (bool)Authorization::childrenTypes();
 	}
-	private function setNavigation(){
-		$item = new menuItem("ticketing");
-		$item->setTitle(translator::trans('ticketing'));
+	private function setNavigation() {
+		$item = new MenuItem("ticketing");
+		$item->setTitle(t('ticketing'));
 		$item->setURL(userpanel\url('ticketing'));
 		$item->setIcon('clip-paperplane');
-		breadcrumb::addItem($item);
+		Breadcrumb::addItem($item);
 
-		$item = new menuItem("ticketing.add");
-		$item->setTitle(translator::trans('ticketing.add'));
+		$item = new MenuItem("ticketing.add");
+		$item->setTitle(t('ticketing.add'));
 		$item->setIcon('fa fa-add tip');
-		breadcrumb::addItem($item);
-		navigation::active("ticketing/list");
+		Breadcrumb::addItem($item);
+		Navigation::active("ticketing/list");
 	}
-	protected function getDepartmentsForSelect(){
-		$options = array();
-		foreach($this->getDepartmentData() as $row){
-			$options[] = array(
+	protected function getDepartmentsForSelect(): array {
+		$departments = array();
+		foreach ($this->getDepartmentData() as $row) {
+			$departments[] = array(
 				'title' => $row->title,
 				'value' => $row->id,
 				'data' => array(
@@ -54,11 +53,11 @@ class add extends ticketadd{
 				)
 			);
 		}
-		return $options;
+		return $departments;
 	}
-	protected function getProductsForSelect(){
+	protected function getProductsForSelect(): array {
 		$products = array();
-		foreach($this->getProducts() as $product){
+		foreach ($this->getProducts() as $product) {
 			$products[] = array(
 				'title' => $product->getTitle(),
 				'value' => $product->getName()
@@ -66,73 +65,72 @@ class add extends ticketadd{
 		}
 		return $products;
 	}
-	protected function getpriortyForSelect(){
+	protected function getpriortyForSelect(): array {
 		return array(
 			array(
-	            "title" => translator::trans("ordinary"),
-	            "value" => ticket::ordinary
+	            "title" => t("ordinary"),
+	            "value" => Ticket::ordinary
         	),
 			array(
-	            "title" => translator::trans("important"),
-	            "value" => ticket::important
+	            "title" => t("important"),
+	            "value" => Ticket::important
         	),
 			array(
-	            "title" => translator::trans("instantaneous"),
-	            "value" => ticket::instantaneous
+	            "title" => t("instantaneous"),
+	            "value" => Ticket::instantaneous
         	),
 		);
 	}
-	protected function products(){
-		$none = array(
-			array(
-				'title' => translator::trans('none'),
-				'value' => ''
+	protected function products(): array {
+		$none = array(array(
+			'title' => t('none'),
+			'value' => ''
 		));
 		return array_merge($none, $this->getProductsForSelect());
 	}
-	private function setUserInput(){
-		if($error = $this->getFormErrorsByInput('client')){
+	private function setUserInput() {
+		if ($error = $this->getFormErrorsByInput('client')) {
 			$error->setInput('user_name');
 			$this->setFormError($error);
 		}
 		$user = $this->getDataForm('client');
-		if($user and $user = user::byId($user)){
+		if ($user and $user = User::byId($user)) {
 			$this->setDataForm($user->name, 'user_name');
 		}
 	}
-	public static function addShortcut(shortcut $shortcut){
-		foreach(self::$shortcuts as $key => $item){
-			if($item->name == $shortcut->name){
+	public static function addShortcut(Shortcut $shortcut): void {
+		foreach (self::$shortcuts as $key => $item) {
+			if ($item->name == $shortcut->name) {
 				self::$shortcuts[$key] = $shortcut;
 				return;
 			}
 		}
 		self::$shortcuts[] = $shortcut;
 	}
-	public static function addBox(box $box){
+	public static function addBox(Box $box) {
 		self::$boxs[] = $box;
 	}
-	public function getBoxs(){
+	public function getBoxs(): array {
 		return self::$boxs;
 	}
-	public function generateShortcuts(){
+	public function generateShortcuts() {
 		$rows = array();
 		$lastrow = 0;
 		$shortcuts = array_slice(self::$shortcuts, 0, max(3, floor(count(self::$shortcuts)/2)));
-		foreach($shortcuts as $box){
+		foreach ($shortcuts as $box) {
 			$rows[$lastrow][] = $box;
 			$size = 0;
-			foreach($rows[$lastrow] as $rowbox){
+			foreach ($rows[$lastrow] as $rowbox) {
 				$size += $rowbox->size;
 			}
-			if($size >= 12){
+			if ($size >= 12) {
 				$lastrow++;
 			}
 		}
 		$html = '';
-		foreach($rows as $row){
+		foreach ($rows as $row) {
 			$html .= "<div class=\"row\">";
-			foreach($row as $shortcut){
+			foreach ($row as $shortcut) {
 				$html .= "<div class=\"col-sm-{$shortcut->size}\">";
 				$html .= "<div class=\"core-box\">";
 				$html .= "<div class=\"heading\">";
@@ -148,21 +146,21 @@ class add extends ticketadd{
 		}
 		return $html;
 	}
-	public function generateRows(){
+	public function generateRows() {
 		$rows = array();
 		$lastrow = 0;
-		foreach(self::$boxs as $box){
+		foreach (self::$boxs as $box) {
 			$rows[$lastrow][] = $box;
 			$size = 0;
-			foreach($rows[$lastrow] as $rowbox){
+			foreach ($rows[$lastrow] as $rowbox) {
 				$size += $rowbox->size;
 			}
-			if($size >= 12){
+			if ($size >= 12) {
 				$lastrow++;
 			}
 		}
 		$html = '';
-		foreach($rows as $row){
+		foreach ($rows as $row) {
 			$html .= "<div class=\"row\">";
 			foreach($row as $box){
 				$html .= "<div class=\"col-md-{$box->size}\">".$box->getHTML()."</div>";

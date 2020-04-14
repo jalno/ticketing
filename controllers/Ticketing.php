@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
@@ -199,6 +199,28 @@ class Ticketing extends Controller {
 		$this->response->setView($view);
 		$view->setProducts(Products::get());
 		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
+		$childrens = Authorization::childrenTypes();
+		$inputRules = array();
+		if ($childrens) {
+			$inputRules['client'] = array(
+				'type' => function ($data, $rules, $input) use ($childrens) {
+					if ($data and is_numeric($data) and $data != Authentication::getID()) {
+						$client = new User();
+						$client->where('id', $data);
+						$client->where('type', $childrens, 'IN');
+						$client = $client->getOne();
+						if ($client) {
+							return $client;
+						}
+					}
+					return new Validator\NullValue();
+				},
+			);
+		}
+		$predefined = $this->checkInputs($inputRules);
+		if (isset($predefined['client'])) {
+			$view->setClient($predefined['client']);
+		}
 		$this->response->setStatus(true);
 		return $this->response;
 	}
