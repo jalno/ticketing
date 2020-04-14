@@ -5,8 +5,14 @@
 		"method": "get"
 	},
 	{
-		"path": ["userpanel","ticketing", "new"],
-		"controller": "controllers\\ticketing@add"
+		"path": "userpanel/ticketing/new",
+		"controller": "controllers/ticketing@add",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/ticketing/new",
+		"controller": "controllers/ticketing@store",
+		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "new", "department", {"type":"dynamic","name":"department", "regex":"/^\\d+$/"}],
