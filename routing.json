@@ -5,6 +5,11 @@
 		"method": "get"
 	},
 	{
+		"path": "userpanel/users/tickets/:id",
+		"controller": "controllers/Userpanel@getUserTickets",
+		"method": "get"
+	},
+	{
 		"path": "userpanel/ticketing/new",
 		"controller": "controllers/ticketing@add",
 		"method": "get"

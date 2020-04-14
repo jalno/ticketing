@@ -36,6 +36,10 @@
 		{
 			"name":"\\themes\\clipone\\events\\initializeDashboard",
 			"listener": "listeners\\ticketing\\dashboard@initialize"
+		},
+		{
+			"name":"themes/clipone/events/InitTabsEvent",
+			"listener": "listeners/ticketing/UserProfileTabs@handle"
 		}
 	],
 	"views":[
