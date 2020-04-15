@@ -10,14 +10,14 @@ class listview extends list_view{
 	protected $canDel;
 	static protected $navigation;
 	function __construct(){
-		$this->canAdd = authorization::is_accessed('department_list');
-		$this->canEdit = authorization::is_accessed('department_edit');
-		$this->canDel = authorization::is_accessed('department_delete');
+		$this->canAdd = authorization::is_accessed('settings_departments_add');
+		$this->canEdit = authorization::is_accessed('settings_departments_edit');
+		$this->canDel = authorization::is_accessed('settings_departments_delete');
 	}
 	public function getDepartments(){
 		return $this->dataList;
 	}
 	public static function onSourceLoad(){
-		self::$navigation = authorization::is_accessed('department_list');
+		self::$navigation = authorization::is_accessed('settings_departments_list');
 	}
 }
