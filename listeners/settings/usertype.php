@@ -18,12 +18,12 @@ class usertype{
 			'message_delete',
 			'message_edit',
 
-			'files_download',
+			'files-download',
 
-			'department_list',
-			'department_add',
-			'department_edit',
-			'department_delete'
+			'settings_departments_list',
+			'settings_departments_add',
+			'settings_departments_edit',
+			'settings_departments_delete'
 
 		);
 		foreach($permissions as $permission){

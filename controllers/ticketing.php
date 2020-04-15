@@ -705,7 +705,7 @@ class Ticketing extends Controller {
 		return $this->response;
 	}
 	public function download($data){
-		authorization::haveOrFail('files_download');
+		Authorization::haveOrFail('files-download');
 		$types = authorization::childrenTypes();
 		db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.id=ticketing_files.message", 'INNER');
 		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");

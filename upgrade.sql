@@ -16,3 +16,13 @@ ALTER TABLE `ticketing_departments` ADD `status` TINYINT NOT NULL AFTER `users`;
 -- Date: Wed, 01 Apr 2020 01:20:30 +0430
 --
 INSERT INTO `options` (`name`, `value`, `autoload`) VALUES ('packages.ticketing.close.respitetime', '86400', '1');
+
+
+--
+--	Commit: 4bca3fd25db3f20f6d3cb3833bdbd807d00c5d32
+--	Author: Hossein Hosni <hosni.hossein@gmail.com>
+--	Date:	Wed Apr 15 13:31:42 2020 +0430
+--	Fix #65 - Compatibility to UserPanel new permissions style
+--
+UPDATE `userpanel_usertypes_permissions` SET name = REPLACE(`name`,'ticketing_department','ticketing_settings_departments') WHERE `name` LIKE 'ticketing_department%';
+UPDATE `userpanel_usertypes_permissions` SET name = REPLACE(`name`,'ticketing_files_download','ticketing_files-download') WHERE `name` LIKE 'ticketing_files_download';

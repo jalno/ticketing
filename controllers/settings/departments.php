@@ -11,7 +11,7 @@ class Departments extends Controller {
 	protected $authentication = true;
 
 	public function listview() {
-		Authorization::haveOrFail("department_list");
+		Authorization::haveOrFail("settings_departments_list");
 		$view = view::byName(views\settings\department\ListView::class);
 		$this->response->setView($view);
 		$department = new Department;
@@ -71,7 +71,7 @@ class Departments extends Controller {
 		return $this->response;
 	}
 	public function delete($data) {
-		authorization::haveOrFail("department_delete");
+		Authorization::haveOrFail("settings_departments_delete");
 		$department = department::byId($data["id"]);
 		if (!$department) {
 			throw new NotFound;
@@ -210,7 +210,7 @@ class Departments extends Controller {
 		return $this->response;
 	}
 	public function edit($data) {
-		Authorization::haveOrFail("department_edit");
+		Authorization::haveOrFail("settings_departments_edit");
 		$view = View::byName(views\settings\department\Edit::class);
 		$this->response->setView($view);
 		$department = Department::byId($data["id"]);
@@ -223,7 +223,7 @@ class Departments extends Controller {
 		return $this->response;
 	}
 	public function update($data): Response {
-		Authorization::haveOrFail("department_edit");
+		Authorization::haveOrFail("settings_departments_edit");
 		$view = View::byName(views\settings\department\edit::class);
 		$this->response->setView($view);
 		$department = Department::byId($data["id"]);
