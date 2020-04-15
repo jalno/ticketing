@@ -13,7 +13,7 @@ class UserProfileTabs {
 		$view = $event->getView();
 		if ($view instanceof views\Users\View) {
 			$userID = $view->getData('user')->id;
-			if (Authorization::is_accessed("list", "ticketing") and $userID != Authentication::getID()) {
+			if (Authorization::is_accessed("list") and $userID != Authentication::getID()) {
 				$this->addTicketsToUserProfile($view);
 			}
 		}
