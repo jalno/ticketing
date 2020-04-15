@@ -41,6 +41,7 @@ class Userpanel extends controller {
 	}
 
 	public function getUserTickets($data) {
+		Authorization::haveOrFail('list');
 		if (!is_numeric($data['id']) or $data['id'] == Authentication::getID()) {
 			throw new NotFound();
 		}
@@ -48,17 +49,17 @@ class Userpanel extends controller {
 		if (!$types) {
 			throw new NotFound();
 		}
-		$user = User::where("id", $data['id'])->where("type", $types, 'IN')->getOne();
+		$user = User::where('id', $data['id'])->where('type', $types, 'IN')->getOne();
 		if (!$user) {
 			throw new NotFound();
 		}
 		$view = View::byName(\themes\clipone\views\users\View::class);
 		$this->response->setView($view);
-		$view->setData($user, "user");
+		$view->setData($user, 'user');
 		$view->isTab(true);
 		$view->triggerTabs();
-		$view->activeTab("ticket");
-		$view->setDepartment((new Department)->where("status", Department::ACTIVE)->get());
+		$view->activeTab('ticket');
+		$view->setDepartment((new Department)->where('status', Department::ACTIVE)->get());
 		$inputs = $this->checkinputs(array(
 			'id' => array(
 				'type' => 'number',
@@ -71,7 +72,7 @@ class Userpanel extends controller {
 			'status' => array(
 				'type' => 'string',
 				'optional' => true,
-				"default" => implode(",", array(Ticket::unread, Ticket::read, Ticket::answered, Ticket::in_progress)),
+				'default' => implode(',', array(Ticket::unread, Ticket::read, Ticket::answered, Ticket::in_progress)),
 			),
 			'priority' => array(
 				'type' => 'number',
@@ -81,7 +82,7 @@ class Userpanel extends controller {
 			'department' => array(
 				'type' => Department::class,
 				'query' => function ($query) {
-					$query->where("status", Department::ACTIVE);
+					$query->where('status', Department::ACTIVE);
 				},
 				'optional' => true,
 			),
@@ -96,23 +97,23 @@ class Userpanel extends controller {
 			)
 		));
 		$ticket = new Ticket();
-		$ticket->with("client");
-		$ticket->with("department");
-		$ticket->where("ticketing_tickets.client", $user->id);
-		if (isset($inputs["status"]) and $inputs["status"]) {
-			$statuses = explode(",", $inputs["status"]);
+		$ticket->with('client');
+		$ticket->with('department');
+		$ticket->where('ticketing_tickets.client', $user->id);
+		if (isset($inputs['status']) and $inputs['status']) {
+			$statuses = explode(',', $inputs['status']);
 			foreach ($statuses as $status) {
 				if (!in_array($status, array(Ticket::unread, Ticket::read, Ticket::answered, Ticket::in_progress, Ticket::closed))) {
-					throw new InputValidationException("status");
+					throw new InputValidationException('status');
 				}
 			}
-			$ticket->where("ticketing_tickets.status", $statuses, "IN");
-			$view->setDataForm($statuses, "status");
+			$ticket->where('ticketing_tickets.status', $statuses, 'IN');
+			$view->setDataForm($statuses, 'status');
 		}
 		foreach (array('id', 'title', 'title', 'priority', 'department') as $item) {
 			if (isset($inputs[$item]) and $inputs[$item]) {
 				$comparison = $inputs['comparison'];
-				if (in_array($item, array('id', 'status'))) {
+				if (in_array($item, array('id', 'status', 'department'))) {
 					$comparison = 'equals';
 				}
 				if ($item == 'department') {
@@ -128,20 +129,20 @@ class Userpanel extends controller {
 					$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
 				}
 			}
-			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
-			db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
-			$parenthesis->orWhere("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison']);
-			$parenthesis->orWhere("ticketing_files.name", $inputs['word'], $inputs['comparison']);
+			db::join('ticketing_tickets_msgs', 'ticketing_tickets_msgs.ticket=ticketing_tickets.id', 'LEFT');
+			db::join('ticketing_files', 'ticketing_files.message=ticketing_tickets_msgs.id', 'LEFT');
+			$parenthesis->orWhere('ticketing_tickets_msgs.text', $inputs['word'], $inputs['comparison']);
+			$parenthesis->orWhere('ticketing_files.name', $inputs['word'], $inputs['comparison']);
 			$ticket->where($parenthesis);
-			$ticket->setQueryOption("DISTINCT");
-			$view->setDataForm($inputs['word'], "word");
+			$ticket->setQueryOption('DISTINCT');
+			$view->setDataForm($inputs['word'], 'word');
 		}
 		$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
 		$ticket->pageLimit = $this->items_per_page;
 		$tickets = $ticket->paginate($this->page, array(
-			"ticketing_tickets.*",
-			"userpanel_users.*",
-			"ticketing_departments.*",
+			'ticketing_tickets.*',
+			'userpanel_users.*',
+			'ticketing_departments.*',
 		));
 		$view->setDataList($tickets);
 		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
