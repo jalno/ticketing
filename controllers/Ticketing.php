@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
@@ -192,156 +192,171 @@ class Ticketing extends Controller {
 		$this->response->setStatus(true);
 		return $this->response;
 	}
-	public function add(){
-		$view = View::byName(Views\Add::class);
+
+	public function add() {
 		Authorization::haveOrFail('add');
-		$children = Authorization::childrenTypes();
+		$view = View::byName(Views\Add::class);
+		$this->response->setView($view);
+		$view->setProducts(Products::get());
+		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
+		$childrens = Authorization::childrenTypes();
+		$inputRules = array();
+		if ($childrens) {
+			$inputRules['client'] = array(
+				'type' => function ($data, $rules, $input) use ($childrens) {
+					if ($data and is_numeric($data) and $data != Authentication::getID()) {
+						$client = new User();
+						$client->where('id', $data);
+						$client->where('type', $childrens, 'IN');
+						$client = $client->getOne();
+						if ($client) {
+							return $client;
+						}
+					}
+					return new Validator\NullValue();
+				},
+			);
+		}
+		$predefined = $this->checkInputs($inputRules);
+		if (isset($predefined['client'])) {
+			$view->setClient($predefined['client']);
+		}
+		$this->response->setStatus(true);
+		return $this->response;
+	}
+
+	public function store() {
+		Authorization::haveOrFail('add');
+		$view = View::byName(Views\Add::class);
+		$this->response->setView($view);
 		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 		$view->setProducts(Products::get());
-		$this->response->setStatus(false);
-		if(http::is_post()){
-			$inputsRules = array(
-				'title' => array(
-					'type' => 'string',
-				),
-				'product' => array(
-					'type' => 'string',
-					'optional' =>true,
-					'empty' => true
-				),
-				'service' => array(
-					'type' => 'number',
-					'optional' =>true,
-					'empty' => true
-				),
-				'priority' => array(
-					'type' => 'number',
-					'value' => array(
-						ticket::instantaneous,
-						ticket::important,
-						ticket::ordinary
-					)
-				),
-				'department' => array(
-					'type' => 'number',
-				),
-				'text' => array(
-					'type' => 'string'
-				),
-				'file' => array(
-					'type' => 'file',
-					'optional' => true,
-					'multiple' => true
-				)
+		$children = Authorization::childrenTypes();
+		$inputsRules = array(
+			'title' => array(
+				'type' => 'string',
+			),
+			'priority' => array(
+				'type' => 'number',
+				'value' => Ticket::PRIORITIES,
+			),
+			'department' => array(
+				'type' => Department::class,
+			),
+			'product' => array(
+				'type' => 'string',
+				'optional' => true,
+				'empty' => true
+			),
+			'service' => array(
+				'type' => 'number',
+				'optional' => true,
+				'empty' => true
+			),
+			'text' => array(
+				'type' => 'string'
+			),
+			'file' => array(
+				'type' => 'file',
+				'optional' => true,
+				'multiple' => true
+			)
+		);
+		if ($children) {
+			$inputsRules['client'] = array(
+				'type' => User::class,
+				'optional' => true
 			);
-			if($children){
-				$inputsRules['client'] = array(
-					'type' => 'number',
-					'optional' => true
-				);
-			}
-			try {
-				$inputs = $this->checkinputs($inputsRules);
-				$inputs['department'] = department::byId($inputs['department']);
-				$inputs['client'] = isset($inputs['client']) ? user::byId($inputs['client']) : authentication::getUser();
-				if(!$inputs['department']){
-					throw new inputValidation("department");
-				}
-				if(!$inputs['client']){
-					throw new inputValidation("client");
-				}
-				if (isset($inputs["product"], $inputs["service"])) {
-					if ($inputs["product"] and $inputs["service"]) {
-						$inputs["product"] = products::getOne($inputs["product"]);
-						if (!$inputs["product"]) {
-							throw new inputValidation("product");
-						}
-						$inputs["service"] = $inputs["product"]->getServiceById($inputs["client"], $inputs["service"]);
-						if (!$inputs["service"]) {
-							throw new inputValidation("service");
-						}
-					} else {
-						unset($inputs["service"]);
-						unset($inputs["product"]);
-					}
-				}
-				if(isset($inputs['file'])){
-					if(!is_array($inputs['file'])){
-						throw new inputValidation("file");
-					}
-					if(empty($inputs['file'])){
-						unset($inputs['file']);
-					}
-				}
-				if(isset($inputs['file'])){
-					$files = [];
-					foreach($inputs['file'] as $file){
-						if($file['error'] == 0){
-							$files[] = $file;
-						}elseif($file['error'] != 4){
-							throw new inputValidation("file");
-						}
-					}
-					$inputs['file'] = [];
-					foreach($files as $file){
-						$name = md5_file($file['tmp_name']);
-						$directory = packages::package('ticketing')->getFilePath('storage/private');
-						if(!is_dir($directory)){
-							IO\mkdir($directory);
-						}
-						if(move_uploaded_file($file['tmp_name'], $directory.'/'.$name)){
-							$inputs['file'][] = [
-								'name' => $file['name'],
-								'size' => $file['size'],
-								'path' => 'private/'.$name,
-							];
-						}else{
-							throw new inputValidation("file");
-						}
-					}
-				}
-				$me = authentication::getID();
-				$ticket = new ticket();
-				$ticket->title	= $inputs['title'];
-				$ticket->priority = $inputs['priority'];
-				$ticket->client = $inputs['client']->id;
-				$ticket->department = $inputs['department']->id;
-				$ticket->status = $me == $inputs['client']->id ? ticket::unread : ticket::answered;
-				if (isset($inputs["product"], $inputs["service"])) {
-					$ticket->setParam("product", $inputs["product"]->getName());
-					$ticket->setParam("service", $inputs["service"]->getId());
-				}
-				$message = new ticket_message();
-				if(isset($inputs['file'])){
-					foreach($inputs['file'] as $file){
-						$message->addFile($file);
-					}
-				}
-				$ticket->save();
-				$message->ticket = $ticket->id;
-				$message->text = $inputs['text'];
-				$message->user = authentication::getID();
-				$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
-				$message->save();
-				$event = new events\tickets\add($message);
-				$event->trigger();
-
-				$log = new log();
-				$log->user = authentication::getID();
-				$log->title = translator::trans("ticketing.logs.add", ['ticket_id' => $ticket->id]);
-				$log->type = logs\tickets\add::class;
-				$log->save();
-
-				$this->response->setStatus(true);
-				$this->response->Go(userpanel\url('ticketing/view/'.$ticket->id));
-			}catch(inputValidation $error){
-				$view->setFormError(FormError::fromException($error));
-			}
-			$view->setDataForm($this->inputsvalue($inputsRules));
-		}else{
-			$this->response->setStatus(true);
 		}
-		$this->response->setView($view);
+		$inputs = $this->checkinputs($inputsRules);
+		$view->setDataForm($this->inputsvalue($inputsRules));
+		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
+		if (isset($inputs["product"], $inputs["service"])) {
+			if ($inputs["product"] and $inputs["service"]) {
+				$inputs["product"] = Products::getOne($inputs["product"]);
+				if (!$inputs["product"]) {
+					throw new InputValidationException("product");
+				}
+				$inputs["service"] = $inputs["product"]->getServiceById($inputs["client"], $inputs["service"]);
+				if (!$inputs["service"]) {
+					throw new InputValidationException("service");
+				}
+			} else {
+				unset($inputs["service"]);
+				unset($inputs["product"]);
+			}
+		}
+		if (isset($inputs['file'])) {
+			if (!is_array($inputs['file'])) {
+				throw new InputValidationException("file");
+			}
+			if (empty($inputs['file'])) {
+				unset($inputs['file']);
+			}
+		}
+		if (isset($inputs['file'])) {
+			$files = [];
+			foreach ($inputs['file'] as $file) {
+				if ($file['error'] == UPLOAD_ERR_NO_FILE) {
+					$files[] = $file;
+				} elseif ($file['error'] != UPLOAD_ERR_OK) {
+					throw new InputValidationException("file");
+				}
+			}
+			$inputs['file'] = [];
+			foreach ($files as $file) {
+				$name = md5_file($file['tmp_name']);
+				$directory = Packages::package('ticketing')->getFilePath('storage/private');
+				if (!is_dir($directory)) {
+					IO\mkdir($directory);
+				}
+				if (move_uploaded_file($file['tmp_name'], $directory . '/' . $name)) {
+					$inputs['file'][] = [
+						'name' => $file['name'],
+						'size' => $file['size'],
+						'path' => 'private/' . $name,
+					];
+				} else {
+					throw new InputValidationException("file");
+				}
+			}
+		}
+
+		$me = Authentication::getID();
+		$ticket = new Ticket();
+		$ticket->title	= $inputs['title'];
+		$ticket->priority = $inputs['priority'];
+		$ticket->client = $inputs['client']->id;
+		$ticket->department = $inputs['department']->id;
+		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
+		$ticket->save();
+		if (isset($inputs["product"], $inputs["service"])) {
+			$ticket->setParam("product", $inputs["product"]->getName());
+			$ticket->setParam("service", $inputs["service"]->getId());
+		}
+		$message = new Ticket_message();
+		if (isset($inputs['file'])) {
+			foreach ($inputs['file'] as $file) {
+				$message->addFile($file);
+			}
+		}
+		$message->ticket = $ticket->id;
+		$message->text = $inputs['text'];
+		$message->user = $me;
+		$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
+		$message->save();
+
+		$event = new events\tickets\Add($message);
+		$event->trigger();
+
+		$log = new Log();
+		$log->user = $me;
+		$log->title = t("ticketing.logs.add", ['ticket_id' => $ticket->id]);
+		$log->type = logs\tickets\Add::class;
+		$log->save();
+
+		$this->response->Go(userpanel\url('ticketing/view/'. $ticket->id));
+		$this->response->setStatus(true);
 		return $this->response;
 	}
 

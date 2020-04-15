@@ -43,7 +43,7 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 		</div>
 		<?php if ($this->canAdd) { ?>
 			<div class="col-sm-4  col-xs-12">
-				<a href="<?php echo userpanel\url('ticketing/new'); ?>" class="btn btn-success pull-<?php echo ((bool)translator::getLang()->isRTL()) ? "left" : "right"; ?>">
+				<a href="<?php echo $this->getNewTicketURL(); ?>" class="btn btn-success pull-<?php echo ((bool)translator::getLang()->isRTL()) ? "left" : "right"; ?>">
 					<div class="btn-icons"> <i class="fa fa-message"></i> </div>
 					<?php echo t("ticketing.add"); ?>
 				</a>

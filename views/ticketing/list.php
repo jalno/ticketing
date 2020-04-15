@@ -3,7 +3,7 @@ namespace packages\ticketing\views;
 
 use packages\financial\views\listview as list_view;
 use packages\base\views\traits\form as formTrait;
-use packages\ticketing\authorization;
+use packages\ticketing\Authorization;
 
 class ticketlist extends list_view {
 	protected $canAdd;
@@ -15,14 +15,20 @@ class ticketlist extends list_view {
 	static protected $navigation;
 	
 	function __construct(){
-		$this->canAdd = authorization::is_accessed('add');
-		$this->canView = authorization::is_accessed('view');
-		$this->canEdit = authorization::is_accessed('edit');
-		$this->canDel = authorization::is_accessed('delete');
-		$this->multiuser = (bool)authorization::childrenTypes();
+		$this->canAdd = Authorization::is_accessed('add');
+		$this->canView = Authorization::is_accessed('view');
+		$this->canEdit = Authorization::is_accessed('edit');
+		$this->canDel = Authorization::is_accessed('delete');
+		$this->multiuser = (bool)Authorization::childrenTypes();
 	}
 	public function getTickets(){
 		return $this->dataList;
+	}
+	public function setNewTicketClientID(int $clientID = 0): void {
+		$this->setData($clientID, 'newTicketClientID');
+	}
+	public function getNewTicketClientID() {
+		return $this->getData('newTicketClientID');
 	}
 	public function setDepartment($department){
 		$this->setData($department, 'department');
@@ -31,7 +37,7 @@ class ticketlist extends list_view {
 		return $this->getData('department');
 	}
 	public static function onSourceLoad(){
-		self::$navigation = authorization::is_accessed('list');
+		self::$navigation = Authorization::is_accessed('list');
 	}
 	public function isTab(bool $isTab = true): void {
 		$this->isTab = $isTab;
