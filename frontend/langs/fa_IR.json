@@ -146,6 +146,8 @@
 		"ticketing.settings.department.notfound": "دپارتمانی برای نمایش یافت نشد.",
 		"ticketing.ticket.list.info.create.create_by": "توسط",
 		"ticketing.ticket.list.info.create.in_department": "در دپارتمان",
-		"ticketing.ticket.list.info.last_answer": "آخرین پاسخ"
+		"ticketing.ticket.list.info.last_answer": "آخرین پاسخ",
+
+		"ticketing.choose": "انتخاب کنید .."
 	}
 }
