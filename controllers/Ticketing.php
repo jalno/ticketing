@@ -242,6 +242,9 @@ class Ticketing extends Controller {
 			),
 			'department' => array(
 				'type' => Department::class,
+				'query' => function($query) {
+					$query->where("status", Department::ACTIVE);
+				},
 			),
 			'product' => array(
 				'type' => 'string',
@@ -268,8 +271,8 @@ class Ticketing extends Controller {
 				'optional' => true
 			);
 		}
-		$inputs = $this->checkinputs($inputsRules);
 		$view->setDataForm($this->inputsvalue($inputsRules));
+		$inputs = $this->checkinputs($inputsRules);
 		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
 		if (isset($inputs["product"], $inputs["service"])) {
 			if ($inputs["product"] and $inputs["service"]) {
