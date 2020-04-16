@@ -297,9 +297,9 @@ class Ticketing extends Controller {
 		if (isset($inputs['file'])) {
 			$files = [];
 			foreach ($inputs['file'] as $file) {
-				if ($file['error'] == UPLOAD_ERR_NO_FILE) {
+				if ($file['error'] == UPLOAD_ERR_OK) {
 					$files[] = $file;
-				} elseif ($file['error'] != UPLOAD_ERR_OK) {
+				} elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
 					throw new InputValidationException("file");
 				}
 			}
