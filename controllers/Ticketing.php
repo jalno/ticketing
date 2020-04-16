@@ -242,6 +242,9 @@ class Ticketing extends Controller {
 			),
 			'department' => array(
 				'type' => Department::class,
+				'query' => function($query) {
+					$query->where("status", Department::ACTIVE);
+				},
 			),
 			'product' => array(
 				'type' => 'string',
@@ -269,6 +272,7 @@ class Ticketing extends Controller {
 			);
 		}
 		$inputs = $this->checkinputs($inputsRules);
+		$inputs['department'] = $inputs['department']->id;
 		$view->setDataForm($this->inputsvalue($inputsRules));
 		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
 		if (isset($inputs["product"], $inputs["service"])) {
@@ -292,32 +296,31 @@ class Ticketing extends Controller {
 			}
 			if (empty($inputs['file'])) {
 				unset($inputs['file']);
-			}
-		}
-		if (isset($inputs['file'])) {
-			$files = [];
-			foreach ($inputs['file'] as $file) {
-				if ($file['error'] == UPLOAD_ERR_NO_FILE) {
-					$files[] = $file;
-				} elseif ($file['error'] != UPLOAD_ERR_OK) {
-					throw new InputValidationException("file");
+			} else {
+				$files = [];
+				foreach ($inputs['file'] as $file) {
+					if ($file['error'] == UPLOAD_ERR_OK) {
+						$files[] = $file;
+					} elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
+						throw new InputValidationException("file");
+					}
 				}
-			}
-			$inputs['file'] = [];
-			foreach ($files as $file) {
-				$name = md5_file($file['tmp_name']);
-				$directory = Packages::package('ticketing')->getFilePath('storage/private');
-				if (!is_dir($directory)) {
-					IO\mkdir($directory);
-				}
-				if (move_uploaded_file($file['tmp_name'], $directory . '/' . $name)) {
-					$inputs['file'][] = [
-						'name' => $file['name'],
-						'size' => $file['size'],
-						'path' => 'private/' . $name,
-					];
-				} else {
-					throw new InputValidationException("file");
+				$inputs['file'] = [];
+				foreach ($files as $file) {
+					$name = md5_file($file['tmp_name']);
+					$directory = Packages::package('ticketing')->getFilePath('storage/private');
+					if (!is_dir($directory)) {
+						IO\mkdir($directory);
+					}
+					if (move_uploaded_file($file['tmp_name'], $directory . '/' . $name)) {
+						$inputs['file'][] = [
+							'name' => $file['name'],
+							'size' => $file['size'],
+							'path' => 'private/' . $name,
+						];
+					} else {
+						throw new InputValidationException("file");
+					}
 				}
 			}
 		}
@@ -327,7 +330,7 @@ class Ticketing extends Controller {
 		$ticket->title	= $inputs['title'];
 		$ticket->priority = $inputs['priority'];
 		$ticket->client = $inputs['client']->id;
-		$ticket->department = $inputs['department']->id;
+		$ticket->department = $inputs['department'];
 		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
 		$ticket->save();
 		if (isset($inputs["product"], $inputs["service"])) {
@@ -343,7 +346,7 @@ class Ticketing extends Controller {
 		$message->ticket = $ticket->id;
 		$message->text = $inputs['text'];
 		$message->user = $me;
-		$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
+		$message->status = ($me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread);
 		$message->save();
 
 		$event = new events\tickets\Add($message);
