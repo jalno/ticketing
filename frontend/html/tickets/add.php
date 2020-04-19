@@ -34,6 +34,7 @@ $this->the_header();
 							array(
 								'name' => 'title',
 								'label' => translator::trans("newticket.title"),
+								'required' => true,
 							),
 							array(
 								'name' => 'product',
@@ -55,13 +56,15 @@ $this->the_header();
 								'name' => 'priority',
 								'type' => 'select',
 								'label' => translator::trans("newticket.priority"),
-								'options' => $this->getpriortyForSelect()
+								'options' => $this->getpriortyForSelect(),
+								'required' => true,
 							),
 							array(
 								'name' => 'department',
 								'type' => 'select',
 								'label' => translator::trans("newticket.department"),
-								'options' => $this->getDepartmentsForSelect()
+								'options' => $this->getDepartmentsForSelect(),
+								'required' => true,
 							),
 							array(
 								'name' => 'service',
@@ -82,7 +85,8 @@ $this->the_header();
 							$this->createField(array(
 								'name' => 'text',
 								'type' => 'textarea',
-								'rows' => 4
+								'rows' => 4,
+								'required' => true,
 							));
 							?>
 							<hr>
