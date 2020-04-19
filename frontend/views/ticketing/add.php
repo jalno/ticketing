@@ -43,7 +43,12 @@ class Add extends TicketAdd {
 		Navigation::active("ticketing/list");
 	}
 	protected function getDepartmentsForSelect(): array {
-		$departments = array();
+		$departments = array(
+			array(
+				'title' => t("ticketing.choose"),
+				'value' => "",
+			)
+		);
 		foreach ($this->getDepartmentData() as $row) {
 			$departments[] = array(
 				'title' => $row->title,

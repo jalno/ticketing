@@ -145,6 +145,7 @@
 		"ticketing.settings.department.notfound": "No department found.",
 		"ticketing.ticket.list.info.create.create_by": "By",
 		"ticketing.ticket.list.info.create.in_department": "in department",
-		"ticketing.ticket.list.info.last_answer": "Last Answer"
+		"ticketing.ticket.list.info.last_answer": "Last Answer",
+		"ticketing.choose": "Choose .."
 	}
 }
