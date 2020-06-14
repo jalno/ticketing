@@ -83,7 +83,7 @@ trait Paramable{
 		if ($lastBackSlash !== false) {
 			$objName = substr($objName, $lastBackSlash + 1);
 		}
-		return $objName;
+		return strtolower($objName);
 	}
 	protected function serializeValue($value):string {
 		if (is_array($value) or is_object($value)) {
