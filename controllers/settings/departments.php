@@ -112,14 +112,14 @@ class Departments extends Controller {
 		return $this->response;
 	}
 	public function add() {
-		Authorization::haveOrFail("department_add");
+		Authorization::haveOrFail("settings_departments_add");
 		$this->response->setView($view = view::byName(views\settings\department\Add::class));
 		$view->setUsers($this->getUsersForSelect());
 		$this->response->setStatus(true);
 		return $this->response;
 	}
 	public function store(): Response {
-		Authorization::haveOrFail("department_add");
+		Authorization::haveOrFail("settings_departments_add");
 		$view = View::byName(views\settings\department\Add::class);
 		$this->response->setView($view);
 		$usersForSelect = $this->getUsersForSelect();
