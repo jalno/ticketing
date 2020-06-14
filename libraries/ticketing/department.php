@@ -6,6 +6,7 @@ use packages\userpanel\Date;
 use packages\ticketing\department\Worktime;
 
 class Department extends dbObject {
+	use Paramable;
 
 	const ACTIVE = 1;
 	const DEACTIVE = 2;
