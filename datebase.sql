@@ -6,6 +6,16 @@ CREATE TABLE `ticketing_departments` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `ticketing_departments_params` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`department` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`value` text NOT NULL,
+	PRIMARY KEY (`id`),
+	KEY `department` (`department`),
+	CONSTRAINT `ticketing_departments_params_ibfk_1` FOREIGN KEY (`department`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `ticketing_departments_worktimes` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`department` int(11) NOT NULL,
