@@ -1,11 +1,21 @@
 <?php
 namespace themes\clipone\views;
 
-use packages\ticketing\{Department, Department\Worktime};
+use packages\ticketing\{Department, Products, Department\Worktime};
 use packages\userpanel\User;
 
 trait DepartmentTrait {
 
+	protected function getProductsForSelect() {
+		$result = array();
+		foreach (Products::get() as $product) {
+			$result[] = array(
+				"title" => $product->getTitle(),
+				"value" => $product->getName(),
+			);
+		}
+		return $result;
+	}
 	protected function getTranslatDays($day){
 		switch($day) {
 			case(Worktime::saturday):

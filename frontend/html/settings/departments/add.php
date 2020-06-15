@@ -15,7 +15,7 @@ $this->the_header();
 			<div class="panel-body">
 				<form id="settings-departmetns-management" action="<?php echo userpanel\url("settings/departments/add"); ?>" method="post">
 					<div class="row">
-						<div class="col-md-5 col-sm-5 col-xs-12">
+						<div class="col-md-5 col-sm-5 col-xs-12 right-side-inputs">
 						<?php
 							$this->createField(array(
 								'name' => 'title',
@@ -26,6 +26,27 @@ $this->the_header();
 								'type' => 'select',
 								'label' => t("ticketing.departments.status"),
 								'options' => $this->getDepartmentStatusForSelect(),
+							));
+							$this->createField(array(
+								'name' => 'products',
+								'type' => 'hidden',
+							));
+							$this->createField(array(
+								'name' => 'products-select',
+								'type' => 'select',
+								'multiple' => true,
+								'label' => t('ticketing.departments.products'),
+								'options' => $this->getProductsForSelect(),
+							));
+							$this->createField(array(
+								'type' => 'checkbox',
+								'name' => 'force_choose_product',
+								'options' => array(
+									array(
+										'label' => t('ticketing.departments.force_choose_product'),
+										'value' => '1',
+									),
+								),
 							));
 						?>
 						</div>

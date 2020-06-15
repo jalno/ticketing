@@ -7,6 +7,7 @@ class edit extends form {
 		$this->setData($department, "department");
 		$this->setDataForm($department->title, "title");
 		$this->setDataForm($department->status, "status");
+		$this->setDataForm($department->param("force_choose_product"), "force_choose_product");
 		foreach ($department->worktimes as $work) {
 			$this->setDataForm(($work->time_start or $work->time_end), "day[{$work->day}][enable]");
 			$this->setDataForm($work->time_start, "day[{$work->day}][worktime][start]");
@@ -39,6 +40,12 @@ class edit extends form {
 	}
 	public function setUsers(array $users) {
 		$this->setData($users, "users");
+	}
+	public function setProducts(array $products) {
+		$this->setData($products, "products");
+	}
+	public function getProducts(): array {
+		return $this->getData("products") ?? [];
 	}
 	protected function getUsers(): array {
 		$users = $this->getData("users");

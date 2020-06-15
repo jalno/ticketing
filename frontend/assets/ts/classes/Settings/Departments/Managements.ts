@@ -3,6 +3,7 @@ import "bootstrap-inputmsg";
 import "ion-rangeslider";
 import * as $ from "jquery";
 import "jquery.growl";
+import "select2";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 
 export default class Managements {
@@ -12,7 +13,9 @@ export default class Managements {
 		}
 	}
 	public static init() {
+		Managements.initSelect2();
 		Managements.runjQRangeSlider();
+		Managements.runInputMsgHelpers();
 		Managements.EnabledjQRangeSlider();
 		Managements.runSubmitFormListener();
 		Managements.AllUserSelectListener();
@@ -27,6 +30,36 @@ export default class Managements {
 
 	private static $form = $("#settings-departmetns-management");
 
+	private static initSelect2() {
+		Managements.importSelect2Translator();
+		$("select[name=products-select]", Managements.$form).select2({
+			multiple: true,
+			allowClear: true,
+			theme: "bootstrap",
+			dropdownParent: Managements.$form,
+			placeholder: t("ticketing.departments.products.all_items"),
+			dir: Translator.isRTL() ? "rtl" : "ltr",
+			language: Translator.getActiveShortLang(),
+		}).trigger("change");
+		$("select[name=status]", Managements.$form).select2({
+			theme: "bootstrap",
+			minimumResultsForSearch: Infinity,
+			dropdownParent: Managements.$form,
+			dir: Translator.isRTL() ? "rtl" : "ltr",
+			language: Translator.getActiveShortLang(),
+		});
+	}
+	private static importSelect2Translator() {
+		if ($.fn.hasOwnProperty("select2") && Translator.getActiveShortLang() !== "en") {
+			require(`select2/dist/js/i18n/${Translator.getActiveShortLang()}.js`);
+		}
+	}
+	private static runInputMsgHelpers() {
+		$("select[name=products-select]", Managements.$form).inputMsg({
+			type: "info",
+			message: t("ticketing.departments.products.helper"),
+		});
+	}
 	private static disableListener($tr: JQuery, disable: boolean) {
 		const slider = $(".slider", $tr).data("ionRangeSlider");
 		slider.update({disable: disable});
@@ -70,6 +103,8 @@ export default class Managements {
 	private static runSubmitFormListener() {
 		Managements.$form.on("submit", function(e) {
 			e.preventDefault();
+			const products = $("select[name=products-select]", this).val() as string[];
+			$("input[name=products]", this).val(products.join(","));
 			($(this) as any).formAjax({
 				data: new FormData(this as HTMLFormElement),
 				contentType: false,
@@ -85,7 +120,11 @@ export default class Managements {
 				},
 				error: (error: webuilder.AjaxError) => {
 					if (error.error === "data_duplicate" || error.error === "data_validation") {
-						const $input = $(`name=["${error.input}"]`);
+						let input = `input[name="${error.input}"]`;
+						if (error.input === "products") {
+							input = `select[name=products-select]`;
+						}
+						const $input = $(input);
 						const params = {
 							title: t("ticketing.request.response.error"),
 							message: "",
