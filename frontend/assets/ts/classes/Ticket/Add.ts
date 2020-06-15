@@ -26,7 +26,7 @@ export default class Add {
 		$("input[name=client_name]", Add.$form).userAutoComplete();
 	}
 	private static runDepartmentListener() {
-		$("select[name=department]", Add).change(function() {
+		$("select[name=department]", Add.$form).change(function() {
 			const $selectedOption = $("option:selected", this);
 			const $products = $("select[name=product]", Add.$form).html("");
 			$products.parents(".form-group").hide();
@@ -77,8 +77,7 @@ export default class Add {
 					$(this).remove();
 				});
 			}
-		});
-		$("select[name=department]", Add.$form).trigger("change");
+		}).trigger("change");
 	}
 	private static runServicesListener() {
 		const $services = $("select[name=service]", Add.$form);
