@@ -8,6 +8,7 @@
 		"usertype.permissions.ticketing": "پشتیبانی",
 		"usertype.permissions.ticketing_list": "لیست تیکت های پشتیبانی",
 		"usertype.permissions.ticketing_add": "ارسال تیکت",
+		"usertype.permissions.ticketing_add_override-force-product-choose": "عدم انتخاب محصول در هنگام ارسال تیکت",
 		"usertype.permissions.ticketing_view": "مشاهده تیکت ",
 		"usertype.permissions.ticketing_reply": "پاسخ دادن به تیکت",
 		"usertype.permissions.ticketing_edit": "ویرایش تیکت",

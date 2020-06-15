@@ -6,6 +6,11 @@ import { AjaxRequest, Router , webuilder } from "webuilder";
 import "../jquery.userAutoComplete";
 
 export default class Add {
+	public static initIfNeeded() {
+		if (Add.$form.length) {
+			Add.init();
+		}
+	}
 	public static init() {
 		if ($("input[name=client_name]", Add.$form).length) {
 			Add.runUserSearch();
@@ -15,12 +20,6 @@ export default class Add {
 		Add.hiddenServices();
 		Add.runSubmitFormListener();
 	}
-	public static initIfNeeded() {
-		if (Add.$form.length) {
-			Add.init();
-		}
-	}
-
 	private static $form = $("#ticket-add");
 
 	private static runUserSearch() {
@@ -28,8 +27,25 @@ export default class Add {
 	}
 	private static runDepartmentListener() {
 		$("select[name=department]", Add).change(function() {
-			const isWorking: number = $("option:selected", this).data("working") as number;
-			const  department: string = $(this).val().toString();
+			const $selectedOption = $("option:selected", this);
+			const $products = $("select[name=product]", Add.$form).html("");
+			$products.parents(".form-group").hide();
+			const products = $selectedOption.data("products") as Array<{title: string, value: string}>;
+			if (products) {
+				for (const product of products) {
+					$products.append($("<option>", {
+						text : product.title,
+						value: product.value,
+					}));
+				}
+				$products.trigger("change").parents(".form-group").show();
+			} else {
+				$("textarea[name=text]", Add.$form).attr("rows", 4);
+				$products.parents(".form-group").hide();
+				$("select[name=service]", Add.$form).parents(".form-group").hide();
+			}
+			const isWorking: number = $selectedOption.data("working") as number;
+			const department: string = $(this).val().toString();
 			if (isWorking === 0) {
 				AjaxRequest({
 					url: "userpanel/ticketing/new/department/" + department,
@@ -68,18 +84,19 @@ export default class Add {
 		const $services = $("select[name=service]", Add.$form);
 		const $formGroup = $services.parents(".form-group");
 		const $alert = $(".alert-service", Add.$form);
-		$("select[name=product], input[name=client]").on("change", () => {
+		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
 			const product: string = $("select[name=product]").val().toString();
 			if (product.length) {
 				let user: string;
-				if ($("input[name=client]", Add.$form).length) {
-					user = $("input[name=client]").val() as string;
+				const $user = $("input[name=client]", Add.$form);
+				if ($user.length) {
+					user = $user.val() as string;
 					if (!user) {
 						$.growl.error({
 							title: t("ticketing.request.response.error"),
 							message: t("ticketing.ticket.add.user_not_entered"),
 						});
-						return ;
+						return;
 					}
 				}
 				$services.html("");
@@ -94,6 +111,9 @@ export default class Add {
 						const length = data.items.length;
 						if (length) {
 							$formGroup.show();
+							if (!$("input[name=client_name]", Add.$form).length) {
+								$("textarea[name=text]", Add.$form).attr("rows", 8);
+							}
 							for (let i = 0; i < length; i++) {
 								$services.append($("<option>", {
 									value: data.items[i].id,
@@ -101,6 +121,7 @@ export default class Add {
 								}));
 							}
 						} else {
+							$services.val("");
 							$formGroup.hide();
 						}
 					},
@@ -125,16 +146,20 @@ export default class Add {
 	private static runSubmitFormListener() {
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
-			$(this).formAjax({
+			const product: string = $("select[name=product]", Add.$form).val() as string;
+			if (!product.length) {
+				$("select[name=service]", Add.$form).val("");
+			}
+			($(this) as any).formAjax({
 				data: new FormData(this as HTMLFormElement),
 				contentType: false,
 				processData: false,
-				success: (data: webuilder.AjaxResponse) => {
+				success: (response: webuilder.AjaxResponse) => {
 					$.growl.notice({
 						title: t("ticketing.request.response.successful"),
 						message: t("ticketing.request.response.successful.message"),
 					});
-					window.location.href = data.redirect;
+					window.location.href = response.redirect;
 				},
 				error: (error: webuilder.AjaxError) => {
 					if (error.error === "data_duplicate" || error.error === "data_validation") {

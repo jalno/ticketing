@@ -273,22 +273,30 @@ class Ticketing extends Controller {
 		}
 		$view->setDataForm($this->inputsvalue($inputsRules));
 		$inputs = $this->checkinputs($inputsRules);
+
 		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
-		if (isset($inputs["product"], $inputs["service"])) {
-			if ($inputs["product"] and $inputs["service"]) {
-				$inputs["product"] = Products::getOne($inputs["product"]);
-				if (!$inputs["product"]) {
-					throw new InputValidationException("product");
-				}
-				$inputs["service"] = $inputs["product"]->getServiceById($inputs["client"], $inputs["service"]);
-				if (!$inputs["service"]) {
-					throw new InputValidationException("service");
-				}
-			} else {
-				unset($inputs["service"]);
-				unset($inputs["product"]);
+		if (isset($inputs['product']) and $inputs['product']) {
+			$allowedProducts = $inputs['department']->getProducts();
+			// if $allowedProducts is empty, all Products is acceptable for this department
+			if ($allowedProducts and !in_array($inputs['product'], $allowedProducts)) {
+				throw new InputValidationException('product');
 			}
+			$inputs['product'] = Products::getOne($inputs['product']);
+			if (!$inputs['product']) {
+				throw new InputValidationException('product');
+			}
+
+			if (!isset($inputs['service']) or !$inputs['service']) {
+				throw new InputValidationException('service');
+			}
+			$inputs['service'] = $inputs['product']->getServiceById($inputs['client'], $inputs['service']);
+			if (!$inputs['service']) {
+				throw new InputValidationException('service');
+			}
+		} else if ($inputs['department']->isMandatoryChooseProduct() and !Authorization::is_accessed('add_override-force-product-choose')) {
+			throw new InputValidationException('product');
 		}
+
 		if (isset($inputs['file'])) {
 			if (!is_array($inputs['file'])) {
 				throw new InputValidationException("file");
@@ -333,7 +341,7 @@ class Ticketing extends Controller {
 		$ticket->department = $inputs['department']->id;
 		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
 		$ticket->save();
-		if (isset($inputs["product"], $inputs["service"])) {
+		if (isset($inputs["product"], $inputs["service"]) and $inputs["product"] and $inputs["service"]) {
 			$ticket->setParam("product", $inputs["product"]->getName());
 			$ticket->setParam("service", $inputs["service"]->getId());
 		}
