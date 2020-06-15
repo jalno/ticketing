@@ -148,7 +148,7 @@ class Departments extends Controller {
 					return $selectedProducts;
 				},
 			),
-			"force_choose_product" => array(
+			"mandatory_choose_product" => array(
 				"type" => "bool",
 				"default" => false,
 				"optional" => true,
@@ -208,9 +208,9 @@ class Departments extends Controller {
 			$department->users = array_values($inputs["users"]);
 		}
 		$department->save();
-		$department->setParam("force_choose_product", $inputs["force_choose_product"]);
+		$department->setMandatoryChooseProduct($inputs["mandatory_choose_product"]);
 		if (isset($inputs["products"]) and $inputs["products"]) {
-			$department->setParam("products", $inputs["products"]);
+			$department->setProducts($inputs["products"]);
 		}
 		foreach (department\Worktime::getDays() as $day) {
 			if (!isset($inputs["day"][$day])) {
@@ -244,7 +244,6 @@ class Departments extends Controller {
 		$this->response->setView($view);
 		$view->setDepartment($department);
 		$view->setUsers($this->getUsersForSelect());
-		$view->setProducts($department->param("products") ?? []);
 		$this->response->setStatus(true);
 		return $this->response;
 	}
@@ -272,8 +271,8 @@ class Departments extends Controller {
 			),
 			"products" => array(
 				"type" => function ($data, $rule, $input) use (&$products) {
-					throw new InputValidationException($input);
 					if (!is_string($data)) {
+						throw new InputValidationException($input);
 					}
 					$selectedProducts = ($data ? explode(",", $data) : []);
 					$existProducts = array_map(function ($item) {
@@ -285,7 +284,7 @@ class Departments extends Controller {
 					return $selectedProducts;
 				},
 			),
-			"force_choose_product" => array(
+			"mandatory_choose_product" => array(
 				"type" => "bool",
 				"default" => false,
 				"optional" => true,
@@ -370,17 +369,16 @@ class Departments extends Controller {
 		}
 		$department->save();
 		if (isset($inputs["products"])) {
-			$products = $department->param("products") ?? [];
+			$products = $department->getProducts();
 			if (array_diff($products, $inputs["products"]) or array_diff($inputs["products"], $products)) {
 				$parameters["oldData"]["products"] = $products;
 				$parameters["newData"]["products"] = $inputs["products"];
-				$department->setParam("products", $inputs["products"]);
+				$department->setProducts($inputs["products"]);
 			}
 		}
-		if (isset($inputs["force_choose_product"])) {
-			$forceChooseProduct = $department->param("force_choose_product");
-			if ($forceChooseProduct != $inputs["force_choose_product"]) {
-				$department->setParam("force_choose_product", $inputs["force_choose_product"]);
+		if (isset($inputs["mandatory_choose_product"])) {
+			if ($department->isMandatoryChooseProduct() != $inputs["mandatory_choose_product"]) {
+				$department->setMandatoryChooseProduct($inputs["mandatory_choose_product"]);
 			}
 		}
 		$days = department\Worktime::getDays();

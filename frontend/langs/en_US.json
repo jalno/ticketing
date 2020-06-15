@@ -109,7 +109,7 @@
 		"ticketing.departments.products": "Products",
 		"ticketing.departments.products.helper": "When sending a ticket, the user will only be allowed to choose from the above products",
 		"ticketing.departments.products.all_items": "All Products",
-		"ticketing.departments.force_choose_product": "Force select product",
+		"ticketing.departments.mandatory_choose_product": "Force select product",
 		"ticketing.departments.status": "Status",
 		"ticketing.departments.status.active": "Active",
 		"ticketing.departments.status.deactive": "Deactive",

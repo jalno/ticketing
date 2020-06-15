@@ -26,3 +26,20 @@ INSERT INTO `options` (`name`, `value`, `autoload`) VALUES ('packages.ticketing.
 --
 UPDATE `userpanel_usertypes_permissions` SET name = REPLACE(`name`,'ticketing_department','ticketing_settings_departments') WHERE `name` LIKE 'ticketing_department%';
 UPDATE `userpanel_usertypes_permissions` SET name = REPLACE(`name`,'ticketing_files_download','ticketing_files-download') WHERE `name` LIKE 'ticketing_files_download';
+
+
+--
+--	Commit: adb36d319f8d713ec71077001e923f9d95675eea
+--	Author: Hossein Hosni <hosni.hossein@gmail.com>
+--	Date:   Sun Jun 14 15:31:39 2020 +0430
+--	#70 Make Departments Paramable
+--
+CREATE TABLE `ticketing_departments_params` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`department` int(11) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`value` text NOT NULL,
+	PRIMARY KEY (`id`),
+	KEY `department` (`department`),
+	CONSTRAINT `ticketing_departments_params_ibfk_1` FOREIGN KEY (`department`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

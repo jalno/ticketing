@@ -106,7 +106,7 @@
 		"ticketing.departments.products": "محصولات",
 		"ticketing.departments.products.helper": "کاربر در هنگام ارسال تیکت صرفا مجاز به انتخاب از بین محصولات فوق خواهد بود",
 		"ticketing.departments.products.all_items": "همه محصولات",
-		"ticketing.departments.force_choose_product": "انتخاب محصول به صورت اجباری",
+		"ticketing.departments.mandatory_choose_product": "انتخاب محصول به صورت اجباری",
 		"ticketing.departments.status": "وضعیت",
 		"ticketing.departments.status.active": "فعال",
 		"ticketing.departments.status.deactive": "غیرفعال",

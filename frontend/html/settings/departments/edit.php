@@ -35,16 +35,16 @@ $this->the_header();
 								'name' => 'products-select',
 								'type' => 'select',
 								'multiple' => true,
-								'value' => $this->getProducts(),
+								'value' => $this->department->getProducts(),
 								'label' => t('ticketing.departments.products'),
 								'options' => $this->getProductsForSelect(),
 							));
 							$this->createField(array(
 								'type' => 'checkbox',
-								'name' => 'force_choose_product',
+								'name' => 'mandatory_choose_product',
 								'options' => array(
 									array(
-										'label' => t('ticketing.departments.force_choose_product'),
+										'label' => t('ticketing.departments.mandatory_choose_product'),
 										'value' => '1',
 									),
 								),
