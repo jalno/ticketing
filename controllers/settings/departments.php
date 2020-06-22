@@ -377,8 +377,11 @@ class Departments extends Controller {
 			}
 		}
 		if (isset($inputs["mandatory_choose_product"])) {
-			if ($department->isMandatoryChooseProduct() != $inputs["mandatory_choose_product"]) {
+			$isMandatory = $department->isMandatoryChooseProduct();
+			if ($isMandatory != $inputs["mandatory_choose_product"]) {
 				$department->setMandatoryChooseProduct($inputs["mandatory_choose_product"]);
+				$parameters["oldData"]["mandatory_choose_product"] = $isMandatory;
+				$parameters["newData"]["mandatory_choose_product"] = $inputs["mandatory_choose_product"];
 			}
 		}
 		$days = department\Worktime::getDays();
