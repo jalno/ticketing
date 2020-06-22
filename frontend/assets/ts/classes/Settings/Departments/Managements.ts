@@ -23,8 +23,8 @@ export default class Managements {
 	protected static AllUserSelectListener() {
 		const $panel = $(".panel.panel-users", Managements.$form);
 		$('input[name="allUsers"]', $panel).on("change", function() {
-			const $users = $(".panel-body input", $panel);
-			$users.prop("disabled", $(this).prop("checked"));
+			const $users = $(".panel-body input[type=checkbox]", $panel);
+			$users.prop("checked", $(this).prop("checked")).trigger("change");
 		});
 	}
 
