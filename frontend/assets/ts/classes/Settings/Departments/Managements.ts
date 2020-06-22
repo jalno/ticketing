@@ -13,9 +13,9 @@ export default class Managements {
 		}
 	}
 	public static init() {
+		Managements.runInputMsgHelpers(); // you should run this before init anything!
 		Managements.initSelect2();
 		Managements.runjQRangeSlider();
-		Managements.runInputMsgHelpers();
 		Managements.EnabledjQRangeSlider();
 		Managements.runSubmitFormListener();
 		Managements.AllUserSelectListener();
@@ -60,25 +60,18 @@ export default class Managements {
 			message: t("ticketing.departments.products.helper"),
 		});
 	}
-	private static disableListener($tr: JQuery, disable: boolean) {
-		const slider = $(".slider", $tr).data("ionRangeSlider");
-		slider.update({disable: disable});
-		$("input[name*=start]").val(slider.result.from);
-		$("input[name*=end]").val(slider.result.to);
-	}
 	private static runjQRangeSlider() {
 		$(".slider", Managements.$form).each(function() {
-			const day: number = $(this).data("day");
-			const startWorkTime = $("input[name='day[" + day + "][worktime][start]']");
-			const endWorkTime = $("input[name='day[" + day + "][worktime][end]']");
-			const from = parseInt(startWorkTime.val() as string, 10);
-			const to = parseInt(endWorkTime.val() as string, 10);
-			const disabled = !$("input[name='day[" + day + "][enable]']").prop("checked");
-			function valuesChangingListener(obj: IonRangeSliderEvent) {
-				startWorkTime.val(obj.from);
-				endWorkTime.val(obj.to);
-			}
-			$(this).ionRangeSlider({
+			const $this = $(this);
+			const day: number = $this.data("day");
+			const $startWorkTime = $(`input[name='day[${day}][worktime][start]']`);
+			const $endWorkTime = $(`input[name='day[${day}][worktime][end]']`);
+
+			const from = parseInt($startWorkTime.val() as string, 10);
+			const to = parseInt($endWorkTime.val() as string, 10);
+			const disabled = !$(`input[name='day[${day}][enable]']`).prop("checked");
+
+			$this.ionRangeSlider({
 				type: "double",
 				grid: true,
 				min: 0,
@@ -86,18 +79,42 @@ export default class Managements {
 				from: from,
 				to: to,
 				min_interval: 1,
-				onChange: valuesChangingListener,
+				disable: disabled,
+				onChange: (obj: IonRangeSliderEvent) => {
+					$startWorkTime.val(obj.from);
+					$endWorkTime.val(obj.to);
+				},
 				prefix: t("ticketing.ion_range_slider.prefix.hour"),
 				postfix: t("ticketing.ion_range_slider.postfix.hour"),
 			});
-			Managements.disableListener($(this).parents("tr"), disabled);
 		});
 	}
 	private static EnabledjQRangeSlider() {
 		$(".panel-day-works input[type=checkbox]", Managements.$form).on("change", function() {
-			const tr = $(this).parents("tr");
 			const disabled = (!$(this).prop("checked"));
-			Managements.disableListener(tr, disabled);
+			const $slider = $(".slider", $(this).parents("tr"));
+			const day = $slider.data("day") as number;
+
+			let lastWorkTimeStart = $slider.data("lastWorkTimeStart") as number;
+			if (!lastWorkTimeStart) {
+				lastWorkTimeStart = 0;
+			}
+			let lastWorkTimeEnd = $slider.data("lastWorkTimeEnd") as number;
+			if (!lastWorkTimeEnd) {
+				lastWorkTimeEnd = 0;
+			}
+			const slider = $slider.data("ionRangeSlider");
+			slider.update({
+				disable: disabled,
+				from: disabled ? 0 : lastWorkTimeStart,
+				to: disabled ? 0 : lastWorkTimeEnd,
+			});
+			const $workTimeStart = $(`input[name='day[${day}][worktime][start]']`);
+			const $workTimeEnd = $(`input[name='day[${day}][worktime][end]']`);
+			$slider.data("lastWorkTimeStart", parseInt($workTimeStart.val() as string, 10));
+			$slider.data("lastWorkTimeEnd", parseInt($workTimeEnd.val() as string, 10));
+			$workTimeStart.val(disabled ? 0 : lastWorkTimeStart);
+			$workTimeEnd.val(disabled ? 0 : lastWorkTimeEnd);
 		});
 	}
 	private static runSubmitFormListener() {
