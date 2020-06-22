@@ -141,7 +141,7 @@ $this->the_header();
 													</td>
 													<td><?php echo($this->getTranslatDays($day['day'])); ?></td>
 													<td style="min-width: 200px;">
-														<input data-day="<?php echo $day['day']; ?>" class="slider">
+														<input class="slider" data-day="<?php echo $day['day']; ?>">
 													</td>
 													<td>
 														<?php
