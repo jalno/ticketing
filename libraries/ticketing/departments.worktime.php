@@ -4,7 +4,7 @@ use packages\base\db\dbObject;
 
 class worktime extends dbObject{
 	const saturday = 6;
-	const sunday = 7;
+	const sunday = 0;
 	const monday = 1;
 	const tuesday = 2;
 	const wednesday = 3;

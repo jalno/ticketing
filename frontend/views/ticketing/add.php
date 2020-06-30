@@ -1,7 +1,7 @@
 <?php
 namespace themes\clipone\views\ticketing;
 
-use packages\ticketing\{Authorization, Ticket};
+use packages\ticketing\{Authorization, Department, Ticket};
 use packages\userpanel;
 use packages\userpanel\User;
 use themes\clipone\{Breadcrumb, Navigation, ViewTrait};
@@ -28,6 +28,8 @@ class Add extends TicketAdd {
 		$initEvent->view = $this;
 		$initEvent->trigger();
 		$this->multiuser = (bool)Authorization::childrenTypes();
+		$this->addBodyClass("ticketing");
+		$this->addBodyClass("tickets-add");
 	}
 	private function setNavigation() {
 		$item = new MenuItem("ticketing");
@@ -49,12 +51,36 @@ class Add extends TicketAdd {
 				'value' => "",
 			)
 		);
+		$allProducts = $this->getProductsForSelect();
+		$getProductsSelectOptions = function (Department $department) use ($allProducts) {
+			$options = array();
+			if (!$department->isMandatoryChooseProduct()) {
+				$options[] = array(
+					'title' => t('none'),
+					'value' => '',
+				);
+			}
+			$departmentProducts = $department->getProducts();
+			if ($departmentProducts) {
+				foreach ($departmentProducts as $departmentProduct) {
+					foreach ($allProducts as $product) {
+						if ($product['value'] == $departmentProduct) {
+							$options[] = $product;
+						}
+					}
+				}
+			} else {
+				$options = array_merge($options, $allProducts);
+			}
+			return $options;
+		};
 		foreach ($this->getDepartmentData() as $row) {
 			$departments[] = array(
 				'title' => $row->title,
 				'value' => $row->id,
 				'data' => array(
-					'working' => $row->isWorking() ? 1 : 0
+					'working' => $row->isWorking() ? 1 : 0,
+					'products' => $getProductsSelectOptions($row),
 				)
 			);
 		}

@@ -15,7 +15,7 @@ $this->the_header();
 			<div class="panel-body">
 				<form id="settings-departmetns-management" action="<?php echo userpanel\url("settings/departments/edit/".$this->department->id); ?>" method="post">
 					<div class="row">
-						<div class="col-md-5 col-sm-5 col-xs-12">
+						<div class="col-md-5 col-sm-5 col-xs-12 right-side-inputs">
 						<?php
 							$this->createField(array(
 								'name' => 'title',
@@ -26,6 +26,28 @@ $this->the_header();
 								'type' => 'select',
 								'label' => t("ticketing.departments.status"),
 								'options' => $this->getDepartmentStatusForSelect(),
+							));
+							$this->createField(array(
+								'name' => 'products',
+								'type' => 'hidden',
+							));
+							$this->createField(array(
+								'name' => 'products-select',
+								'type' => 'select',
+								'multiple' => true,
+								'value' => $this->department->getProducts(),
+								'label' => t('ticketing.departments.products'),
+								'options' => $this->getProductsForSelect(),
+							));
+							$this->createField(array(
+								'type' => 'checkbox',
+								'name' => 'mandatory_choose_product',
+								'options' => array(
+									array(
+										'label' => t('ticketing.departments.mandatory_choose_product'),
+										'value' => '1',
+									),
+								),
 							));
 						?>
 						</div>
@@ -119,7 +141,7 @@ $this->the_header();
 													</td>
 													<td><?php echo $this->getTranslatDays($day["day"]); ?></td>
 													<td style="min-width: 200px;">
-														<div data-day="<?php echo $day["day"]; ?>" class="slider"></div>
+														<input class="slider" data-day="<?php echo $day["day"]; ?>">
 													</td>
 													<td>
 														<?php

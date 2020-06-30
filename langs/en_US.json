@@ -8,6 +8,7 @@
 		"usertype.permissions.ticketing": "Ticketing",
 		"usertype.permissions.ticketing_list": "Tickets list",
 		"usertype.permissions.ticketing_add": "Add Ticket",
+		"usertype.permissions.ticketing_add_override-force-product-choose": "Ability to don't choose product on add ticket",
 		"usertype.permissions.ticketing_view": "View Ticket",
 		"usertype.permissions.ticketing_reply": "Reply in Ticket",
 		"usertype.permissions.ticketing_edit": "Edit Ticket",

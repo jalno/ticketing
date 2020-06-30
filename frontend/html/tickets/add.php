@@ -17,46 +17,10 @@ $this->the_header();
 					<div class="row">
 						<div class="col-sm-6">
 						<?php
-						if($this->multiuser){
-							$this->createField(array(
-								'name' => 'client',
-								'type' => 'hidden'
-							));
-							$this->createField(array(
-								'name' => 'client_name',
-								'label' => translator::trans("newticket.client"),
-								'error' => array(
-									'data_validation' => 'newticket.client.data_validation'
-								)
-							));
-						}
 						$fields = array(
 							array(
 								'name' => 'title',
 								'label' => translator::trans("newticket.title"),
-								'required' => true,
-							),
-							array(
-								'name' => 'product',
-								'type' => 'select',
-								'label' => translator::trans("newticket.typeservice"),
-								'options' => $this->products(),
-								'value' => ''
-							)
-						);
-						foreach($fields as $field){
-							$this->createField($field);
-						}
-						?>
-						</div>
-						<div class="col-sm-6">
-						<?php
-						$fields = array(
-							array(
-								'name' => 'priority',
-								'type' => 'select',
-								'label' => translator::trans("newticket.priority"),
-								'options' => $this->getpriortyForSelect(),
 								'required' => true,
 							),
 							array(
@@ -67,31 +31,66 @@ $this->the_header();
 								'required' => true,
 							),
 							array(
+								'name' => 'product',
+								'type' => 'select',
+								'label' => translator::trans("newticket.typeservice"),
+								'options' => array(
+									array(
+										'title' => t('none'),
+										'value' => '',
+									)
+								),
+							),
+							array(
 								'name' => 'service',
 								'type' => 'select',
 								'label' => translator::trans("newticket.service"),
 								'options' => array()
-							)
+							),
 						);
 						foreach($fields as $field){
 							$this->createField($field);
 						}
 						?>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12">
+						<div class="col-sm-6">
 							<?php
-							$this->createField(array(
-								'name' => 'text',
-								'type' => 'textarea',
-								'rows' => 4,
-								'required' => true,
-							));
+							$fields = array(
+								array(
+									'name' => 'priority',
+									'type' => 'select',
+									'label' => translator::trans("newticket.priority"),
+									'options' => $this->getpriortyForSelect(),
+									'required' => true,
+								),
+								array(
+									'name' => 'text',
+									'label' => t('newticket.text'),
+									'type' => 'textarea',
+									'rows' => 4,
+									'required' => true,
+								)
+							);
+							if ($this->multiuser) {
+								array_unshift($fields, array(
+									'name' => 'client',
+									'type' => 'hidden'
+								),
+								array(
+									'name' => 'client_name',
+									'label' => t('newticket.client'),
+									'error' => array(
+										'data_validation' => 'newticket.client.data_validation'
+									),
+								));
+							}
+							foreach ($fields as $field) {
+								$this->createField($field);
+							}
 							?>
-							<hr>
 						</div>
 					</div>
+					<hr>
 					<div class="row">
 						<?php
 						$editor = authentication::getUser()->getOption('ticketing_editor');

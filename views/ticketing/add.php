@@ -29,6 +29,6 @@ class Add extends Form {
 		$this->setData($products, 'products');
 	}
 	public function getProducts(){
-		return $this->getData('products');
+		return $this->getData('products') ?? [];
 	}
 }

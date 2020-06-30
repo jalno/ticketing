@@ -32,26 +32,15 @@ class add extends DepartmentAdd {
 		$departments->setIcon('fa fa-university');
 		$item->addItem($departments);
 	}
-	private function setDaysValue(){
-		for($i = 1; $i <= 7; $i++){
+	private function setDaysValue() {
+		$firstDay = Date::getFirstDayOfWeek();
+		for ($i = $firstDay; $i < $firstDay + 7; $i++) {
 			$this->days[] = array(
-				'day' => $i
+				'day' => ($i % 7),
 			);
 		}
 	}
-	protected function sortedDays(){
-		if(date::getCanlenderName() == 'jdate'){
-			$times = $this->days;
-			usort($times, function($a, $b){
-				if($a['day'] > $b['day']){
-					return 1;
-				}elseif($b['day'] > $a['day']){
-					return -1;
-				}
-				return 0;
-			});
-			return array_merge(array_slice($times, 5,2),array_slice($times, 0,5));
-		}
+	protected function sortedDays() {
 		return $this->days;
 	}
 }

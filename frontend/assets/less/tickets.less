@@ -141,6 +141,17 @@
 		margin-top: 15px;
 	}
 }
+.tickets-add {
+	#ticket-add {
+		textarea {
+			resize: vertical;
+		}
+		select:-moz-focusring {
+			color: transparent;
+			text-shadow: 0 0 0 #000;
+		}
+	}
+}
 body.rtl {
 	.ticket-status-search {
 		font-family: yekan;
@@ -153,6 +164,11 @@ body.rtl {
 			.ticket-info {
 				text-align: left;
 			}
+		}
+	}
+	&.tickets-add {
+		#ticket-add {
+			font-family: yekan;
 		}
 	}
 }

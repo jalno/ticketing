@@ -19,26 +19,14 @@ class Edit extends DepartmentEdit {
 		$this->addBodyClass("departments");
 		$this->addBodyClass("departments-add");
 	}
-	protected function sortedDays(){
-		if (Date::getCanlenderName() == "jdate") {
-			return array(
-				array("day" => Worktime::saturday),
-				array("day" => Worktime::sunday),
-				array("day" => Worktime::monday),
-				array("day" => Worktime::tuesday),
-				array("day" => Worktime::wednesday),
-				array("day" => Worktime::thursday),
-				array("day" => Worktime::friday),
+	protected function sortedDays() {
+		$days = array();
+		$firstDay = Date::getFirstDayOfWeek();
+		for ($i = $firstDay; $i < $firstDay + 7; $i++) {
+			$days[] = array(
+				'day' => ($i % 7),
 			);
 		}
-		return array(
-			array("day" => Worktime::monday),
-			array("day" => Worktime::tuesday),
-			array("day" => Worktime::wednesday),
-			array("day" => Worktime::thursday),
-			array("day" => Worktime::friday),
-			array("day" => Worktime::saturday),
-			array("day" => Worktime::sunday),
-		);
+		return $days;
 	}
 }

@@ -7,6 +7,8 @@ class edit extends form {
 		$this->setData($department, "department");
 		$this->setDataForm($department->title, "title");
 		$this->setDataForm($department->status, "status");
+		$this->setDataForm($department->getProducts(), "products-select");
+		$this->setDataForm($department->isMandatoryChooseProduct(), "mandatory_choose_product");
 		foreach ($department->worktimes as $work) {
 			$this->setDataForm(($work->time_start or $work->time_end), "day[{$work->day}][enable]");
 			$this->setDataForm($work->time_start, "day[{$work->day}][worktime][start]");

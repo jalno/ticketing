@@ -28,6 +28,8 @@ class view extends ticketView{
 		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
 		$this->setNavigation();
 		$this->SetDataView();
+		$this->addBodyClass("ticketing");
+		$this->addBodyClass("tickets-view");
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");

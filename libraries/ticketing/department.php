@@ -6,6 +6,7 @@ use packages\userpanel\Date;
 use packages\ticketing\department\Worktime;
 
 class Department extends dbObject {
+	use Paramable;
 
 	const ACTIVE = 1;
 	const DEACTIVE = 2;
@@ -26,6 +27,18 @@ class Department extends dbObject {
 	protected $relations = array(
 		'worktimes' => array('hasMany', Worktime::class, 'department')
 	);
+	public function setProducts(array $products): void {
+		$this->setParam("products", $products);
+	}
+	public function getProducts(): array { // if products is an empty array, all products are accpetable for this department
+		return $this->param("products") ?? [];
+	}
+	public function setMandatoryChooseProduct(bool $isMandatory): void {
+		$this->setParam("mandatory_choose_product", $isMandatory);
+	}
+	public function isMandatoryChooseProduct(): bool {
+		return !!$this->param("mandatory_choose_product");
+	}
 	protected function isWorking() {
 		$worktime = $this->currentWork();
 		return($worktime->time_start <= date::format("H") and $worktime->time_end >= date::format("H"));

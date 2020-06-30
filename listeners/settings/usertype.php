@@ -6,6 +6,7 @@ class usertype{
 		$permissions = array(
 			'list',
 			'add',
+			'add_override-force-product-choose',
 			'view',
 			'reply',
 			'edit',
@@ -13,7 +14,7 @@ class usertype{
 			'unlock',
 			'delete',
 			'close',
-			"unassigned",
+			'unassigned',
 
 			'message_delete',
 			'message_edit',
