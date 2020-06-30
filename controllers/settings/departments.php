@@ -159,7 +159,7 @@ class Departments extends Controller {
 						throw new InputValidationException($input);
 					}
 					foreach ($data as $day => $val) {
-						if (!in_array($day, range(1, 7))) {
+						if (!in_array($day, range(0, 6))) {
 							throw new InputValidationException("day[{$day}][enable]");
 						}
 						if (isset($val["enable"]) and $val["enable"]) {
@@ -295,7 +295,7 @@ class Departments extends Controller {
 						throw new InputValidationException($input);
 					}
 					foreach ($data as $day => $val) {
-						if (!in_array($day, range(1, 7))) {
+						if (!in_array($day, range(0, 6))) {
 							throw new InputValidationException("day[{$day}][enable]");
 						}
 						if (isset($val["enable"]) and $val["enable"]) {
@@ -319,7 +319,7 @@ class Departments extends Controller {
 				},
 			),
 			"users" => array(
-				"type" => function ($data, $rule, $input) use ($usersForSelect) {
+				"type" => function ($data, $rule, $input) use (&$usersForSelect) {
 					if (!is_array($data)) {
 						throw new InputValidationException($input);
 					}

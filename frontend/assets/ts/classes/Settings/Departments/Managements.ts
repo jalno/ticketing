@@ -22,10 +22,15 @@ export default class Managements {
 	}
 	protected static AllUserSelectListener() {
 		const $panel = $(".panel.panel-users", Managements.$form);
-		$('input[name="allUsers"]', $panel).on("change", function() {
-			const $users = $(".panel-body input[type=checkbox]", $panel);
-			$users.prop("checked", $(this).prop("checked")).trigger("change");
+		const $users = $(".panel-body input[type=checkbox]", $panel);
+		const $all = $('input[name="allUsers"]', $panel);
+		$all.on("change", function() {
+			const checked = $(this).prop("checked");
+			$users.prop("checked", checked).prop("disabled", checked).trigger("change");
 		});
+		if ($all.prop("checked")) {
+			$all.trigger("change");
+		}
 	}
 
 	private static $form = $("#settings-departmetns-management");
