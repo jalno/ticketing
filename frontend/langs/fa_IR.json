@@ -153,6 +153,8 @@
 		"ticketing.ticket.list.info.create.in_department": "در دپارتمان",
 		"ticketing.ticket.list.info.last_answer": "آخرین پاسخ",
 
-		"ticketing.choose": "انتخاب کنید .."
+		"ticketing.choose": "انتخاب کنید ..",
+		"ticketing.active_ticket_shortcut_title.client": "تیکت خوانده نشده دارید",
+		"ticketing.active_ticket_shortcut_title.operator": "تیکت نیاز به پیگیری دارند"
 	}
 }
