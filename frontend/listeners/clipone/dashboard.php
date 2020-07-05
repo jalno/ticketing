@@ -42,6 +42,9 @@ class dashboard{
 			}
 			$shortcut = new shortcut("tickets");
 			$shortcut->icon = "clip-user-6";
+			if ($count and !$isManager and !$types) {
+				$shortcut->color = Shortcut::Danger;
+			}
 			if ($count) {
 				$shortcut->title = $count;
 				$shortcut->text = $text;
