@@ -28,20 +28,17 @@ class Ticketing extends Controller {
 		}
 		$parenthes->where($haveOperator);
 
-		$clientParenthes = new Parenthesis();
-		if ($types) {
-			$clientParenthes->where("userpanel_users.type", $types, "IN");
-		} else {
-			$clientParenthes->where("ticketing_tickets.client", $me);
-		}
-
 		if ($unassignedTickets) {
 			$notOperator = new Parenthesis();
 			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			$notOperator->where($clientParenthes);
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
 			$parenthes->orWhere($notOperator);
 		} else {
-			$parenthes->orWhere($clientParenthes);
+			$parenthes->orWhere("ticketing_tickets.client", $me);
 		}
 
 		$ticket->where($parenthes);
@@ -60,7 +57,7 @@ class Ticketing extends Controller {
 		$me = authentication::getID();
 		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
 		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.user", "INNER");
+		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		$message = new ticket_message();
 		$parenthes = new Parenthesis();
 
@@ -72,20 +69,17 @@ class Ticketing extends Controller {
 		}
 		$parenthes->where($haveOperator);
 
-		$clientParenthes = new Parenthesis();
-		if ($types) {
-			$clientParenthes->where("userpanel_users.type", $types, "IN");
-		} else {
-			$clientParenthes->where("ticketing_tickets.client", $me);
-		}
-
 		if ($unassignedTickets) {
 			$notOperator = new Parenthesis();
 			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			$notOperator->where($clientParenthes);
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
 			$parenthes->orWhere($notOperator);
 		} else {
-			$parenthes->orWhere($clientParenthes);
+			$parenthes->orWhere("ticketing_tickets.client", $me);
 		}
 
 		$message->where($parenthes);
@@ -163,10 +157,12 @@ class Ticketing extends Controller {
 					$accessed[] = $department->id;
 				}
 			}
-			if (! empty($accessed)) {
+			if (!empty($accessed)) {
 				$ticket->where("ticketing_tickets.department", $accessed, "IN");
 			}
 		}
+
+
 		$parenthes = new Parenthesis();
 
 		$haveOperator = new Parenthesis();
@@ -177,20 +173,17 @@ class Ticketing extends Controller {
 		}
 		$parenthes->where($haveOperator);
 
-		$clientParenthes = new Parenthesis();
-		if ($types) {
-			$clientParenthes->where("userpanel_users.type", $types, "IN");
-		} else {
-			$clientParenthes->where("ticketing_tickets.client", $me);
-		}
-
 		if ($unassignedTickets) {
 			$notOperator = new Parenthesis();
 			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			$notOperator->where($clientParenthes);
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
 			$parenthes->orWhere($notOperator);
 		} else {
-			$parenthes->orWhere($clientParenthes);
+			$parenthes->orWhere("ticketing_tickets.client", $me);
 		}
 
 		$ticket->where($parenthes);
@@ -372,7 +365,7 @@ class Ticketing extends Controller {
 				}
 			}
 		}
-
+		$hasAccessToUnassignedTickets = Authorization::is_accessed("unassigned");
 		$me = Authentication::getID();
 		$ticket = new Ticket();
 		$ticket->title	= $inputs['title'];
@@ -380,6 +373,9 @@ class Ticketing extends Controller {
 		$ticket->client = $inputs['client']->id;
 		$ticket->department = $inputs['department']->id;
 		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
+		if ($me != $inputs["client"]->id and !$hasAccessToUnassignedTickets) {
+			$ticket->operator_id = $me;
+		}
 		$ticket->save();
 		if (isset($inputs["product"], $inputs["service"])) {
 			$ticket->setParam("product", $inputs["product"]->getName());
