@@ -18,21 +18,30 @@ class Ticketing extends Controller {
 		$ticket->with("client");
 		$ticket->with("department");
 		$ticket->where("ticketing_tickets.id", $ticketID);
-		$parenthesis = new parenthesis();
+		$parenthes = new Parenthesis();
+
+		$haveOperator = new Parenthesis();
 		if ($types) {
-			$parenthesis->orWhere("userpanel_users.type", $types, "IN");
+			$haveOperator->where("operator.type", $types, "IN");
 		} else {
-			$parenthesis->orWhere("ticketing_tickets.client", $me);
+			$haveOperator->where("ticketing_tickets.operator_id", $me);
 		}
+		$parenthes->where($haveOperator);
+
 		if ($unassignedTickets) {
-			$parenthesis->orWhere("ticketing_tickets.operator_id", null, "IS");
-		}
-		if ($types) {
-			$parenthesis->orWhere("operator.type", $types, "IN");
+			$notOperator = new Parenthesis();
+			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
+			$parenthes->orWhere($notOperator);
 		} else {
-			$parenthesis->orWhere("ticketing_tickets.operator_id", $me);
+			$parenthes->orWhere("ticketing_tickets.client", $me);
 		}
-		$ticket->where($parenthesis);
+
+		$ticket->where($parenthes);
 		$ticket = $ticket->getOne();
 		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array($me, $ticket->department->users))){
 			throw new NotFound;
@@ -43,19 +52,40 @@ class Ticketing extends Controller {
 		return $ticket;
 	}
 	private function getTicketMessage($messageID) {
+		$unassignedTickets = authorization::is_accessed("unassigned");
 		$types = authorization::childrenTypes();
 		$me = authentication::getID();
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets_msgs.user", "LEFT");
+		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
+		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
+		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
 		$message = new ticket_message();
-		if($types){
-			$message->where("userpanel_users.type", $types, "in");
-		}else{
-			$message->where("userpanel_users.id", $me);
+		$parenthes = new Parenthesis();
+
+		$haveOperator = new Parenthesis();
+		if ($types) {
+			$haveOperator->where("operator.type", $types, "IN");
+		} else {
+			$haveOperator->where("ticketing_tickets.operator_id", $me);
 		}
+		$parenthes->where($haveOperator);
+
+		if ($unassignedTickets) {
+			$notOperator = new Parenthesis();
+			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
+			$parenthes->orWhere($notOperator);
+		} else {
+			$parenthes->orWhere("ticketing_tickets.client", $me);
+		}
+
+		$message->where($parenthes);
 		$message->where("ticketing_tickets_msgs.id", $messageID);
-		$message->with("ticket");
 		$message = $message->getOne("ticketing_tickets_msgs.*");
-		if (!$message or ($message->ticket->client->id != $me and $message->ticket->department->users and !in_array(authentication::getID(), $message->ticket->department->users))){
+		if (!$message or ($message->ticket->client->id != $me and $message->ticket->department->users and !in_array($me, $message->ticket->department->users))){
 			throw new NotFound;
 		}
 		return $message;
@@ -127,25 +157,36 @@ class Ticketing extends Controller {
 					$accessed[] = $department->id;
 				}
 			}
-			if (! empty($accessed)) {
+			if (!empty($accessed)) {
 				$ticket->where("ticketing_tickets.department", $accessed, "IN");
 			}
 		}
-		$parenthesis = new parenthesis();
+
+
+		$parenthes = new Parenthesis();
+
+		$haveOperator = new Parenthesis();
 		if ($types) {
-			$parenthesis->orWhere("userpanel_users.type", $types, "IN");
+			$haveOperator->where("operator.type", $types, "IN");
 		} else {
-			$parenthesis->orWhere("ticketing_tickets.client", $me);
+			$haveOperator->where("ticketing_tickets.operator_id", $me);
 		}
+		$parenthes->where($haveOperator);
+
 		if ($unassignedTickets) {
-			$parenthesis->orWhere("ticketing_tickets.operator_id", null, "IS");
-		}
-		if ($types) {
-			$parenthesis->orWhere("operator.type", $types, "IN");
+			$notOperator = new Parenthesis();
+			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
+			if ($types) {
+				$notOperator->orWhere("userpanel_users.type", $types, "IN");
+			} else {
+				$notOperator->orWhere("ticketing_tickets.client", $me);
+			}
+			$parenthes->orWhere($notOperator);
 		} else {
-			$parenthesis->orWhere("ticketing_tickets.operator_id", $me);
+			$parenthes->orWhere("ticketing_tickets.client", $me);
 		}
-		$ticket->where($parenthesis);
+
+		$ticket->where($parenthes);
 		if (isset($inputs["status"]) and $inputs["status"]) {
 			$ticket->where("ticketing_tickets.status", $inputs["status"], "IN");
 			$view->setDataForm($inputs["status"], "status");
@@ -332,7 +373,7 @@ class Ticketing extends Controller {
 				}
 			}
 		}
-
+		$hasAccessToUnassignedTickets = Authorization::is_accessed("unassigned");
 		$me = Authentication::getID();
 		$ticket = new Ticket();
 		$ticket->title	= $inputs['title'];
@@ -340,6 +381,9 @@ class Ticketing extends Controller {
 		$ticket->client = $inputs['client']->id;
 		$ticket->department = $inputs['department']->id;
 		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
+		if ($me != $inputs["client"]->id and !$hasAccessToUnassignedTickets) {
+			$ticket->operator_id = $me;
+		}
 		$ticket->save();
 		if (isset($inputs["product"], $inputs["service"]) and $inputs["product"] and $inputs["service"]) {
 			$ticket->setParam("product", $inputs["product"]->getName());
