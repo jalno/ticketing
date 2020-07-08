@@ -16,20 +16,13 @@ class dashboard{
 			$user = Authentication::getUser();
 			$count = 0;
 			$text = t("ticketing.active_ticket_shortcut_title.client");
-			$isManager = $user->isManager();
-			$url = userpanel\url("ticketing", array(
-				"status" => Ticket::answered,
-			));
-			if ($isManager or $types) {
+			$url = userpanel\url("ticketing", array("unread" => 1));
+			if ($types) {
 				db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
-				if ($types) {
-					$ticket->where("userpanel_users.type", $types, 'IN');
-				} else {
-					$ticket->where("ticketing_tickets.client", authentication::getID());
-				}
+				$ticket->where("userpanel_users.type", $types, 'IN');
 				$ticket->where("ticketing_tickets.status", array(Ticket::unread, Ticket::read, Ticket::in_progress), "IN");
 				$count = $ticket->count();
-				$text = $isManager ? t("shortcut.tickets.not.answered") : t("ticketing.active_ticket_shortcut_title.operator");
+				$text = t("shortcut.tickets.not.answered");
 				$url = userpanel\url("ticketing", array(
 					"status" => implode(",", array(Ticket::unread, Ticket::read, Ticket::in_progress)),
 				));
@@ -37,12 +30,11 @@ class dashboard{
 				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
 				db::joinWhere("ticketing_tickets_msgs", "ticketing_tickets_msgs.status", Ticket_message::unread);
 				$ticket->where("ticketing_tickets.client", Authentication::getID());
-				$ticket->where("ticketing_tickets.status", Ticket::answered);
 				$count = $ticket->count();
 			}
 			$shortcut = new shortcut("tickets");
 			$shortcut->icon = "clip-user-6";
-			if ($count and !$isManager and !$types) {
+			if ($count and !$types) {
 				$shortcut->color = Shortcut::Danger;
 			}
 			if ($count) {

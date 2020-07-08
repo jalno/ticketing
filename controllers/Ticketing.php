@@ -107,7 +107,12 @@ class Ticketing extends Controller {
 				'values' => array('equals', 'startswith', 'contains'),
 				'default' => 'contains',
 				'optional' => true
-			)
+			),
+			'unread' => array(
+				'type' => 'bool',
+				'optional' => true,
+				'default' => false,
+			),
 		));
 		$types = authorization::childrenTypes();
 		$unassignedTickets = authorization::is_accessed("unassigned");
@@ -146,6 +151,9 @@ class Ticketing extends Controller {
 			$parenthesis->orWhere("ticketing_tickets.operator_id", $me);
 		}
 		$ticket->where($parenthesis);
+		if ($inputs["unread"]) {
+			$inputs["status"] = Ticket::STATUSES;
+		}
 		if (isset($inputs["status"]) and $inputs["status"]) {
 			$ticket->where("ticketing_tickets.status", $inputs["status"], "IN");
 			$view->setDataForm($inputs["status"], "status");
@@ -159,6 +167,12 @@ class Ticketing extends Controller {
 				$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
 			}
 		}
+		if ((isset($inputs['word']) and $inputs['word']) or $inputs["unread"]) {
+			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
+		}
+		if ($inputs["unread"]) {
+			$ticket->where("ticketing_tickets_msgs.status", Ticket_message::unread);
+		}
 		if(isset($inputs['word']) and $inputs['word']){
 			$parenthesis = new parenthesis();
 			foreach(array('title') as $item){
@@ -166,7 +180,6 @@ class Ticketing extends Controller {
 					$parenthesis->where("ticketing_tickets.{$item}", $inputs['word'], $inputs['comparison'], 'OR');
 				}
 			}
-			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
 			db::join("ticketing_files", "ticketing_files.message=ticketing_tickets_msgs.id", "LEFT");
 			$parenthesis->orWhere("ticketing_tickets_msgs.text", $inputs['word'], $inputs['comparison']);
 			$parenthesis->orWhere("ticketing_files.name", $inputs['word'], $inputs['comparison']);
