@@ -1,22 +1,18 @@
 <?php
 namespace themes\clipone\views\ticketing;
-use \packages\base\translator;
-use \packages\ticketing\views\view as ticketView;
-use \packages\userpanel;
-use \themes\clipone\views\listTrait;
-use \themes\clipone\views\formTrait;
-use \themes\clipone\viewTrait;
-use \themes\clipone\navigation;
-use \themes\clipone\utility;
-use \themes\clipone\breadcrumb;
-use \themes\clipone\navigation\menuItem;
-use \packages\ticketing\ticket;
-use \packages\ticketing\Parsedown;
-use \packages\ticketing\products;
-class view extends ticketView{
-	use viewTrait, listTrait, formTrait;
+
+use packages\base\Translator;
+use packages\ticketing\views\View as TicketView;
+use packages\userpanel;
+use packages\ticketing\{Authorization, Parsedown, Products, Ticket};
+use themes\clipone\{BreadCrumb, Navigation, navigation\MenuItem, Utility, ViewTrait};
+use themes\clipone\views\{FormTrait, ListTrait};
+
+class View extends TicketView {
+	use ViewTrait, ListTrait, FormTrait;
 	protected $messages;
 	protected $canSend = true;
+	protected $isLocked = false;
 	protected $ticket;
 	function __beforeLoad(){
 		$this->ticket = $this->getTicket();
@@ -57,8 +53,9 @@ class view extends ticketView{
 			$message->content = $text;
 		}
 		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
-			$this->canSend = false;
+			$this->isLocked = true;
 		}
+		$this->canSend = (Authorization::is_accessed("reply") and !$this->isLocked);
 		if($user = $this->getDataForm('client')){
 			if($user = userpanel\user::byId($user)){
 				$this->setDataForm($user->getFullName(), 'client_name');
