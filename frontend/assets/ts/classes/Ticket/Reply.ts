@@ -7,9 +7,6 @@ import { webuilder } from "webuilder";
 export default class Reply {
 	public static init() {
 		Reply.runSubmitFormListener();
-		if ($("input[type=file]", Reply.$form).prop("disabled")) {
-			$(".btn-file2", Reply.$form).addClass("disabled");
-		}
 	}
 	public static initIfNeeded() {
 		if (Reply.$form.length) {
@@ -20,6 +17,20 @@ export default class Reply {
 	private static $form = $("#ticket-reply");
 
 	private static runSubmitFormListener() {
+		const $selectSendType = $(".select-send-type", Reply.$form);
+		if ($selectSendType.length) {
+			$("a.send-type").on("click", function(e) {
+				e.preventDefault();
+				const $this = $(this);
+				const $sendTypeInput = $("input[name=send_without_notification]", Reply.$form);
+				if ($this.hasClass("with-notification")) {
+					$sendTypeInput.val("");
+				} else if ($this.hasClass("without-notification")) {
+					$sendTypeInput.val("true");
+				}
+				Reply.$form.submit();
+			});
+		}
 		Reply.$form.on("submit", function(e) {
 			e.preventDefault();
 			$(this).formAjax({

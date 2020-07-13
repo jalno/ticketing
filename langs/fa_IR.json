@@ -17,6 +17,7 @@
 		"usertype.permissions.ticketing_delete": "حذف تیکت",
 		"usertype.permissions.ticketing_files-download": "دانلود فایل های پیوست تیکت",
 		"usertype.permissions.ticketing_unassigned": "تیکت های بدون اپراتور",
+		"usertype.permissions.ticketing_select_send_type": "فعال یا غیرفعال سازی ارسال اعلان در هنگام ارسال تیکت",
 		
 		"usertype.permissions.ticketing_message": "پیام های تیکت",
 		"usertype.permissions.ticketing_message_delete": "حذف پیام های تیکت",

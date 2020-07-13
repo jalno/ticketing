@@ -13,6 +13,7 @@ class View extends TicketView {
 	protected $messages;
 	protected $canSend = true;
 	protected $isLocked = false;
+	protected $hasAccessToSelectSendType;
 	protected $ticket;
 	function __beforeLoad(){
 		$this->ticket = $this->getTicket();
@@ -21,6 +22,7 @@ class View extends TicketView {
 			translator::trans('ticket'),
 			"#".$this->ticket->id
 		]);
+		$this->hasAccessToSelectSendType = Authorization::is_accessed("select_send_type");
 		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
 		$this->setNavigation();
 		$this->SetDataView();

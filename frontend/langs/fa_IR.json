@@ -152,7 +152,7 @@
 		"ticketing.ticket.list.info.create.create_by": "توسط",
 		"ticketing.ticket.list.info.create.in_department": "در دپارتمان",
 		"ticketing.ticket.list.info.last_answer": "آخرین پاسخ",
-
+		"ticketing.ticket.send.without_notification": "ارسال بدون اعلان",
 		"ticketing.choose": "انتخاب کنید .."
 	}
 }

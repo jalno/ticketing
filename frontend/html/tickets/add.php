@@ -1,7 +1,7 @@
 <?php
 use \packages\base\translator;
 use \packages\userpanel;
-use \packages\ticketing\ticket_message;
+use packages\ticketing\{Ticket, ticket_message};
 use \packages\ticketing\authentication;
 $this->the_header();
 ?>
@@ -84,6 +84,12 @@ $this->the_header();
 									),
 								));
 							}
+							if ($this->hasAccessToSelectSendType) {
+								$fields[] = array(
+									'name' => 'send_without_notification',
+									'type' => 'hidden',
+								);
+							}
 							foreach ($fields as $field) {
 								$this->createField($field);
 							}
@@ -102,11 +108,23 @@ $this->the_header();
 						<?php } ?>
 						<div class="col-sm-5 text-left <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 							<div class="btn-group btn-group-lg" role="group">
+								<?php if ($this->hasAccessToSelectSendType) { ?>
+								<div class="btn-group btn-group-lg" role="group">
+									<button type="submit" class="btn btn-teal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<i class="fa fa-paper-plane"></i><?php echo t("send"); ?> <i class="fa fa-caret-down" aria-hidden="true"></i>
+									</button>
+									<ul class="dropdown-menu select-send-type">
+										<li><a class="send-type with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("send"); ?> </a></li>
+										<li><a class="send-type without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.ticket.send.without_notification"); ?> </a></li>
+									</ul>
+								</div>
+								<?php } else { ?>
+								<button class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo t("send"); ?></button>
+								<?php } ?>
 								<span class="btn btn-file2">
 									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 									<input type="file" name="file[]" multiple="">
 								</span>
-								<button class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 							</div>
 						</div>
 					</div>

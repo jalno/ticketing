@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
@@ -273,6 +273,7 @@ class Ticketing extends Controller {
 		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 		$view->setProducts(Products::get());
 		$children = Authorization::childrenTypes();
+		$hasAccessToSelectSendType = Authorization::is_accessed("select_send_type");
 		$inputsRules = array(
 			'title' => array(
 				'type' => 'string',
@@ -310,6 +311,11 @@ class Ticketing extends Controller {
 			$inputsRules['client'] = array(
 				'type' => User::class,
 				'optional' => true
+			);
+		}
+		if ($hasAccessToSelectSendType) {
+			$inputsRules["send_without_notification"] = array(
+				'type' => 'bool',
 			);
 		}
 		$view->setDataForm($this->inputsvalue($inputsRules));
@@ -401,14 +407,17 @@ class Ticketing extends Controller {
 		$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
 		$message->save();
 
-		$event = new events\tickets\Add($message);
-		$event->trigger();
-
 		$log = new Log();
 		$log->user = $me;
 		$log->title = t("ticketing.logs.add", ['ticket_id' => $ticket->id]);
 		$log->type = logs\tickets\Add::class;
 		$log->save();
+
+		$shouldTriggerNotification = Options::get("packages.ticketing.send.trigger_notification");
+		if (($hasAccessToSelectSendType and (!$inputs["send_without_notification"])) or (!$hasAccessToSelectSendType and $shouldTriggerNotification)) {
+			$event = new events\tickets\Add($message);
+			$event->trigger();
+		}
 
 		$this->response->Go(userpanel\url('ticketing/view/'. $ticket->id));
 		$this->response->setStatus(true);
@@ -456,7 +465,8 @@ class Ticketing extends Controller {
 		if ($ticket->param('ticket_lock')) {
 			throw new NotFound();
 		}
-		$inputs = $this->checkinputs(array(
+		$hasAccessToSelectSendType = Authorization::is_accessed("select_send_type");
+		$inputsRules = array(
 			'text' => array(
 				'type' => 'string'
 			),
@@ -465,8 +475,16 @@ class Ticketing extends Controller {
 				'optional' => true,
 				'multiple' => true,
 				'obj' => true,
-			)
-		));
+			),
+		);
+		if ($hasAccessToSelectSendType) {
+			$inputsRules['send_without_notification'] = array(
+				'type' => 'bool',
+			);
+		}
+		$inputs = $this->checkinputs($inputsRules);
+		var_dump($inputs["send_without_notification"]);
+		exit();
 		if (!$inputs['text'] = strip_tags($inputs['text'])) {
 			throw new InputValidationException('text');
 		}
@@ -515,13 +533,17 @@ class Ticketing extends Controller {
 		$ticket->reply_at = Date::time();
 		$ticket->save();
 
-		$event = new events\tickets\Reply($ticket_message);
-		$event->trigger();
 		$log = new Log();
 		$log->user = Authentication::getID();
 		$log->title = t("ticketing.logs.reply", array("ticket_id" => $ticket->id));
 		$log->type = Logs\tickets\Reply::class;
 		$log->save();
+
+		$shouldTriggerNotification = Options::get("packages.ticketing.send.trigger_notification");
+		if (($hasAccessToSelectSendType and (!$inputs["send_without_notification"])) or (!$hasAccessToSelectSendType and $shouldTriggerNotification)) {
+			$event = new events\tickets\Reply($ticket_message);
+			$event->trigger();
+		}
 
 		$this->response->Go(userpanel\url("ticketing/view/" . $ticket->id));
 		$this->response->setStatus(true);

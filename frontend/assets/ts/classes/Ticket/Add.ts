@@ -84,8 +84,8 @@ export default class Add {
 		const $formGroup = $services.parents(".form-group");
 		const $alert = $(".alert-service", Add.$form);
 		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
-			const product: string = $("select[name=product]").val().toString();
-			if (product.length) {
+			const product = $("select[name=product]").val();
+			if (product) {
 				let user: string;
 				const $user = $("input[name=client]", Add.$form);
 				if ($user.length) {
@@ -104,7 +104,7 @@ export default class Add {
 					data: {
 						ajax: 1,
 						client: user,
-						product: product,
+						product: product.toString(),
 					},
 					success: (data: webuilder.AjaxResponse) => {
 						const length = data.items.length;
@@ -143,10 +143,24 @@ export default class Add {
 		}
 	}
 	private static runSubmitFormListener() {
+		const $selectSendType = $(".select-send-type", Add.$form);
+		if ($selectSendType.length) {
+			$("a.send-type").on("click", function(e) {
+				e.preventDefault();
+				const $this = $(this);
+				const $sendTypeInput = $("input[name=send_without_notification]", Add.$form);
+				if ($this.hasClass("with-notification")) {
+					$sendTypeInput.val("");
+				} else if ($this.hasClass("without-notification")) {
+					$sendTypeInput.val("true");
+				}
+				Add.$form.submit();
+			});
+		}
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
-			const product: string = $("select[name=product]", Add.$form).val() as string;
-			if (!product.length) {
+			const product = $("select[name=product]", Add.$form).val();
+			if (!product) {
 				$("select[name=service]", Add.$form).val("");
 			}
 			($(this) as any).formAjax({

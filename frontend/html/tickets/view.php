@@ -82,12 +82,28 @@ $childrenType = (bool)authorization::childrenTypes();
 						<div class="replaycontianer">
 							<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
 							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data" spellcheck="false">
-								<div class="row">
-									<div class="col-sm-12">
-										<textarea <?php if(!$this->canSend){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
-										<hr>
-									</div>
-								</div>
+								<?php
+									$fields = array(
+										array(
+											'name' => 'text',
+											'type' => 'textarea',
+											'rows' => 4,
+											'required' => true,
+											'disabled' => !$this->canSend,
+											'class' => 'autosize form-control text-send',
+										),
+									);
+									if ($this->hasAccessToSelectSendType) {
+										$fields[] = array(
+											'name' => 'send_without_notification',
+											'type' => 'hidden',
+										);
+									}
+									foreach ($fields as $field) {
+										$this->createField($field);
+									}
+								?>
+								<hr>
 								<div class="row">
 									<?php
 									$editor = authentication::getUser()->getOption('ticketing_editor');
@@ -99,11 +115,23 @@ $childrenType = (bool)authorization::childrenTypes();
 									<?php } ?>
 									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
-											<span class="btn btn-file2">
+											<?php if ($this->hasAccessToSelectSendType) { ?>
+											<div class="btn-group btn-group-lg" role="group">
+												<button <?php echo (!$this->canSend ? 'disabled="true"' : ""); ?> class="btn btn-teal dropdown-toggle btn-submit" type="submit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<i class="fa fa-paper-plane"></i><?php echo t("send"); ?> <i class="fa fa-caret-down" aria-hidden="true"></i>
+												</button>
+												<ul class="dropdown-menu select-send-type">
+													<li><a class="send-type with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("send"); ?> </a></li>
+													<li><a class="send-type without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.ticket.send.without_notification"); ?> </a></li>
+												</ul>
+											</div>
+											<?php } else { ?>
+											<button <?php echo (!$this->canSend ? 'disabled="true"' : ""); ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo t("send"); ?></button>
+											<?php } ?>
+											<span class="btn btn-file2 <?php echo !$this->canSend ? 'disabled' : ''; ?>">
 												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
 												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
-											<button <?php if(!$this->canSend){echo("disabled");} ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 										</div>
 									</div>
 								</div>
