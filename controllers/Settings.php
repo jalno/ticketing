@@ -14,14 +14,17 @@ class Settings implements Controller {
 			return t("settings.ticketing.autoclose_time.disable");
 		}
 		$logs = array();
-		$option = Options::get("packages.ticketing.close.respitetime");
 		if (isset($inputs["ticketing_autoclose_time"])) {
+			$option = Options::get("packages.ticketing.close.respitetime");
+			if (is_numeric($option)) {
+				$option /= 3600;
+			}
 			if ($option != $inputs["ticketing_autoclose_time"]) {
-				$logs[] = new Log('ticketing_autoclose_time', translateCloseTime($option / 3600), translateCloseTime($inputs["ticketing_autoclose_time"]), t('settings.ticketing.autoclose_time'));
+				$logs[] = new Log('ticketing_autoclose_time', translateCloseTime($option), translateCloseTime($inputs["ticketing_autoclose_time"]), t('settings.ticketing.autoclose_time'));
 				$option = $inputs["ticketing_autoclose_time"] * 3600;
+				Options::save("packages.ticketing.close.respitetime", $option, true);
 			}
 		}
-		Options::save("packages.ticketing.close.respitetime", $option, true);
 		return $logs;
 	}
 
