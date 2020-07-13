@@ -24,7 +24,7 @@ class listview extends DepartmentList {
 		$error = new Error();
 		$error->setType(Error::NOTICE);
 		$error->setCode('ticketing.settings.department.notfound');
-		$error->setMessage('ticketing.settings.department.notfound');
+		$error->setMessage(t('ticketing.settings.department.notfound'));
 		if ($this->canAdd) {
 			$error->setData([
 				[
