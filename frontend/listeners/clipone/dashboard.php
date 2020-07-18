@@ -1,8 +1,8 @@
 <?php
 namespace themes\clipone\listeners\ticketing;
-use packages\base\{db, translator, db\parenthesis};
 use packages\userpanel;
-use packages\ticketing\{authorization, authentication, ticket, ticket_message};
+use packages\base\{db, translator, db\parenthesis};
+use packages\ticketing\{Authorization, Authentication, ticket, ticket_message};
 use themes\clipone\views\dashboard as view;
 use themes\clipone\views\dashboard\shortcut;
 class dashboard{
@@ -10,27 +10,40 @@ class dashboard{
 		$this->addShortcuts();
 	}
 	protected function addShortcuts(){
-		if (authorization::is_accessed("list")) {
+		if (Authorization::is_accessed("list")) {
 			$ticket = new ticket();
 			$types = authorization::childrenTypes();
-			db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
-			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
+			$user = Authentication::getUser();
+			$count = 0;
+			$text = t("ticketing.active_ticket_shortcut_title.client");
+			$url = userpanel\url("ticketing", array("unread" => 1));
 			if ($types) {
-				$ticket->where("userpanel_users.type", $types, 'in');
+				db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+				$ticket->where("userpanel_users.type", $types, 'IN');
+				$ticket->where("ticketing_tickets.status", array(Ticket::unread, Ticket::read, Ticket::in_progress), "IN");
+				$count = $ticket->count();
+				$text = t("shortcut.tickets.not.answered");
+				$url = userpanel\url("ticketing", array(
+					"status" => implode(",", array(Ticket::unread, Ticket::read, Ticket::in_progress)),
+				));
 			} else {
-				$ticket->where("userpanel_users.id", authentication::getID());
+				db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
+				db::joinWhere("ticketing_tickets_msgs", "ticketing_tickets_msgs.status", Ticket_message::unread);
+				$ticket->where("ticketing_tickets.client", Authentication::getID());
+				$count = $ticket->count();
 			}
-			$ticket->where("ticketing_tickets.status", array(ticket::answered, ticket::closed), "NOT IN");
-			$tickets = $ticket->count();
 			$shortcut = new shortcut("tickets");
 			$shortcut->icon = "clip-user-6";
-			if ($tickets) {
-				$shortcut->title = $tickets;
-				$shortcut->text = translator::trans("shortcut.tickets.not.answered");
-				$shortcut->setLink(translator::trans("shortcut.tickets.link"), userpanel\url("ticketing"));
+			if ($count and !$types) {
+				$shortcut->color = Shortcut::Danger;
+			}
+			if ($count) {
+				$shortcut->title = $count;
+				$shortcut->text = $text;
+				$shortcut->setLink(t("shortcut.tickets.link"), $url);
 			} else {
-				$shortcut->text = translator::trans("shortcut.tickets.has.question");
-				$shortcut->setLink(translator::trans("shortcut.tickets.send.ticket"), userpanel\url("ticketing/new"));
+				$shortcut->text = t("shortcut.tickets.has.question");
+				$shortcut->setLink(t("shortcut.tickets.send.ticket"), userpanel\url("ticketing/new"));
 			}
 			view::addShortcut($shortcut);
 		}
