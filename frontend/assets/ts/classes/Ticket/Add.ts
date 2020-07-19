@@ -45,7 +45,7 @@ export default class Add {
 				$("select[name=service]", Add.$form).parents(".form-group").hide();
 			}
 			const isWorking: number = $selectedOption.data("working") as number;
-			const department: string = $(this).val().toString();
+			const department = $(this).val() as string;
 			if (isWorking === 0) {
 				AjaxRequest({
 					url: "userpanel/ticketing/new/department/" + department,
@@ -84,56 +84,56 @@ export default class Add {
 		const $formGroup = $services.parents(".form-group");
 		const $alert = $(".alert-service", Add.$form);
 		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
-			const product: string = $("select[name=product]").val().toString();
-			if (product.length) {
-				let user: string;
-				const $user = $("input[name=client]", Add.$form);
-				if ($user.length) {
-					user = $user.val() as string;
-					if (!user) {
-						$.growl.error({
-							title: t("ticketing.request.response.error"),
-							message: t("ticketing.ticket.add.user_not_entered"),
-						});
-						return;
-					}
-				}
-				$services.html("");
-				AjaxRequest({
-					url: "userpanel/ticketing/getservices",
-					data: {
-						ajax: 1,
-						client: user,
-						product: product,
-					},
-					success: (data: webuilder.AjaxResponse) => {
-						const length = data.items.length;
-						if (length) {
-							$formGroup.show();
-							if (!$("input[name=client_name]", Add.$form).length) {
-								$("textarea[name=text]", Add.$form).attr("rows", 8);
-							}
-							for (let i = 0; i < length; i++) {
-								$services.append($("<option>", {
-									value: data.items[i].id,
-									text : data.items[i].title,
-								}));
-							}
-						} else {
-							$services.val("");
-							$formGroup.hide();
-						}
-					},
-					error: (error: webuilder.AjaxError) => {
-						$.growl.error({
-							title: t("ticketing.request.response.error"),
-							message: t("ticketing.request.response.error.message"),
-						});
-					},
-				});
-			} else {
+			const product = $("select[name=product]").val() as string;
+			if (!product) {
 				$("select[name=service]").parents(".form-group").hide();
+				return;
 			}
+			let user: string;
+			const $user = $("input[name=client]", Add.$form);
+			if ($user.length) {
+				user = $user.val() as string;
+				if (!user) {
+					$.growl.error({
+						title: t("ticketing.request.response.error"),
+						message: t("ticketing.ticket.add.user_not_entered"),
+					});
+					return;
+				}
+			}
+			$services.html("");
+			AjaxRequest({
+				url: "userpanel/ticketing/getservices",
+				data: {
+					ajax: 1,
+					client: user,
+					product: product,
+				},
+				success: (data: webuilder.AjaxResponse) => {
+					const length = data.items.length;
+					if (length) {
+						$formGroup.show();
+						if (!$("input[name=client_name]", Add.$form).length) {
+							$("textarea[name=text]", Add.$form).attr("rows", 8);
+						}
+						for (let i = 0; i < length; i++) {
+							$services.append($("<option>", {
+								value: data.items[i].id,
+								text : data.items[i].title,
+							}));
+						}
+					} else {
+						$services.val("");
+						$formGroup.hide();
+					}
+				},
+				error: (error: webuilder.AjaxError) => {
+					$.growl.error({
+						title: t("ticketing.request.response.error"),
+						message: t("ticketing.request.response.error.message"),
+					});
+				},
+			});
 		});
 	}
 	private static hiddenServices() {
@@ -146,7 +146,7 @@ export default class Add {
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
 			const product: string = $("select[name=product]", Add.$form).val() as string;
-			if (!product.length) {
+			if (!product) {
 				$("select[name=service]", Add.$form).val("");
 			}
 			($(this) as any).formAjax({
