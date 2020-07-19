@@ -17,6 +17,7 @@ class Add extends TicketAdd {
 	public static $shortcuts = array();
 	public static $boxs = array();
 	protected $multiuser = false;
+	private $hasAccessToIgnoreDepartmentProduct;
 
 	function __beforeLoad() {
 		$this->setTitle(array(
@@ -28,6 +29,7 @@ class Add extends TicketAdd {
 		$initEvent->view = $this;
 		$initEvent->trigger();
 		$this->multiuser = (bool)Authorization::childrenTypes();
+		$this->hasAccessToIgnoreDepartmentProduct = Authorization::is_accessed('add_override-force-product-choose');
 		$this->addBodyClass("ticketing");
 		$this->addBodyClass("tickets-add");
 	}
@@ -54,7 +56,7 @@ class Add extends TicketAdd {
 		$allProducts = $this->getProductsForSelect();
 		$getProductsSelectOptions = function (Department $department) use ($allProducts) {
 			$options = array();
-			if (!$department->isMandatoryChooseProduct()) {
+			if ($this->hasAccessToIgnoreDepartmentProduct or !$department->isMandatoryChooseProduct()) {
 				$options[] = array(
 					'title' => t('none'),
 					'value' => '',
