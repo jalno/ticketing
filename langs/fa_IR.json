@@ -94,7 +94,7 @@
 		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد",
 		"settings.ticketing.autoclose_time": "زمان برای بسته شدن تیکت ها",
 		"settings.ticketing.autoclose_time.disable": "غیرفعال",
-		"settings.ticketing.send.trigger_notification": "حالت پیشفرض ارسال اعلان در هنگام ارسال تیکت",
+		"settings.ticketing.send.notification_default_behaviour": "حالت پیشفرض ارسال اعلان در هنگام ارسال تیکت",
 		"settings.ticketing.send.with_notification": "ارسال با اعلان",
 		"settings.ticketing.send.without_notification": "ارسال بدون اعلان",
 		"packages.ticketing.hour": "ساعت",

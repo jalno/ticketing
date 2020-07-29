@@ -94,7 +94,7 @@
 		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}",
 		"settings.ticketing.autoclose_time": "Time to close tickets",
 		"settings.ticketing.autoclose_time.disable": "Disable",
-		"settings.ticketing.send.trigger_notification": "Default behavior of send notification on send ticket",
+		"settings.ticketing.send.notification_default_behaviour": "Default behavior of send notification on send ticket",
 		"settings.ticketing.send.with_notification": "Send with notification",
 		"settings.ticketing.send.without_notification": "Send without notification",
 		"packages.ticketing.hour": "hours",

@@ -9,10 +9,16 @@ class ticket extends dbObject{
 	const in_progress = 3;
 	const answered = 4;
 	const closed = 5;
+
 	const instantaneous = 1;
 	const important = 2;
 	const ordinary = 3;
+
 	const canSendMessage = 0;
+
+	const SEND_WITH_NOTIFICATION = 1;
+	const SEND_WITHOUT_NOTIFICATION = 2;
+
 	const STATUSES = array(
 		self::unread,
 		self::read,

@@ -29,20 +29,19 @@ class Settings implements Controller {
 		function translateTriggerNotification($value) {
 			return ($value ? t('settings.ticketing.send.with_notification') : t('settings.ticketing.send.without_notification'));
 		}
-		if (isset($inputs['ticketing_send_trigger_notification'])) {
-			$option = Options::get('packages.ticketing.send.trigger_notification');
-			if ($option != $inputs['ticketing_send_trigger_notification']) {
+		if (isset($inputs['ticketing_send_notification_default_behaviour'])) {
+			$option = Options::get('packages.ticketing.send.notification_default_behaviour');
+			if ($option != $inputs['ticketing_send_notification_default_behaviour']) {
 				$logs[] = new Log(
-					'ticketing_send_trigger_notification',
+					'ticketing_send_notification_default_behaviour',
 					translateTriggerNotification($option),
-					translateTriggerNotification($inputs['ticketing_send_trigger_notification']),
-					t('settings.ticketing.send.trigger_notification')
+					translateTriggerNotification($inputs['ticketing_send_notification_default_behaviour']),
+					t('settings.ticketing.send.notification_default_behaviour')
 				);
-				$option = $inputs['ticketing_send_trigger_notification'];
-				Options::save('packages.ticketing.send.trigger_notification', $option, true);
+				$option = $inputs['ticketing_send_notification_default_behaviour'];
+				Options::save('packages.ticketing.send.notification_default_behaviour', $option, true);
 			}
 		}
 		return $logs;
 	}
-
 }

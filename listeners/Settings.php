@@ -3,18 +3,18 @@ namespace packages\ticketing\listeners;
 
 use packages\base\{Date, Options};
 use packages\userpanel\{events\General\Settings as SettingsEvent, Usertype, User};
-use packages\ticketing\controllers\Settings as Controller;
+use packages\ticketing\{controllers\Settings as Controller, Ticket};
 
 class Settings {
 	
-	public function init(SettingsEvent $settings){
+	public function init(SettingsEvent $settings): void {
 		$setting = new SettingsEvent\Setting("ticketing");
 		$setting->setController(Controller::class);
 		$this->addRegisterItems($setting);
 		$settings->addSetting($setting);
 	}
 
-	private function addRegisterItems(SettingsEvent\Setting $setting) {
+	private function addRegisterItems(SettingsEvent\Setting $setting): void {
 		$setting->addInput(array(
 			"name" => "ticketing_autoclose_time",
 			"type" => "number",
@@ -40,29 +40,30 @@ class Settings {
 			),
 		));
 		$options = Options::get("packages.ticketing.close.respitetime");
-		$setting->setDataForm("ticketing_autoclose_time", $options ? $options / 3600 : "");
+		$setting->setDataForm("ticketing_autoclose_time", $options ? intval($options / 3600) : "");
 
 		$setting->addInput(array(
-			'name' => 'ticketing_send_trigger_notification',
-			'type' => 'bool',
+			'name' => 'ticketing_send_notification_default_behaviour',
+			'type' => 'number',
+			'values' => [Ticket::SEND_WITH_NOTIFICATION, Ticket::SEND_WITHOUT_NOTIFICATION],
 		));
 		$setting->addField(array(
-			'name' => 'ticketing_send_trigger_notification',
+			'name' => 'ticketing_send_notification_default_behaviour',
 			'type' => 'radio',
-			'label' => t('settings.ticketing.send.trigger_notification'),
+			'label' => t('settings.ticketing.send.notification_default_behaviour'),
 			'inline' => true,
 			'options' => array(
 				array(
 					'label' => t('settings.ticketing.send.with_notification'),
-					'value' => 1,
+					'value' => Ticket::SEND_WITH_NOTIFICATION,
 				),
 				array(
 					'label' => t('settings.ticketing.send.without_notification'),
-					'value' => 0,
+					'value' => Ticket::SEND_WITHOUT_NOTIFICATION,
 				),
 			),
 		));
-		$options = Options::get("packages.ticketing.send.trigger_notification");
-		$setting->setDataForm("ticketing_send_trigger_notification", $options ? 1 : 0);
+		$options = Options::get('packages.ticketing.send.notification_default_behaviour');
+		$setting->setDataForm("ticketing_send_notification_default_behaviour", $options);
 	}
 }
