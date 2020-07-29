@@ -15,7 +15,7 @@ class usertype{
 			'delete',
 			'close',
 			'unassigned',
-			'select_send_type', // add or reply ticket with or without send notification
+			'enable_disabled_notification',
 
 
 			'message_delete',
