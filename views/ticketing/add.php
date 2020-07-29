@@ -1,10 +1,14 @@
 <?php
 namespace packages\ticketing\views;
 
+use packages\ticketing\{Authorization, views\Form};
 use packages\userpanel\User;
-use packages\ticketing\views\Form;
 
 class Add extends Form {
+	protected $canEnableDisableNotification;
+	public function __construct() {
+		$this->canEnableDisableNotification = Authorization::is_accessed('enable_disabled_notification');
+	}
 	public function setClient(User $client) {
 		$this->setData($client, 'client');
 		$this->setDataForm($client->id, 'client');

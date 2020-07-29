@@ -12,6 +12,7 @@ class view extends form{
 	protected $canDel;
 	protected $canDelMessage;
 	protected $canClose;
+	protected $canEnableDisableNotification;
 	static protected $navigation;
 	function __construct(){
 		$this->canEdit = authorization::is_accessed('edit');
@@ -20,6 +21,7 @@ class view extends form{
 		$this->canDelMessage = authorization::is_accessed('message_delete');
 		$this->canViewDec = authorization::is_accessed('view_description');
 		$this->canClose = authorization::is_accessed('close');
+		$this->canEnableDisableNotification = Authorization::is_accessed('enable_disabled_notification');
 	}
 	public function setTicket(ticket $ticket){
 		$this->setData($ticket, 'ticket');

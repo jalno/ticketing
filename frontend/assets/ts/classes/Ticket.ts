@@ -10,6 +10,11 @@ import "jquery.growl";
 import "bootstrap/js/modal";
 import "./jquery.ticketOperatorAutoComplete";
 
+export enum SendNotificationBehavoir {
+	SEND_WITH_NOTIFICATION = 1,
+	SEND_WITHOUT_NOTIFICATION = 2,
+}
+
 export default class Ticket{
 	private static closeTicketListener(){
 		$('#ticket-close').on('click', function(e){

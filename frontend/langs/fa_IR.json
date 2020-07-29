@@ -93,6 +93,9 @@
 		"ticketing.search.advance_search": "جستجوی پیشرفته",
 		"choose":"انتخاب کنید...",
 		
+		"ticketing.send.with_notification": "ارسال با اعلان",
+		"ticketing.send.without_notification": "ارسال بدون اعلان",
+
 		"department.edit":"ویرایش",
 		"department.delete":"حذف",
 		"departments" : "دپارتمان ها",

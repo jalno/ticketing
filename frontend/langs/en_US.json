@@ -96,6 +96,9 @@
 		"ticketing.search.advance_search": "Advanced Search",
 		"choose":"Choose...",
 
+		"ticketing.send.with_notification": "Send with notification",
+		"ticketing.send.without_notification": "Send with without notification",
+
 		"department.edit":"Edit",
 		"department.delete":"Delete",
 		"departments" : "Departments",

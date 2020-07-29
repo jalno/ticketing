@@ -4,6 +4,7 @@ import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "../jquery.userAutoComplete";
+import { SendNotificationBehavoir } from "../Ticket";
 
 export default class Add {
 	public static initIfNeeded() {
@@ -19,6 +20,7 @@ export default class Add {
 		Add.runServicesListener();
 		Add.hiddenServices();
 		Add.runSubmitFormListener();
+		Add.runEnableDisableNotificationListener();
 	}
 	private static $form = $("#ticket-add");
 
@@ -142,21 +144,26 @@ export default class Add {
 			$service.parents(".form-group").first().hide();
 		}
 	}
-	private static runSubmitFormListener() {
-		const $selectSendType = $(".select-send-type", Add.$form);
-		if ($selectSendType.length) {
-			$("a.send-type").on("click", function(e) {
-				e.preventDefault();
-				const $this = $(this);
-				const $sendTypeInput = $("input[name=send_without_notification]", Add.$form);
-				if ($this.hasClass("with-notification")) {
-					$sendTypeInput.val("");
-				} else if ($this.hasClass("without-notification")) {
-					$sendTypeInput.val("true");
-				}
-				Add.$form.submit();
-			});
+	private static runEnableDisableNotificationListener() {
+		const $notificationBehavior = $(".btn-group-notification-behavior", Add.$form);
+		if (!$notificationBehavior.length) {
+			return;
 		}
+		$("a.notification-behavior", $notificationBehavior).on("click", function(e) {
+			e.preventDefault();
+			const $this = $(this);
+			const $behaviorInput = $("input[name=send_notification_behavior]", Add.$form);
+			const $sendBtnIcon = $(".btn-send > i", $notificationBehavior);
+			if ($this.hasClass("with-notification")) {
+				$behaviorInput.val(SendNotificationBehavoir.SEND_WITH_NOTIFICATION);
+				$sendBtnIcon.removeClass().addClass("fa fa-bell");
+			} else if ($this.hasClass("without-notification")) {
+				$behaviorInput.val(SendNotificationBehavoir.SEND_WITHOUT_NOTIFICATION);
+				$sendBtnIcon.removeClass().addClass("fa fa-bell-slash");
+			}
+		});
+	}
+	private static runSubmitFormListener() {
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
 			const product = $("select[name=product]", Add.$form).val();

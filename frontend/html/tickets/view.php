@@ -6,9 +6,20 @@ use \packages\ticketing\ticket;
 use \packages\ticketing\authorization;
 use \packages\ticketing\ticket_message;
 use \packages\ticketing\authentication;
-$this->the_header();
+
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
+
+$sendNotificationDefaultBehavior = Ticket::getSendNotificationDefaultBehavior();
+$sendNotificationBehavior = $sendNotificationDefaultBehavior;
+if ($this->canEnableDisableNotification) {
+	$sendNotificationBehavior = Authentication::getUser()->getOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME);
+	if (!$sendNotificationBehavior) {
+		$sendNotificationBehavior = $sendNotificationDefaultBehavior;
+	}
+}
+
+$this->the_header();
 ?>
 <div class="row">
 
@@ -93,10 +104,11 @@ $childrenType = (bool)authorization::childrenTypes();
 											'class' => 'autosize form-control text-send',
 										),
 									);
-									if ($this->hasAccessToSelectSendType) {
+									if ($this->canEnableDisableNotification) {
 										$fields[] = array(
-											'name' => 'send_without_notification',
+											'name' => 'send_notification_behavior',
 											'type' => 'hidden',
+											'value' => $sendNotificationBehavior,
 										);
 									}
 									foreach ($fields as $field) {
@@ -115,16 +127,20 @@ $childrenType = (bool)authorization::childrenTypes();
 									<?php } ?>
 									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
-											<?php if ($this->hasAccessToSelectSendType) { ?>
-											<div class="btn-group btn-group-lg" role="group">
-												<button <?php echo (!$this->canSend ? 'disabled="true"' : ""); ?> class="btn btn-teal dropdown-toggle btn-submit" type="submit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-													<i class="fa fa-paper-plane"></i><?php echo t("send"); ?> <i class="fa fa-caret-down" aria-hidden="true"></i>
-												</button>
-												<ul class="dropdown-menu select-send-type">
-													<li><a class="send-type with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("send"); ?> </a></li>
-													<li><a class="send-type without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.ticket.send.without_notification"); ?> </a></li>
-												</ul>
-											</div>
+											<?php if ($this->canEnableDisableNotification) { ?>
+												<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
+													<button type="button" class="btn btn-teal dropdown-toggle btn-select-notification-behavior" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														<i class="fa fa-caret-down" aria-hidden="true"></i>
+													</button>
+													<button type="submit" class="btn btn-teal btn-send">
+														<i class="fa fa-<?php echo ($sendNotificationBehavior == Ticket::SEND_WITH_NOTIFICATION ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></i>
+														<?php echo t("send"); ?>
+													</button>
+													<ul class="dropdown-menu select-notification-behavior">
+														<li><a class="notification-behavior with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("ticketing.send.with_notification"); ?> </a></li>
+														<li><a class="notification-behavior without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.send.without_notification"); ?> </a></li>
+													</ul>
+												</div>
 											<?php } else { ?>
 											<button <?php echo (!$this->canSend ? 'disabled="true"' : ""); ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo t("send"); ?></button>
 											<?php } ?>

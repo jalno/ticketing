@@ -3,34 +3,41 @@ import "bootstrap-inputmsg";
 import * as $ from "jquery";
 import "jquery.growl";
 import { webuilder } from "webuilder";
+import { SendNotificationBehavoir } from "../Ticket";
 
 export default class Reply {
-	public static init() {
-		Reply.runSubmitFormListener();
-	}
 	public static initIfNeeded() {
 		if (Reply.$form.length) {
 			Reply.init();
 		}
 	}
+	public static init() {
+		Reply.runSubmitFormListener();
+		Reply.runEnableDisableNotificationListener();
+	}
 
 	private static $form = $("#ticket-reply");
 
-	private static runSubmitFormListener() {
-		const $selectSendType = $(".select-send-type", Reply.$form);
-		if ($selectSendType.length) {
-			$("a.send-type").on("click", function(e) {
-				e.preventDefault();
-				const $this = $(this);
-				const $sendTypeInput = $("input[name=send_without_notification]", Reply.$form);
-				if ($this.hasClass("with-notification")) {
-					$sendTypeInput.val("");
-				} else if ($this.hasClass("without-notification")) {
-					$sendTypeInput.val("true");
-				}
-				Reply.$form.submit();
-			});
+	private static runEnableDisableNotificationListener() {
+		const $notificationBehavior = $(".btn-group-notification-behavior", Reply.$form);
+		if (!$notificationBehavior.length) {
+			return;
 		}
+		$("a.notification-behavior", $notificationBehavior).on("click", function(e) {
+			e.preventDefault();
+			const $this = $(this);
+			const $behaviorInput = $("input[name=send_notification_behavior]", Reply.$form);
+			const $sendBtnIcon = $(".btn-send > i", $notificationBehavior);
+			if ($this.hasClass("with-notification")) {
+				$behaviorInput.val(SendNotificationBehavoir.SEND_WITH_NOTIFICATION);
+				$sendBtnIcon.removeClass().addClass("fa fa-bell");
+			} else if ($this.hasClass("without-notification")) {
+				$behaviorInput.val(SendNotificationBehavoir.SEND_WITHOUT_NOTIFICATION);
+				$sendBtnIcon.removeClass().addClass("fa fa-bell-slash");
+			}
+		});
+	}
+	private static runSubmitFormListener() {
 		Reply.$form.on("submit", function(e) {
 			e.preventDefault();
 			$(this).formAjax({

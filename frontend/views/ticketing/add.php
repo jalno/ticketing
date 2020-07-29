@@ -17,7 +17,6 @@ class Add extends TicketAdd {
 	public static $shortcuts = array();
 	public static $boxs = array();
 	protected $multiuser = false;
-	protected $hasAccessToSelectSendType;
 
 	function __beforeLoad() {
 		$this->setTitle(array(
@@ -29,7 +28,6 @@ class Add extends TicketAdd {
 		$initEvent->view = $this;
 		$initEvent->trigger();
 		$this->multiuser = (bool)Authorization::childrenTypes();
-		$this->hasAccessToSelectSendType = Authorization::is_accessed("select_send_type");
 		$this->addBodyClass("ticketing");
 		$this->addBodyClass("tickets-add");
 	}

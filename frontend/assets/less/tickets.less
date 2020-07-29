@@ -141,6 +141,17 @@
 		margin-top: 15px;
 	}
 }
+body.tickets-add, body.tickets-view {
+	.btn-group-notification-behavior {
+		.btn-select-notification-behavior {
+			padding-right: 6px;
+			padding-left: 6px;
+		}
+		.notification-behavior {
+			cursor: pointer;
+		}
+	}
+}
 body.tickets-add {
 	#ticket-add {
 		textarea {
@@ -174,20 +185,12 @@ body.rtl {
 	&.tickets-add {
 		#ticket-add {
 			font-family: yekan;
-			.select-send-type {
-				a {
-					cursor: pointer;
-				}
-			}
 		}
 	}
 	&.tickets-view {
 		#ticket-reply {
-			.select-send-type {
+			.btn-group-notification-behavior {
 				font-family: yekan;
-				a {
-					cursor: pointer;
-				}
 			}
 		}
 	}
