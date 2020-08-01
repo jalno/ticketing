@@ -6,9 +6,10 @@ use \packages\ticketing\ticket;
 use \packages\ticketing\authorization;
 use \packages\ticketing\ticket_message;
 use \packages\ticketing\authentication;
-$this->the_header();
+
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
+$this->the_header();
 ?>
 <div class="row">
 
@@ -23,7 +24,7 @@ $childrenType = (bool)authorization::childrenTypes();
 						<?php if($this->ticket->status != ticket::in_progress){ ?>
 						<a id="ticket-inProgress" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("in_progress"); ?>" href="<?php echo userpanel\url('ticketing/inprogress/'.$this->ticket->id); ?>"><i class="fa fa-tasks" ></i></a>
 						<?php } ?>
-						<?php if($this->canSend == true){ ?>
+						<?php if(!$this->isLocked) { ?>
 						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php }else{ ?>
 						<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
@@ -82,12 +83,28 @@ $childrenType = (bool)authorization::childrenTypes();
 						<div class="replaycontianer">
 							<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
 							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data" spellcheck="false">
-								<div class="row">
-									<div class="col-sm-12">
-										<textarea <?php if(!$this->canSend){echo("disabled");} ?> name="text" rows="4" class="autosize form-control text-send"></textarea>
-										<hr>
-									</div>
-								</div>
+								<?php
+									$fields = array(
+										array(
+											'name' => 'text',
+											'type' => 'textarea',
+											'rows' => 4,
+											'required' => true,
+											'disabled' => !$this->canSend,
+											'class' => 'autosize form-control text-send',
+										),
+									);
+									if ($this->canEnableDisableNotification) {
+										$fields[] = array(
+											'name' => "send_notification",
+											"type" => "hidden",
+										);
+									}
+									foreach ($fields as $field) {
+										$this->createField($field);
+									}
+								?>
+								<hr>
 								<div class="row">
 									<?php
 									$editor = authentication::getUser()->getOption('ticketing_editor');
@@ -99,11 +116,41 @@ $childrenType = (bool)authorization::childrenTypes();
 									<?php } ?>
 									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
-											<span class="btn btn-file2">
-												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+										<?php if ($this->canEnableDisableNotification) { ?>
+											<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
+												<button type="button" class="btn btn-teal dropdown-toggle btn-select-notification-behavior" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<i class="fa fa-caret-down" aria-hidden="true"></i>
+												</button>
+												<button type="submit" class="btn btn-teal btn-send">
+													<div class="btn-icons"><i class="fa fa-<?php echo ($this->sendNotification ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></div>
+												<?php echo t("send"); ?>
+												</button>
+												<ul class="dropdown-menu select-notification-behavior">
+													<li>
+														<a class="notification-behavior with-notification">
+															<div class="btn-icons"><i class="fa fa-bell" aria-hidden="true"></i></div>
+														<?php echo t("ticketing.send.with_notification"); ?>
+														</a>
+													</li>
+													<li>
+														<a class="notification-behavior without-notification">
+															<div class="btn-icons"><i class="fa fa-bell-slash-o" aria-hidden="true"></i></div>
+														<?php echo t("ticketing.send.without_notification"); ?>
+														</a>
+													</li>
+												</ul>
+											</div>
+										<?php } else { ?>
+											<button <?php echo (!$this->canSend ? 'disabled' : ""); ?> class="btn btn-teal" type="submit">
+												<div class="btn-icons"><i class="fa fa-paper-plane"></i></div>
+											<?php echo t("send"); ?>
+											</button>
+										<?php } ?>
+											<span class="btn btn-file2 <?php echo !$this->canSend ? 'disabled' : ''; ?>">
+												<div class="btn-icons"><i class="fa fa-upload"></i></div>
+											<?php echo translator::trans("upload") ?>
 												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
-											<button <?php if(!$this->canSend){echo("disabled");} ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 										</div>
 									</div>
 								</div>
@@ -250,6 +297,6 @@ $childrenType = (bool)authorization::childrenTypes();
 		<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo translator::trans('cancel'); ?></button>
 	</div>
 </div>
-<?php } ?>
 <?php
+}
 $this->the_footer();

@@ -15,6 +15,8 @@ class usertype{
 			'delete',
 			'close',
 			'unassigned',
+			'enable_disabled_notification',
+
 
 			'message_delete',
 			'message_edit',

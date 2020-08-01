@@ -3,22 +3,22 @@ import "bootstrap-inputmsg";
 import * as $ from "jquery";
 import "jquery.growl";
 import { webuilder } from "webuilder";
+import Ticket from "../Ticket";
 
 export default class Reply {
-	public static init() {
-		Reply.runSubmitFormListener();
-		if ($("input[type=file]", Reply.$form).prop("disabled")) {
-			$(".btn-file2", Reply.$form).addClass("disabled");
-		}
-	}
 	public static initIfNeeded() {
+		Reply.$form = $("#ticket-reply");
 		if (Reply.$form.length) {
 			Reply.init();
 		}
 	}
+	public static init() {
+		Reply.runSubmitFormListener();
+		Ticket.runEnableDisableNotificationListener(Reply.$form);
+		Ticket.runTextareaAutosize(Reply.$form);
+	}
 
-	private static $form = $("#ticket-reply");
-
+	private static $form: JQuery;
 	private static runSubmitFormListener() {
 		Reply.$form.on("submit", function(e) {
 			e.preventDefault();

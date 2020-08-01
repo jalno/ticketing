@@ -3,7 +3,7 @@ namespace themes\clipone\views\ticketing;
 
 use packages\ticketing\{Authorization, Department, Ticket};
 use packages\userpanel;
-use packages\userpanel\User;
+use packages\userpanel\{User, Authentication};
 use themes\clipone\{Breadcrumb, Navigation, ViewTrait};
 use themes\clipone\events\AddingTicket;
 use themes\clipone\Navigation\MenuItem;
@@ -18,8 +18,10 @@ class Add extends TicketAdd {
 	public static $boxs = array();
 	protected $multiuser = false;
 	private $hasAccessToIgnoreDepartmentProduct;
+	protected $sendNotification = false;
 
-	function __beforeLoad() {
+	public function __beforeLoad() {
+		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? Authentication::getUser() : null);
 		$this->setTitle(array(
 			t('ticketing.add')
 		));
@@ -32,6 +34,7 @@ class Add extends TicketAdd {
 		$this->hasAccessToIgnoreDepartmentProduct = Authorization::is_accessed('add_override-force-product-choose');
 		$this->addBodyClass("ticketing");
 		$this->addBodyClass("tickets-add");
+		$this->setFormData();
 	}
 	private function setNavigation() {
 		$item = new MenuItem("ticketing");
@@ -201,5 +204,8 @@ class Add extends TicketAdd {
 			$html .= "</div>";
 		}
 		return $html;
+	}
+	private function setFormData() {
+		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
 	}
 }

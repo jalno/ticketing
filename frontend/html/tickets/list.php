@@ -4,7 +4,7 @@ use themes\clipone\utility;
 use packages\userpanel\date;
 use packages\base\translator;
 use packages\ticketing\ticket;
-if (!$this->isTab) {
+if (!$this->isActiveTab()) {
 	$this->the_header();
 }
 $tickets = $this->getOrderedTickets();
@@ -244,6 +244,6 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 	</div>
 <?php } ?>
 <?php
-if (!$this->isTab) {
+if (!$this->isActiveTab()) {
 	$this->the_footer();
 }

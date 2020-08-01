@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
@@ -285,6 +285,11 @@ class Ticketing extends Controller {
 		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 		$view->setProducts(Products::get());
 		$children = Authorization::childrenTypes();
+		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
+
+		$currentUser = Authentication::getUser();
+		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
+		
 		$inputsRules = array(
 			'title' => array(
 				'type' => 'string',
@@ -316,7 +321,12 @@ class Ticketing extends Controller {
 				'type' => 'file',
 				'optional' => true,
 				'multiple' => true
-			)
+			),
+			"send_notification" => array(
+				'type' => 'bool',
+				'optional' => true,
+				'default' => $defaultBehavior,
+			),
 		);
 		if ($children) {
 			$inputsRules['client'] = array(
@@ -324,8 +334,14 @@ class Ticketing extends Controller {
 				'optional' => true
 			);
 		}
+		if (!$hasAccessToEnableDisableNotification) {
+			unset($inputsRules["send_notification"]);
+		}
 		$view->setDataForm($this->inputsvalue($inputsRules));
 		$inputs = $this->checkinputs($inputsRules);
+		if (!$hasAccessToEnableDisableNotification) {
+			$inputs["send_notification"] = $defaultBehavior;
+		}
 
 		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
 		if (isset($inputs['product']) and $inputs['product']) {
@@ -413,14 +429,19 @@ class Ticketing extends Controller {
 		$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
 		$message->save();
 
-		$event = new events\tickets\Add($message);
-		$event->trigger();
-
 		$log = new Log();
 		$log->user = $me;
 		$log->title = t("ticketing.logs.add", ['ticket_id' => $ticket->id]);
 		$log->type = logs\tickets\Add::class;
 		$log->save();
+
+		if ($hasAccessToUnassignedTickets and $defaultBehavior != $inputs["send_notification"]) {
+			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
+		}
+		if ($inputs["send_notification"]) {
+			$event = new events\tickets\Add($message);
+			$event->trigger();
+		}
 
 		$this->response->Go(userpanel\url('ticketing/view/'. $ticket->id));
 		$this->response->setStatus(true);
@@ -468,7 +489,10 @@ class Ticketing extends Controller {
 		if ($ticket->param('ticket_lock')) {
 			throw new NotFound();
 		}
-		$inputs = $this->checkinputs(array(
+		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
+		$currentUser = Authentication::getUser();
+		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
+		$inputsRules = array(
 			'text' => array(
 				'type' => 'string'
 			),
@@ -477,8 +501,20 @@ class Ticketing extends Controller {
 				'optional' => true,
 				'multiple' => true,
 				'obj' => true,
-			)
-		));
+			),
+			"send_notification" => array(
+				'type' => 'bool',
+				'optional' => true,
+				'default' => $defaultBehavior,
+			),
+		);
+		if (!$hasAccessToEnableDisableNotification) {
+			unset($inputsRules["send_notification"]);
+		}
+		$inputs = $this->checkinputs($inputsRules);
+		if (!$hasAccessToEnableDisableNotification) {
+			$inputs["send_notification"] = $defaultBehavior;
+		}
 		if (!$inputs['text'] = strip_tags($inputs['text'])) {
 			throw new InputValidationException('text');
 		}
@@ -527,13 +563,21 @@ class Ticketing extends Controller {
 		$ticket->reply_at = Date::time();
 		$ticket->save();
 
-		$event = new events\tickets\Reply($ticket_message);
-		$event->trigger();
 		$log = new Log();
 		$log->user = Authentication::getID();
 		$log->title = t("ticketing.logs.reply", array("ticket_id" => $ticket->id));
 		$log->type = Logs\tickets\Reply::class;
 		$log->save();
+
+
+		
+		if ($hasAccessToEnableDisableNotification and $inputs["send_notification"] != $defaultBehavior) {
+			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
+		}
+		if ($inputs["send_notification"]) {
+			$event = new events\tickets\Reply($ticket_message);
+			$event->trigger();
+		}
 
 		$this->response->Go(userpanel\url("ticketing/view/" . $ticket->id));
 		$this->response->setStatus(true);

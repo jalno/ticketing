@@ -141,7 +141,34 @@
 		margin-top: 15px;
 	}
 }
-.tickets-add {
+body.tickets-add, body.tickets-view {
+	.btn-group-notification-behavior {
+		.btn-select-notification-behavior {
+			padding-right: 6px;
+			padding-left: 6px;
+			i {
+				vertical-align: middle;
+			}
+		}
+		.select-notification-behavior {
+			padding: 0px;
+			li {
+				a {
+					padding: 6px 12px;
+					.btn-icons {
+						float: left;
+						margin-left: 0;
+						margin-right: 7px;
+					}
+				}
+			}
+		}
+		.notification-behavior {
+			cursor: pointer;
+		}
+	}
+}
+body.tickets-add {
 	#ticket-add {
 		textarea {
 			resize: vertical;
@@ -150,6 +177,11 @@
 			color: transparent;
 			text-shadow: 0 0 0 #000;
 		}
+	}
+}
+body.tickets-view {
+	textarea {
+		resize: vertical;
 	}
 }
 body.rtl {
@@ -169,6 +201,24 @@ body.rtl {
 	&.tickets-add {
 		#ticket-add {
 			font-family: yekan;
+		}
+	}
+	&.tickets-view {
+		#ticket-reply {
+			.btn-group-notification-behavior {
+				font-family: yekan;
+			}
+		}
+	}
+	&.tickets-view, &.tickets-add {
+		.btn-group-notification-behavior {
+			.select-notification-behavior {
+				.btn-icons {
+					float: right;
+					margin-right: 0;
+					margin-left: 7px;
+				}
+			}
 		}
 	}
 }

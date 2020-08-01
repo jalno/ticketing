@@ -4,14 +4,17 @@ import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "../jquery.userAutoComplete";
+import Ticket from "../Ticket";
 
 export default class Add {
 	public static initIfNeeded() {
+		Add.$form = $("#ticket-add");
 		if (Add.$form.length) {
 			Add.init();
 		}
 	}
-	public static init() {
+	private static $form: JQuery;
+	private static init() {
 		if ($("input[name=client_name]", Add.$form).length) {
 			Add.runUserSearch();
 		}
@@ -19,8 +22,9 @@ export default class Add {
 		Add.runServicesListener();
 		Add.hiddenServices();
 		Add.runSubmitFormListener();
+		Ticket.runEnableDisableNotificationListener(Add.$form);
+		Ticket.runTextareaAutosize(Add.$form);
 	}
-	private static $form = $("#ticket-add");
 
 	private static runUserSearch() {
 		$("input[name=client_name]", Add.$form).userAutoComplete();
@@ -40,7 +44,6 @@ export default class Add {
 				}
 				$products.trigger("change").parents(".form-group").show();
 			} else {
-				$("textarea[name=text]", Add.$form).attr("rows", 4);
 				$products.parents(".form-group").hide();
 				$("select[name=service]", Add.$form).parents(".form-group").hide();
 			}
@@ -145,7 +148,7 @@ export default class Add {
 	private static runSubmitFormListener() {
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
-			const product: string = $("select[name=product]", Add.$form).val() as string;
+			const product = $("select[name=product]", Add.$form).val();
 			if (!product) {
 				$("select[name=service]", Add.$form).val("");
 			}

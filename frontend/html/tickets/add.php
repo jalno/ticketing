@@ -1,8 +1,9 @@
 <?php
 use \packages\base\translator;
 use \packages\userpanel;
-use \packages\ticketing\ticket_message;
+use packages\ticketing\{Ticket, ticket_message};
 use \packages\ticketing\authentication;
+
 $this->the_header();
 ?>
 <div class="row">
@@ -41,12 +42,6 @@ $this->the_header();
 									)
 								),
 							),
-							array(
-								'name' => 'service',
-								'type' => 'select',
-								'label' => translator::trans("newticket.service"),
-								'options' => array()
-							),
 						);
 						foreach($fields as $field){
 							$this->createField($field);
@@ -64,12 +59,11 @@ $this->the_header();
 									'required' => true,
 								),
 								array(
-									'name' => 'text',
-									'label' => t('newticket.text'),
-									'type' => 'textarea',
-									'rows' => 4,
-									'required' => true,
-								)
+									'name' => 'service',
+									'type' => 'select',
+									'label' => translator::trans("newticket.service"),
+									'options' => array()
+								),
 							);
 							if ($this->multiuser) {
 								array_unshift($fields, array(
@@ -84,12 +78,26 @@ $this->the_header();
 									),
 								));
 							}
+							if ($this->canEnableDisableNotification) {
+								$fields[] = array(
+									'name' => 'send_notification',
+									'type' => 'hidden',
+								);
+							}
 							foreach ($fields as $field) {
 								$this->createField($field);
 							}
 							?>
 						</div>
 					</div>
+				<?php $this->createField(array(
+					'name' => 'text',
+					'label' => t('newticket.text'),
+					'type' => 'textarea',
+					'rows' => 4,
+					'required' => true,
+				)); ?>
+
 					<hr>
 					<div class="row">
 						<?php
@@ -102,11 +110,41 @@ $this->the_header();
 						<?php } ?>
 						<div class="col-sm-5 text-left <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 							<div class="btn-group btn-group-lg" role="group">
+								<?php if ($this->canEnableDisableNotification) { ?>
+								<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
+									<button type="button" class="btn btn-teal dropdown-toggle btn-select-notification-behavior" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<i class="fa fa-caret-down" aria-hidden="true"></i>
+									</button>
+									<button type="submit" class="btn btn-teal btn-send">
+										<div class="btn-icons"><i class="fa fa-<?php echo ($this->sendNotification ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></div>
+									<?php echo t("send"); ?>
+									</button>
+									<ul class="dropdown-menu select-notification-behavior">
+										<li>
+											<a class="notification-behavior with-notification">
+												<div class="btn-icons"><i class="fa fa-bell" aria-hidden="true"></i></div>
+											<?php echo t("ticketing.send.with_notification"); ?>
+											</a>
+										</li>
+										<li>
+											<a class="notification-behavior without-notification">
+												<div class="btn-icons"><i class="fa fa-bell-slash-o" aria-hidden="true"></i></div>
+												<?php echo t("ticketing.send.without_notification"); ?>
+											</a>
+										</li>
+									</ul>
+								</div>
+								<?php } else { ?>
+								<button class="btn btn-teal" type="submit">
+									<div class="btn-icons"><i class="fa fa-paper-plane"></i></div>
+								<?php echo t("send"); ?>
+								</button>
+								<?php } ?>
 								<span class="btn btn-file2">
-									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+									<div class="btn-icons"><i class="fa fa-upload"></i></div>
+								<?php echo translator::trans("upload") ?>
 									<input type="file" name="file[]" multiple="">
 								</span>
-								<button class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo translator::trans("send"); ?></button>
 							</div>
 						</div>
 					</div>

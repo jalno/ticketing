@@ -17,6 +17,7 @@
 		"usertype.permissions.ticketing_delete": "Delete Ticket",
 		"usertype.permissions.ticketing_files-download": "Download Ticket Attachments",
 		"usertype.permissions.ticketing_unassigned": "Access to unassigned tickets",
+		"usertype.permissions.ticketing_enable_disabled_notification": "Enable or disable send notifications on send ticket",
 		
 		"usertype.permissions.ticketing_message": "Ticket Messages",
 		"usertype.permissions.ticketing_message_delete": "Delete Ticket Message",
@@ -93,6 +94,7 @@
 		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}",
 		"settings.ticketing.autoclose_time": "Time to close tickets",
 		"settings.ticketing.autoclose_time.disable": "Disable",
+		"settings.ticketing.send_notification_on_send_ticket": "Send notification on send new ticket or new message",
 		"packages.ticketing.hour": "hours",
 		"packages.ticketing.autoclose_time.inHours": "{hour} hours",
 		"ticketing.logs.add": "Added ticket #{ticket_id}.",
@@ -101,6 +103,8 @@
 		"ticketing.logs.unlock": "Unlocked ticket #{ticket_id}.",
 		"ticketing.logs.delete": "Deleted ticket #{ticket_id}.",
 		"ticketing.logs.settings.departments.add": "Added ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
-		"ticketing.logs.settings.departments.edit": "Modified ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>."
+		"ticketing.logs.settings.departments.edit": "Modified ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
+		"ticketing.active": "Active",
+		"ticketing.deactive": "Deactive"
 	}
 }

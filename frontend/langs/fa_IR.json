@@ -93,6 +93,9 @@
 		"ticketing.search.advance_search": "جستجوی پیشرفته",
 		"choose":"انتخاب کنید...",
 		
+		"ticketing.send.with_notification": "ارسال با اعلان",
+		"ticketing.send.without_notification": "ارسال بدون اعلان",
+
 		"department.edit":"ویرایش",
 		"department.delete":"حذف",
 		"departments" : "دپارتمان ها",
@@ -155,6 +158,6 @@
 
 		"ticketing.choose": "انتخاب کنید ..",
 		"ticketing.active_ticket_shortcut_title.client": "تیکت خوانده نشده دارید",
-		"ticketing.active_ticket_shortcut_title.operator": "تیکت نیاز به پیگیری دارند"
+		"ticketing.active_ticket_shortcut_title.operator": "تیکت نیاز به پیگیری دارند",
 	}
 }

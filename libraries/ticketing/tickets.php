@@ -1,7 +1,8 @@
 <?php
 namespace packages\ticketing;
-use packages\userpanel\user;
-use packages\base\{db, db\dbObject};
+
+use packages\base\{db, db\dbObject, Options};
+use packages\userpanel\User;
 
 class ticket extends dbObject{
 	const unread = 1;
@@ -9,10 +10,15 @@ class ticket extends dbObject{
 	const in_progress = 3;
 	const answered = 4;
 	const closed = 5;
+
 	const instantaneous = 1;
 	const important = 2;
 	const ordinary = 3;
+
 	const canSendMessage = 0;
+
+	const SEND_NOTIFICATION_USER_OPTION_NAME = "ticketing_send_notification";
+
 	const STATUSES = array(
 		self::unread,
 		self::read,
@@ -25,6 +31,15 @@ class ticket extends dbObject{
 		self::important,
 		self::ordinary,
 	);
+	public static function sendNotificationOnSendTicket(?User $user = null): ?bool {
+		if ($user) {
+			$res = $user->getOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME);
+			if (!is_null($res)) {
+				return $res;
+			}
+		}
+		return Options::get("packages.ticketing.send_notification_on_send_ticket");
+	}
 	protected $dbTable = "ticketing_tickets";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
