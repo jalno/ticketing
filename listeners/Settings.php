@@ -43,27 +43,26 @@ class Settings {
 		$setting->setDataForm("ticketing_autoclose_time", $options ? intval($options / 3600) : "");
 
 		$setting->addInput(array(
-			'name' => 'ticketing_send_notification_default_behaviour',
-			'type' => 'number',
-			'values' => [Ticket::SEND_WITH_NOTIFICATION, Ticket::SEND_WITHOUT_NOTIFICATION],
+			'name' => 'ticketing_send_notification_on_send_ticket',
+			'type' => 'bool',
 		));
 		$setting->addField(array(
-			'name' => 'ticketing_send_notification_default_behaviour',
+			'name' => 'ticketing_send_notification_on_send_ticket',
 			'type' => 'radio',
-			'label' => t('settings.ticketing.send.notification_default_behaviour'),
+			'label' => t('settings.ticketing.send_notification_on_send_ticket'),
 			'inline' => true,
 			'options' => array(
 				array(
-					'label' => t('settings.ticketing.send.with_notification'),
-					'value' => Ticket::SEND_WITH_NOTIFICATION,
+					'label' => t('ticketing.active'),
+					'value' => 1,
 				),
 				array(
-					'label' => t('settings.ticketing.send.without_notification'),
-					'value' => Ticket::SEND_WITHOUT_NOTIFICATION,
+					'label' => t('ticketing.deactive'),
+					'value' => 0,
 				),
 			),
 		));
-		$options = Options::get('packages.ticketing.send.notification_default_behaviour');
-		$setting->setDataForm("ticketing_send_notification_default_behaviour", $options);
+		$options = Options::get('packages.ticketing.send_notification_on_send_ticket');
+		$setting->setDataForm("ticketing_send_notification_on_send_ticket", $options ? 1 : 0);
 	}
 }

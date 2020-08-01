@@ -4,15 +4,6 @@ use \packages\userpanel;
 use packages\ticketing\{Ticket, ticket_message};
 use \packages\ticketing\authentication;
 
-$sendNotificationDefaultBehavior = Ticket::getSendNotificationDefaultBehavior();
-$sendNotificationBehavior = $sendNotificationDefaultBehavior;
-if ($this->canEnableDisableNotification) {
-	$sendNotificationBehavior = Authentication::getUser()->getOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME);
-	if (!$sendNotificationBehavior) {
-		$sendNotificationBehavior = $sendNotificationDefaultBehavior;
-	}
-}
-
 $this->the_header();
 ?>
 <div class="row">
@@ -51,12 +42,6 @@ $this->the_header();
 									)
 								),
 							),
-							array(
-								'name' => 'service',
-								'type' => 'select',
-								'label' => translator::trans("newticket.service"),
-								'options' => array()
-							),
 						);
 						foreach($fields as $field){
 							$this->createField($field);
@@ -74,12 +59,11 @@ $this->the_header();
 									'required' => true,
 								),
 								array(
-									'name' => 'text',
-									'label' => t('newticket.text'),
-									'type' => 'textarea',
-									'rows' => 4,
-									'required' => true,
-								)
+									'name' => 'service',
+									'type' => 'select',
+									'label' => translator::trans("newticket.service"),
+									'options' => array()
+								),
 							);
 							if ($this->multiuser) {
 								array_unshift($fields, array(
@@ -96,9 +80,8 @@ $this->the_header();
 							}
 							if ($this->canEnableDisableNotification) {
 								$fields[] = array(
-									'name' => 'send_notification_behavior',
+									'name' => 'send_notification',
 									'type' => 'hidden',
-									'value' => $sendNotificationBehavior,
 								);
 							}
 							foreach ($fields as $field) {
@@ -107,6 +90,14 @@ $this->the_header();
 							?>
 						</div>
 					</div>
+				<?php $this->createField(array(
+					'name' => 'text',
+					'label' => t('newticket.text'),
+					'type' => 'textarea',
+					'rows' => 4,
+					'required' => true,
+				)); ?>
+
 					<hr>
 					<div class="row">
 						<?php
@@ -125,19 +116,33 @@ $this->the_header();
 										<i class="fa fa-caret-down" aria-hidden="true"></i>
 									</button>
 									<button type="submit" class="btn btn-teal btn-send">
-										<i class="fa fa-<?php echo ($sendNotificationBehavior == Ticket::SEND_WITH_NOTIFICATION ? "bell" : "bell-slash") ?>" aria-hidden="true"></i>
-										<?php echo t("send"); ?>
+										<div class="btn-icons"><i class="fa fa-<?php echo ($this->sendNotification ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></div>
+									<?php echo t("send"); ?>
 									</button>
 									<ul class="dropdown-menu select-notification-behavior">
-										<li><a class="notification-behavior with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("ticketing.send.with_notification"); ?> </a></li>
-										<li><a class="notification-behavior without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.send.without_notification"); ?> </a></li>
+										<li>
+											<a class="notification-behavior with-notification">
+												<div class="btn-icons"><i class="fa fa-bell" aria-hidden="true"></i></div>
+											<?php echo t("ticketing.send.with_notification"); ?>
+											</a>
+										</li>
+										<li>
+											<a class="notification-behavior without-notification">
+												<div class="btn-icons"><i class="fa fa-bell-slash-o" aria-hidden="true"></i></div>
+												<?php echo t("ticketing.send.without_notification"); ?>
+											</a>
+										</li>
 									</ul>
 								</div>
 								<?php } else { ?>
-								<button class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo t("send"); ?></button>
+								<button class="btn btn-teal" type="submit">
+									<div class="btn-icons"><i class="fa fa-paper-plane"></i></div>
+								<?php echo t("send"); ?>
+								</button>
 								<?php } ?>
 								<span class="btn btn-file2">
-									<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+									<div class="btn-icons"><i class="fa fa-upload"></i></div>
+								<?php echo translator::trans("upload") ?>
 									<input type="file" name="file[]" multiple="">
 								</span>
 							</div>

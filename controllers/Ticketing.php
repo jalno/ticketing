@@ -274,6 +274,10 @@ class Ticketing extends Controller {
 		$view->setProducts(Products::get());
 		$children = Authorization::childrenTypes();
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
+
+		$currentUser = Authentication::getUser();
+		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
+		
 		$inputsRules = array(
 			'title' => array(
 				'type' => 'string',
@@ -305,7 +309,12 @@ class Ticketing extends Controller {
 				'type' => 'file',
 				'optional' => true,
 				'multiple' => true
-			)
+			),
+			"send_notification" => array(
+				'type' => 'bool',
+				'optional' => true,
+				'default' => $defaultBehavior,
+			),
 		);
 		if ($children) {
 			$inputsRules['client'] = array(
@@ -313,15 +322,14 @@ class Ticketing extends Controller {
 				'optional' => true
 			);
 		}
-		if ($hasAccessToEnableDisableNotification) {
-			$inputsRules["send_notification_behavior"] = array(
-				'type' => 'number',
-				'values' => [Ticket::SEND_WITH_NOTIFICATION, Ticket::SEND_WITHOUT_NOTIFICATION],
-				'optional' => true,
-			);
+		if (!$hasAccessToEnableDisableNotification) {
+			unset($inputsRules["send_notification"]);
 		}
 		$view->setDataForm($this->inputsvalue($inputsRules));
 		$inputs = $this->checkinputs($inputsRules);
+		if (!$hasAccessToEnableDisableNotification) {
+			$inputs["send_notification"] = $defaultBehavior;
+		}
 
 		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
 		if (isset($inputs['product']) and $inputs['product']) {
@@ -415,16 +423,10 @@ class Ticketing extends Controller {
 		$log->type = logs\tickets\Add::class;
 		$log->save();
 
-		$currentUser = Authentication::getUser();
-		$defaultBehavior = Ticket::getSendNotificationDefaultBehavior();
-		$userSendNotificationBehavior = $currentUser->getOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME) ?? $defaultBehavior;
-		if (isset($inputs["send_notification_behavior"]) and $inputs["send_notification_behavior"] != $defaultBehavior) {
-			$currentUser->setOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME, $inputs["send_notification_behavior"]);
-			$userSendNotificationBehavior = $inputs["send_notification_behavior"];
+		if ($hasAccessToUnassignedTickets and $defaultBehavior != $inputs["send_notification"]) {
+			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
 		}
-		if (($hasAccessToEnableDisableNotification and $userSendNotificationBehavior == Ticket::SEND_WITH_NOTIFICATION) or
-			(!$hasAccessToEnableDisableNotification and $defaultBehavior == Ticket::SEND_WITH_NOTIFICATION)
-		) {
+		if ($inputs["send_notification"]) {
 			$event = new events\tickets\Add($message);
 			$event->trigger();
 		}
@@ -476,6 +478,8 @@ class Ticketing extends Controller {
 			throw new NotFound();
 		}
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
+		$currentUser = Authentication::getUser();
+		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
 		$inputsRules = array(
 			'text' => array(
 				'type' => 'string'
@@ -486,15 +490,19 @@ class Ticketing extends Controller {
 				'multiple' => true,
 				'obj' => true,
 			),
-		);
-		if ($hasAccessToEnableDisableNotification) {
-			$inputsRules["send_notification_behavior"] = array(
-				'type' => 'number',
-				'values' => [Ticket::SEND_WITH_NOTIFICATION, Ticket::SEND_WITHOUT_NOTIFICATION],
+			"send_notification" => array(
+				'type' => 'bool',
 				'optional' => true,
-			);
+				'default' => $defaultBehavior,
+			),
+		);
+		if (!$hasAccessToEnableDisableNotification) {
+			unset($inputsRules["send_notification"]);
 		}
 		$inputs = $this->checkinputs($inputsRules);
+		if (!$hasAccessToEnableDisableNotification) {
+			$inputs["send_notification"] = $defaultBehavior;
+		}
 		if (!$inputs['text'] = strip_tags($inputs['text'])) {
 			throw new InputValidationException('text');
 		}
@@ -550,16 +558,11 @@ class Ticketing extends Controller {
 		$log->save();
 
 
-		$currentUser = Authentication::getUser();
-		$defaultBehavior = Ticket::getSendNotificationDefaultBehavior();
-		$userSendNotificationBehavior = $currentUser->getOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME) ?? $defaultBehavior;
-		if (isset($inputs["send_notification_behavior"]) and $inputs["send_notification_behavior"] != $userSendNotificationBehavior) {
-			$currentUser->setOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME, $inputs["send_notification_behavior"]);
-			$userSendNotificationBehavior = $inputs["send_notification_behavior"];
+		
+		if ($hasAccessToEnableDisableNotification and $inputs["send_notification"] != $defaultBehavior) {
+			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
 		}
-		if (($hasAccessToEnableDisableNotification and $userSendNotificationBehavior == Ticket::SEND_WITH_NOTIFICATION) or
-			(!$hasAccessToEnableDisableNotification and $defaultBehavior == Ticket::SEND_WITH_NOTIFICATION)
-		) {
+		if ($inputs["send_notification"]) {
 			$event = new events\tickets\Reply($ticket_message);
 			$event->trigger();
 		}

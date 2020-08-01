@@ -4,15 +4,17 @@ import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "../jquery.userAutoComplete";
-import { SendNotificationBehavoir } from "../Ticket";
+import Ticket from "../Ticket";
 
 export default class Add {
 	public static initIfNeeded() {
+		Add.$form = $("#ticket-add");
 		if (Add.$form.length) {
 			Add.init();
 		}
 	}
-	public static init() {
+	private static $form: JQuery;
+	private static init() {
 		if ($("input[name=client_name]", Add.$form).length) {
 			Add.runUserSearch();
 		}
@@ -20,9 +22,9 @@ export default class Add {
 		Add.runServicesListener();
 		Add.hiddenServices();
 		Add.runSubmitFormListener();
-		Add.runEnableDisableNotificationListener();
+		Ticket.runEnableDisableNotificationListener(Add.$form);
+		Ticket.runTextareaAutosize(Add.$form);
 	}
-	private static $form = $("#ticket-add");
 
 	private static runUserSearch() {
 		$("input[name=client_name]", Add.$form).userAutoComplete();
@@ -42,7 +44,6 @@ export default class Add {
 				}
 				$products.trigger("change").parents(".form-group").show();
 			} else {
-				$("textarea[name=text]", Add.$form).attr("rows", 4);
 				$products.parents(".form-group").hide();
 				$("select[name=service]", Add.$form).parents(".form-group").hide();
 			}
@@ -112,9 +113,6 @@ export default class Add {
 						const length = data.items.length;
 						if (length) {
 							$formGroup.show();
-							if (!$("input[name=client_name]", Add.$form).length) {
-								$("textarea[name=text]", Add.$form).attr("rows", 8);
-							}
 							for (let i = 0; i < length; i++) {
 								$services.append($("<option>", {
 									value: data.items[i].id,
@@ -143,25 +141,6 @@ export default class Add {
 		if (!$("option", $service).length) {
 			$service.parents(".form-group").first().hide();
 		}
-	}
-	private static runEnableDisableNotificationListener() {
-		const $notificationBehavior = $(".btn-group-notification-behavior", Add.$form);
-		if (!$notificationBehavior.length) {
-			return;
-		}
-		$("a.notification-behavior", $notificationBehavior).on("click", function(e) {
-			e.preventDefault();
-			const $this = $(this);
-			const $behaviorInput = $("input[name=send_notification_behavior]", Add.$form);
-			const $sendBtnIcon = $(".btn-send > i", $notificationBehavior);
-			if ($this.hasClass("with-notification")) {
-				$behaviorInput.val(SendNotificationBehavoir.SEND_WITH_NOTIFICATION);
-				$sendBtnIcon.removeClass().addClass("fa fa-bell");
-			} else if ($this.hasClass("without-notification")) {
-				$behaviorInput.val(SendNotificationBehavoir.SEND_WITHOUT_NOTIFICATION);
-				$sendBtnIcon.removeClass().addClass("fa fa-bell-slash");
-			}
-		});
 	}
 	private static runSubmitFormListener() {
 		Add.$form.on("submit", function(e) {

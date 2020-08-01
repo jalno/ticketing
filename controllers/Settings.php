@@ -27,19 +27,19 @@ class Settings implements Controller {
 		}
 
 		function translateTriggerNotification($value) {
-			return ($value ? t('settings.ticketing.send.with_notification') : t('settings.ticketing.send.without_notification'));
+			return $value ? t('settings.ticketing.send_notification_on_send_ticket') : t('settings.ticketing.send.without_notification');
 		}
-		if (isset($inputs['ticketing_send_notification_default_behaviour'])) {
-			$option = Options::get('packages.ticketing.send.notification_default_behaviour');
-			if ($option != $inputs['ticketing_send_notification_default_behaviour']) {
+		if (isset($inputs['ticketing_send_notification_on_send_ticket'])) {
+			$option = Options::get('packages.ticketing.send_notification_on_send_ticket');
+			if ($option != $inputs['ticketing_send_notification_on_send_ticket']) {
 				$logs[] = new Log(
-					'ticketing_send_notification_default_behaviour',
+					'ticketing_send_notification_on_send_ticket',
 					translateTriggerNotification($option),
-					translateTriggerNotification($inputs['ticketing_send_notification_default_behaviour']),
-					t('settings.ticketing.send.notification_default_behaviour')
+					translateTriggerNotification($inputs['ticketing_send_notification_on_send_ticket']),
+					t('settings.ticketing.send_notification_on_send_ticket')
 				);
-				$option = $inputs['ticketing_send_notification_default_behaviour'];
-				Options::save('packages.ticketing.send.notification_default_behaviour', $option, true);
+				$option = $inputs['ticketing_send_notification_on_send_ticket'];
+				Options::save('packages.ticketing.send_notification_on_send_ticket', $option, true);
 			}
 		}
 		return $logs;

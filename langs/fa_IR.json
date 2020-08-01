@@ -94,9 +94,7 @@
 		"ticketing.logs.reply": "پاسخی برای تیکت #{ticket_id} ارسال کرد",
 		"settings.ticketing.autoclose_time": "زمان برای بسته شدن تیکت ها",
 		"settings.ticketing.autoclose_time.disable": "غیرفعال",
-		"settings.ticketing.send.notification_default_behaviour": "حالت پیشفرض ارسال اعلان در هنگام ارسال تیکت",
-		"settings.ticketing.send.with_notification": "ارسال با اعلان",
-		"settings.ticketing.send.without_notification": "ارسال بدون اعلان",
+		"settings.ticketing.send_notification_on_send_ticket": "ارسال اعلان هنگام ایجاد تیکت جدید و یا ارسال پیام جدید",
 		"packages.ticketing.hour": "ساعت",
 		"packages.ticketing.autoclose_time.inHours": "{hour} ساعت",
 		"ticketing.logs.add": "تیکت #{ticket_id} را ایجاد کرد ",
@@ -105,6 +103,8 @@
 		"ticketing.logs.unlock": "تیکت #{ticket_id} را باز کرد ",
 		"ticketing.logs.delete": "تیکت #{ticket_id} را حذف کرد ",
 		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد",
-		"ticketing.logs.settings.departments.edit": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را ویرایش کرد"
+		"ticketing.logs.settings.departments.edit": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را ویرایش کرد",
+		"ticketing.active": "فعال",
+		"ticketing.deactive": "غیرفعال"
 	}
 }

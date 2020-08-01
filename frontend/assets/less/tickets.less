@@ -146,6 +146,22 @@ body.tickets-add, body.tickets-view {
 		.btn-select-notification-behavior {
 			padding-right: 6px;
 			padding-left: 6px;
+			i {
+				vertical-align: middle;
+			}
+		}
+		.select-notification-behavior {
+			padding: 0px;
+			li {
+				a {
+					padding: 6px 12px;
+					.btn-icons {
+						float: left;
+						margin-left: 0;
+						margin-right: 7px;
+					}
+				}
+			}
 		}
 		.notification-behavior {
 			cursor: pointer;
@@ -191,6 +207,17 @@ body.rtl {
 		#ticket-reply {
 			.btn-group-notification-behavior {
 				font-family: yekan;
+			}
+		}
+	}
+	&.tickets-view, &.tickets-add {
+		.btn-group-notification-behavior {
+			.select-notification-behavior {
+				.btn-icons {
+					float: right;
+					margin-right: 0;
+					margin-left: 7px;
+				}
 			}
 		}
 	}

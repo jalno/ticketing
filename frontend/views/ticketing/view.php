@@ -13,16 +13,15 @@ class View extends TicketView {
 	protected $messages;
 	protected $canSend = true;
 	protected $isLocked = false;
-	protected $hasAccessToSelectSendType;
 	protected $ticket;
 	function __beforeLoad(){
 		$this->ticket = $this->getTicket();
+		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? userpanel\Authentication::getUser() : null);
 		$this->setTitle([
 			translator::trans('ticketing.view'),
 			translator::trans('ticket'),
 			"#".$this->ticket->id
 		]);
-		$this->hasAccessToSelectSendType = Authorization::is_accessed("select_send_type");
 		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
 		$this->setNavigation();
 		$this->SetDataView();
@@ -73,6 +72,7 @@ class View extends TicketView {
 			$error->setInput('client_name');
 			$this->setFormError($error);
 		}
+		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
 	}
 	private function formatUrlsInText(string $text):string{
         $reg_exUrl = '/(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\\'\\,]*)?/';

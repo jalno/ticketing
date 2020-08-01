@@ -94,9 +94,7 @@
 		"ticketing.logs.reply": "Posted a reply on ticket #{ticket_id}",
 		"settings.ticketing.autoclose_time": "Time to close tickets",
 		"settings.ticketing.autoclose_time.disable": "Disable",
-		"settings.ticketing.send.notification_default_behaviour": "Default behavior of send notification on send ticket",
-		"settings.ticketing.send.with_notification": "Send with notification",
-		"settings.ticketing.send.without_notification": "Send without notification",
+		"settings.ticketing.send_notification_on_send_ticket": "Send notification on send new ticket or new message",
 		"packages.ticketing.hour": "hours",
 		"packages.ticketing.autoclose_time.inHours": "{hour} hours",
 		"ticketing.logs.add": "Added ticket #{ticket_id}.",
@@ -105,6 +103,8 @@
 		"ticketing.logs.unlock": "Unlocked ticket #{ticket_id}.",
 		"ticketing.logs.delete": "Deleted ticket #{ticket_id}.",
 		"ticketing.logs.settings.departments.add": "Added ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
-		"ticketing.logs.settings.departments.edit": "Modified ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>."
+		"ticketing.logs.settings.departments.edit": "Modified ticketing department <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span>.",
+		"ticketing.active": "Active",
+		"ticketing.deactive": "Deactive"
 	}
 }

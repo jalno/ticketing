@@ -9,16 +9,6 @@ use \packages\ticketing\authentication;
 
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
-
-$sendNotificationDefaultBehavior = Ticket::getSendNotificationDefaultBehavior();
-$sendNotificationBehavior = $sendNotificationDefaultBehavior;
-if ($this->canEnableDisableNotification) {
-	$sendNotificationBehavior = Authentication::getUser()->getOption(Ticket::SEND_NOTIFICATION_BEHAVIOR_USER_OPTION_NAME);
-	if (!$sendNotificationBehavior) {
-		$sendNotificationBehavior = $sendNotificationDefaultBehavior;
-	}
-}
-
 $this->the_header();
 ?>
 <div class="row">
@@ -106,9 +96,8 @@ $this->the_header();
 									);
 									if ($this->canEnableDisableNotification) {
 										$fields[] = array(
-											'name' => 'send_notification_behavior',
-											'type' => 'hidden',
-											'value' => $sendNotificationBehavior,
+											'name' => "send_notification",
+											"type" => "hidden",
 										);
 									}
 									foreach ($fields as $field) {
@@ -127,25 +116,39 @@ $this->the_header();
 									<?php } ?>
 									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
-											<?php if ($this->canEnableDisableNotification) { ?>
-												<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
-													<button type="button" class="btn btn-teal dropdown-toggle btn-select-notification-behavior" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-caret-down" aria-hidden="true"></i>
-													</button>
-													<button type="submit" class="btn btn-teal btn-send">
-														<i class="fa fa-<?php echo ($sendNotificationBehavior == Ticket::SEND_WITH_NOTIFICATION ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></i>
-														<?php echo t("send"); ?>
-													</button>
-													<ul class="dropdown-menu select-notification-behavior">
-														<li><a class="notification-behavior with-notification"><i class="fa fa-bell" aria-hidden="true"></i> <?php echo t("ticketing.send.with_notification"); ?> </a></li>
-														<li><a class="notification-behavior without-notification"><i class="fa fa-bell-slash-o" aria-hidden="true"></i> <?php echo t("ticketing.send.without_notification"); ?> </a></li>
-													</ul>
-												</div>
-											<?php } else { ?>
-											<button <?php echo (!$this->canSend ? 'disabled="true"' : ""); ?> class="btn btn-teal" type="submit"><i class="fa fa-paper-plane"></i><?php echo t("send"); ?></button>
-											<?php } ?>
+										<?php if ($this->canEnableDisableNotification) { ?>
+											<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
+												<button type="button" class="btn btn-teal dropdown-toggle btn-select-notification-behavior" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<i class="fa fa-caret-down" aria-hidden="true"></i>
+												</button>
+												<button type="submit" class="btn btn-teal btn-send">
+													<div class="btn-icons"><i class="fa fa-<?php echo ($this->sendNotification ? "bell" : "bell-slash") ?>" aria-hidden="true"></i></div>
+												<?php echo t("send"); ?>
+												</button>
+												<ul class="dropdown-menu select-notification-behavior">
+													<li>
+														<a class="notification-behavior with-notification">
+															<div class="btn-icons"><i class="fa fa-bell" aria-hidden="true"></i></div>
+														<?php echo t("ticketing.send.with_notification"); ?>
+														</a>
+													</li>
+													<li>
+														<a class="notification-behavior without-notification">
+															<div class="btn-icons"><i class="fa fa-bell-slash-o" aria-hidden="true"></i></div>
+														<?php echo t("ticketing.send.without_notification"); ?>
+														</a>
+													</li>
+												</ul>
+											</div>
+										<?php } else { ?>
+											<button <?php echo (!$this->canSend ? 'disabled' : ""); ?> class="btn btn-teal" type="submit">
+												<div class="btn-icons"><i class="fa fa-paper-plane"></i></div>
+											<?php echo t("send"); ?>
+											</button>
+										<?php } ?>
 											<span class="btn btn-file2 <?php echo !$this->canSend ? 'disabled' : ''; ?>">
-												<i class="fa fa-upload"></i> <?php echo translator::trans("upload") ?>
+												<div class="btn-icons"><i class="fa fa-upload"></i></div>
+											<?php echo translator::trans("upload") ?>
 												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
 										</div>
@@ -294,6 +297,6 @@ $this->the_header();
 		<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo translator::trans('cancel'); ?></button>
 	</div>
 </div>
-<?php } ?>
 <?php
+}
 $this->the_footer();
