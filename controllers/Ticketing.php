@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing\controllers;
 
-use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, response\file as Responsefile, Translator, Validator};
+use packages\base\{db, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, Response, response\file as Responsefile, Translator, Validator};
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
@@ -246,51 +246,73 @@ class Ticketing extends Controller {
 		return $this->response;
 	}
 
-	public function add() {
+	public function add(): Response {
 		Authorization::haveOrFail('add');
 		$view = View::byName(Views\Add::class);
 		$this->response->setView($view);
 		$view->setProducts(Products::get());
 		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 		$childrens = Authorization::childrenTypes();
-		$inputRules = array();
+		$rules = array();
 		if ($childrens) {
-			$inputRules['client'] = array(
+			$rules['client'] = array(
 				'type' => function ($data, $rules, $input) use ($childrens) {
 					if ($data and is_numeric($data) and $data != Authentication::getID()) {
-						$client = new User();
-						$client->where('id', $data);
-						$client->where('type', $childrens, 'IN');
-						$client = $client->getOne();
+						$client = (new User())->where('type', $childrens, 'IN')->byID($data, ['id', 'name', 'lastname', 'email', 'cellphone']);
 						if ($client) {
 							return $client;
 						}
 					}
 					return new Validator\NullValue();
 				},
+				'optional' => true,
 			);
+			if (Authorization::is_accessed('add_multiuser')) {
+				$rules['clients'] = array(
+					'type' => function ($data, $rules, $input) use ($childrens) {
+						$clients = array();
+						if ($data and is_string($data)) {
+							$clientsIDs = array_filter(explode(',', trim($data)), function ($id) {
+								return ($id and is_numeric($id) and $id > 0);
+							});
+							if ($clientsIDs) {
+								$clients = (new User)
+								->where('id', $clientsIDs, 'IN')
+								->where('type', $childrens, 'IN')
+								->get(null, ['id', 'name', 'lastname', 'email', 'cellphone']);
+							}
+						}
+						return $clients;
+					},
+					'optional' => true,
+				);
+			}
 		}
-		$predefined = $this->checkInputs($inputRules);
+		$predefined = $this->checkInputs($rules);
 		if (isset($predefined['client'])) {
 			$view->setClient($predefined['client']);
+		}
+		if (isset($predefined['clients']) and $predefined['clients']) {
+			$view->setClients($predefined['clients']);
 		}
 		$this->response->setStatus(true);
 		return $this->response;
 	}
 
-	public function store() {
+	public function store(): Response {
 		Authorization::haveOrFail('add');
 		$view = View::byName(Views\Add::class);
 		$this->response->setView($view);
-		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 		$view->setProducts(Products::get());
-		$children = Authorization::childrenTypes();
-		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
+		$view->setDepartmentData((new Department)->where("status", Department::ACTIVE)->get());
 
 		$currentUser = Authentication::getUser();
+		$childrens = Authorization::childrenTypes();
+		$canAddMultiuser = Authorization::is_accessed('add_multiuser');
+		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
 		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
 		
-		$inputsRules = array(
+		$rules = array(
 			'title' => array(
 				'type' => 'string',
 			),
@@ -322,48 +344,95 @@ class Ticketing extends Controller {
 				'optional' => true,
 				'multiple' => true
 			),
-			"send_notification" => array(
+			'send_notification' => array(
 				'type' => 'bool',
 				'optional' => true,
 				'default' => $defaultBehavior,
 			),
 		);
-		if ($children) {
-			$inputsRules['client'] = array(
+		if ($childrens) {
+			$rules['client'] = array(
 				'type' => User::class,
+				'query' => function ($query) {
+					$query->where('type', $childrens, 'IN');
+				},
 				'optional' => true
 			);
+			if ($canAddMultiuser) {
+				$rules['clients'] = array(
+					'type' => function ($data, $rule, $input) use ($childrens) {
+						if (!$data or !is_array($data)) {
+							throw new InputValidationException($input);
+						}
+						$clients = array();
+						foreach ($data as $key => $userID) {
+							if (!is_numeric($userID)) {
+								throw new InputValidationException("clients[{$key}]");
+							}
+							$client = (new User())->where('type', $childrens, 'IN')->byID($userID);
+							if (!$client) {
+								throw new InputValidationException("clients[{$key}]");
+							}
+							$clients[] = $client;
+						}
+						return $clients;
+					},
+					'optional' => true,
+				);
+				$rules['is_multiuser'] = array(
+					'type' => 'bool',
+					'default' => false,
+					'optional' => true,
+				);
+			}
 		}
 		if (!$hasAccessToEnableDisableNotification) {
-			unset($inputsRules["send_notification"]);
+			unset($rules["send_notification"]);
 		}
-		$view->setDataForm($this->inputsvalue($inputsRules));
-		$inputs = $this->checkinputs($inputsRules);
+		$view->setDataForm($this->inputsvalue($rules));
+		$inputs = $this->checkinputs($rules);
+
+		if ((isset($inputs["is_multiuser"]) and $inputs["is_multiuser"]) and (!isset($inputs["clients"]) or !$inputs["clients"])) {
+			throw new InputValidationException("clients");
+		}
 		if (!$hasAccessToEnableDisableNotification) {
 			$inputs["send_notification"] = $defaultBehavior;
 		}
 
-		$inputs['client'] = isset($inputs['client']) ? $inputs['client'] : Authentication::getUser();
-		if (isset($inputs['product']) and $inputs['product']) {
-			$allowedProducts = $inputs['department']->getProducts();
-			// if $allowedProducts is empty, all Products is acceptable for this department
-			if ($allowedProducts and !in_array($inputs['product'], $allowedProducts)) {
-				throw new InputValidationException('product');
-			}
-			$inputs['product'] = Products::getOne($inputs['product']);
-			if (!$inputs['product']) {
-				throw new InputValidationException('product');
-			}
+		$clients = array();
+		if (isset($inputs['clients']) and $inputs['clients']) {
+			$clients = $inputs['clients'];
+			unset($inputs['client']);
+		} else if (isset($inputs['client']) and $inputs['client']) {
+			$clients = array($inputs['client']);
+		} else {
+			$clients = array($currentUser);
+			$inputs['client'] = $currentUser;
+		}
 
-			if (!isset($inputs['service']) or !$inputs['service']) {
-				throw new InputValidationException('service');
+		if (isset($inputs['client'])) {
+			$canOverrideForceProductChoose = Authorization::is_accessed('add_override-force-product-choose');
+			if (isset($inputs['product']) and $inputs['product']) {
+				$allowedProducts = $inputs['department']->getProducts();
+				// if $allowedProducts is empty, all Products is acceptable for this department
+				if ($allowedProducts and !in_array($inputs['product'], $allowedProducts)) {
+					throw new InputValidationException('product');
+				}
+				$inputs['product'] = Products::getOne($inputs['product']);
+				if (!$inputs['product']) {
+					throw new InputValidationException('product');
+				}
+
+				if (!isset($inputs['service']) or !$inputs['service']) {
+					throw new InputValidationException('service');
+				}
+				$inputs['service'] = $inputs['product']->getServiceById($inputs['client'], $inputs['service']);
+				if (!$inputs['service']) {
+					throw new InputValidationException('service');
+				}
+			} else if ($inputs['department']->isMandatoryChooseProduct() and !$canOverrideForceProductChoose) {
+				throw new InputValidationException('product');
 			}
-			$inputs['service'] = $inputs['product']->getServiceById($inputs['client'], $inputs['service']);
-			if (!$inputs['service']) {
-				throw new InputValidationException('service');
-			}
-		} else if ($inputs['department']->isMandatoryChooseProduct() and !Authorization::is_accessed('add_override-force-product-choose')) {
-			throw new InputValidationException('product');
 		}
 
 		if (isset($inputs['file'])) {
@@ -401,49 +470,54 @@ class Ticketing extends Controller {
 				}
 			}
 		}
-		$hasAccessToUnassignedTickets = Authorization::is_accessed("unassigned");
-		$me = Authentication::getID();
-		$ticket = new Ticket();
-		$ticket->title	= $inputs['title'];
-		$ticket->priority = $inputs['priority'];
-		$ticket->client = $inputs['client']->id;
-		$ticket->department = $inputs['department']->id;
-		$ticket->status = ($me == $inputs['client']->id ? Ticket::unread : Ticket::answered);
-		if ($me != $inputs["client"]->id and !$hasAccessToUnassignedTickets) {
-			$ticket->operator_id = $me;
-		}
-		$ticket->save();
-		if (isset($inputs["product"], $inputs["service"]) and $inputs["product"] and $inputs["service"]) {
-			$ticket->setParam("product", $inputs["product"]->getName());
-			$ticket->setParam("service", $inputs["service"]->getId());
-		}
-		$message = new Ticket_message();
-		if (isset($inputs['file'])) {
-			foreach ($inputs['file'] as $file) {
-				$message->addFile($file);
-			}
-		}
-		$message->ticket = $ticket->id;
-		$message->text = $inputs['text'];
-		$message->user = $me;
-		$message->status = $me == $inputs["client"]->id ? ticket_message::read : ticket_message::unread;
-		$message->save();
 
-		$log = new Log();
-		$log->user = $me;
-		$log->title = t("ticketing.logs.add", ['ticket_id' => $ticket->id]);
-		$log->type = logs\tickets\Add::class;
-		$log->save();
-
-		if ($hasAccessToUnassignedTickets and $defaultBehavior != $inputs["send_notification"]) {
+		if ($hasAccessToEnableDisableNotification and $defaultBehavior != $inputs["send_notification"]) {
 			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
 		}
-		if ($inputs["send_notification"]) {
-			$event = new events\tickets\Add($message);
-			$event->trigger();
+		$hasAccessedToUnassigned = Authorization::is_accessed("unassigned");
+		foreach ($clients as $client) {
+			$ticket = new Ticket();
+			$ticket->title	= $inputs['title'];
+			$ticket->priority = $inputs['priority'];
+			$ticket->client = $client->id;
+			$ticket->department = $inputs['department']->id;
+			$ticket->status = ($currentUser->id == $client->id ? Ticket::unread : Ticket::answered);
+			if ($currentUser->id != $client->id and !$hasAccessedToUnassigned) {
+				$ticket->operator_id = $currentUser->id;
+			}
+			$ticket->save();
+
+			if (isset($inputs["product"], $inputs["service"]) and $inputs["product"] and $inputs["service"]) {
+				$ticket->setParam("product", $inputs["product"]->getName());
+				$ticket->setParam("service", $inputs["service"]->getId());
+			}
+			$message = new Ticket_message();
+			if (isset($inputs['file'])) {
+				foreach ($inputs['file'] as $file) {
+					$message->addFile($file);
+				}
+			}
+			$message->ticket = $ticket->id;
+			$message->text = $inputs['text'];
+			$message->user = $currentUser->id;
+			$message->status = ($currentUser->id == $client->id ? ticket_message::read : ticket_message::unread);
+			$message->save();
+
+			$log = new Log();
+			$log->user = $currentUser->id;
+			$log->title = t("ticketing.logs.add", ['ticket_id' => $ticket->id]);
+			$log->type = logs\tickets\Add::class;
+			$log->save();
+
+			if ($inputs["send_notification"]) {
+				$event = new events\tickets\Add($message);
+				try {
+					$event->trigger();
+				} catch (\Exception $e) {}
+			}
 		}
 
-		$this->response->Go(userpanel\url('ticketing/view/'. $ticket->id));
+		$this->response->Go(userpanel\url(count($clients) == 1 ? "ticketing/view/{$ticket->id}" : "ticketing"));
 		$this->response->setStatus(true);
 		return $this->response;
 	}

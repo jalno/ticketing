@@ -6,6 +6,7 @@ class usertype{
 		$permissions = array(
 			'list',
 			'add',
+			'add_multiuser',
 			'add_override-force-product-choose',
 			'view',
 			'reply',

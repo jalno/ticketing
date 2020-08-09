@@ -18,6 +18,7 @@
 		"ticketing.ticket.add.user_not_entered": "کاربر مشخص نشده ، لطفا کاربر را مشخص کنید",
 		"ticketing.ion_range_slider.prefix.hour": "ساعت",
 		"ticketing.ion_range_slider.postfix.hour": "",
+		"ticketing.error": "خطا",
 
 		"user.view_profile": "مشاهده پروفایل",
 		"attention": "توجه",
@@ -155,6 +156,14 @@
 		"ticketing.ticket.list.info.create.create_by": "توسط",
 		"ticketing.ticket.list.info.create.in_department": "در دپارتمان",
 		"ticketing.ticket.list.info.last_answer": "آخرین پاسخ",
+
+		"ticketing.ticket.add.user.select_one_user": "انتخاب یک کاربر",
+		"ticketing.ticket.add.user.select_multi_user": "انتخاب چند کاربر",
+		"ticketing.ticket.add.user.select_multi_user.search": "جستجوی کاربر",
+		"ticketing.ticket.add.user.select_multi_user.search.placeholder": " نام کاربر را وارد کنید",
+		"ticketing.ticket.add.user.select_multi_user.search.added_users": "کاربران اضافه شده",
+		"ticketing.ticket.add.user.select_multi_user.duplicate": "شما این کاربر را اضافه کرده اید!",
+		"ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least": "شما باید حداقل یک کاربر را انتخاب کنید",
 
 		"ticketing.choose": "انتخاب کنید ..",
 		"ticketing.active_ticket_shortcut_title.client": "تیکت خوانده نشده دارید",

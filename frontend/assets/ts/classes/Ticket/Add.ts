@@ -3,7 +3,8 @@ import "bootstrap-inputmsg";
 import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
-import "../jquery.userAutoComplete";
+import "../jquery.ticketingUserAutoComplete";
+import {IUser} from "../jquery.ticketingUserAutoComplete";
 import Ticket from "../Ticket";
 
 export default class Add {
@@ -14,6 +15,7 @@ export default class Add {
 		}
 	}
 	private static $form: JQuery;
+	private static multiuserMode: boolean = false;
 	private static init() {
 		if ($("input[name=client_name]", Add.$form).length) {
 			Add.runUserSearch();
@@ -21,19 +23,142 @@ export default class Add {
 		Add.runDepartmentListener();
 		Add.runServicesListener();
 		Add.hiddenServices();
+		Add.resetMultiuserTable();
+		Add.runMultiuserPanel();
+		Add.runMultiuserBtnChangeListener();
 		Add.runSubmitFormListener();
 		Ticket.runEnableDisableNotificationListener(Add.$form);
 		Ticket.runTextareaAutosize(Add.$form);
 	}
+	private static runMultiuserBtnChangeListener(): void {
+		const $btn = $("button.btn-multiuser", Add.$form);
+		if (!$btn.length) {
+			return;
+		}
+		const $newTicketPanelContainer = $(".new-ticket-panel-container", Add.$form);
+		const $multiuserPanelContainer = $(".multiuser-panel-container", Add.$form);
+		const $oneClientInputs = $("input[name=client_name], input[name=client]", Add.$form);
+		const $multiuserInput = $("input[name=is_multiuser]", Add.$form);
+		$btn.on("click", (e) => {
+			e.preventDefault();
+			Add.multiuserMode = !Add.multiuserMode;
+			$multiuserInput.val(Add.multiuserMode ? 1 : 0);
+			if (Add.multiuserMode) {
+				$oneClientInputs.prop("disabled", true).val("");
+				$btn.blur().css("background-color", "#e6e6e6").html(`<i class="fa fa-user" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_one_user")}`);
+				$newTicketPanelContainer.removeClass("col-sm-12").addClass("col-sm-8");
+				$("select[name=product]", Add.$form).val("").parents(".form-group").hide();
+				$("select[name=service]", Add.$form).val("").parents(".form-group").hide();
+				setTimeout(() => {
+					$multiuserPanelContainer.slideDown();
+					$("input[name=clients_name]", $multiuserPanelContainer).focus();
+					$newTicketPanelContainer.addClass("col-sm-pull-4");
+				}, 700);
+			} else {
+				$("select[name=department]", Add.$form).trigger("change");
+				$oneClientInputs.prop("disabled", false);
+				$btn.blur().css("background-color", "inherit").html(`<i class="fa fa-users" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_multi_user")}`);
+				$newTicketPanelContainer.addClass("col-sm-12").removeClass("col-sm-8 col-sm-pull-4");
+				$multiuserPanelContainer.hide();
+				Add.resetMultiuserTable(false);
+			}
+		});
+		if ($btn.data("has-clients") as boolean) {
+			$btn.trigger("click");
+		}
+	}
+	private static runMultiuserPanel(): void {
+		const $clientsName = $("input[name=clients_name]", Add.$form);
+		$clientsName.ticketingUserAutoComplete($("input[name=clients]", Add.$form), (event, ui) => {
+			Add.AddMultiuser(ui.item);
+			$clientsName.val("");
+		});
+	}
+	private static resetMultiuserTable(addPredefinedUsers: boolean = true): void {
+		const $table = $(".multiuser-users .table");
+		$("tbody > tr", $table).remove();
+		$("input[name=clients_name]", Add.$form).val("");
+		const users = $table.data("items") as IUser[];
+		if (users && addPredefinedUsers) {
+			for (const user of users) {
+				this.AddMultiuser(user);
+			}
+		}
+	}
+	private static AddMultiuser(user: IUser): void {
+		const $table = $(".multiuser-users .table", Add.$form);
+		const $tbody = $("tbody", $table);
+		const $trs = $("> tr", $tbody);
+		if ($(`input[value=${user.id}]`, $trs).length) {
+			$.growl.warning({
+				title: t("ticketing.error"),
+				message: t("ticketing.ticket.add.user.select_multi_user.duplicate"),
+			});
+			return;
+		}
+		const index = $trs.length;
+		const html = `<tr>
+			<td class="index">${index + 1}</td>
+			<td>
+				<span><a target="_blank" href="${Router.url(`userpanel/users?id=${user.id}`)}">${user.name + (user.lastname ? " " + user.lastname : "")}</a></span>
+				<input type="hidden" name="clients[${index}]" value="${user.id}">
+			</td>
+			<td class="btn-remove-container">
+				<button type="button" class="btn btn-link btn-block btn-remove-user">
+					<i class="fa fa-trash"></i>
+				</button>
+			</td>
+		</tr>`;
+		const $tr = $(html).appendTo($tbody);
 
+		let timeout: number;
+		let confirmStep = false;
+		const $btn = $(".btn-remove-user", $tr);
+		$btn.on("click", (e) => {
+			e.preventDefault();
+			if (confirmStep) {
+				if (timeout) {
+					clearTimeout(timeout);
+				}
+				$btn.parents("tr").remove();
+				const $rows = $(".multiuser-users .table tbody > tr");
+				if (!$rows.length) {
+					$("input[name=clients_name]", Add.$form).val("").focus();
+					return;
+				}
+				$rows.each((item, elemnt) => {
+					const $row = $(elemnt);
+					const $input = $("input", $row);
+					if ($input.length) {
+						$input.attr("name", `clients[${item}]`);
+					}
+					$("td.index", $row).html((item + 1).toString());
+				});
+				return;
+			}
+			confirmStep = true;
+			const $icon = $("i", $btn);
+			$icon.removeClass().addClass("fa fa-info-circle");
+			$btn.removeClass("btn-link").addClass("btn-danger");
+			timeout = setTimeout(() => {
+				confirmStep = false;
+				$icon.removeClass().addClass("fa fa-trash");
+				$btn.addClass("btn-link").removeClass("btn-danger");
+				timeout = undefined;
+			}, 1000);
+		});
+	}
 	private static runUserSearch() {
-		$("input[name=client_name]", Add.$form).userAutoComplete();
+		$("input[name=client_name]", Add.$form).ticketingUserAutoComplete();
 	}
 	private static runDepartmentListener() {
 		$("select[name=department]", Add.$form).change(function() {
-			const $selectedOption = $("option:selected", this);
 			const $products = $("select[name=product]", Add.$form).html("");
 			$products.parents(".form-group").hide();
+			if (Add.multiuserMode) {
+				return;
+			}
+			const $selectedOption = $("option:selected", this);
 			const products = $selectedOption.data("products") as Array<{title: string, value: string}>;
 			if (products) {
 				for (const product of products) {
@@ -88,7 +213,7 @@ export default class Add {
 		const $alert = $(".alert-service", Add.$form);
 		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
 			const product = $("select[name=product]").val() as string;
-			if (!product) {
+			if (!product || Add.multiuserMode) {
 				$("select[name=service]").parents(".form-group").hide();
 				return;
 			}
@@ -152,6 +277,14 @@ export default class Add {
 			if (!product) {
 				$("select[name=service]", Add.$form).val("");
 			}
+			$(".has-error", Add.$form).removeClass("has-error").children(".help-block").remove();
+			if (Add.multiuserMode && !$('input[name^="clients["]').length) {
+				$.growl.error({
+					title: t("ticketing.error"),
+					message: t("ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least"),
+				});
+				return;
+			}
 			($(this) as any).formAjax({
 				data: new FormData(this as HTMLFormElement),
 				contentType: false,
@@ -172,8 +305,12 @@ export default class Add {
 						};
 						if (error.error === "data_validation") {
 							params.message = t("ticketing.request.response.error.message.data_validation");
-							if (error.input && new RegExp(/^file\[[0-9]\]/).test(error.input)) {
-								params.message = t("ticketing.request.response.error.message.data_validation.file");
+							if (error.input) {
+								if ((new RegExp(/^file\[[0-9]\]/)).test(error.input)) {
+									params.message = t("ticketing.request.response.error.message.data_validation.file");
+								} else if (error.input === "clients") {
+									params.message = t("ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least");
+								}
 							}
 						}
 						if ($input.length) {

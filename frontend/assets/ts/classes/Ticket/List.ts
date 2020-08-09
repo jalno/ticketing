@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import "select2";
-import "../jquery.userAutoComplete";
+import "../jquery.ticketingUserAutoComplete";
 
 export default class List {
 	public static init() {
@@ -19,7 +19,7 @@ export default class List {
 	private static $form = $("#tickets-search");
 
 	private static runUserSearch() {
-		$("input[name=client_name]", List.$form).userAutoComplete();
+		$("input[name=client_name]", List.$form).ticketingUserAutoComplete();
 	}
 	private static openAdvancedSearchListener() {
 		const $fields = $(".more-field", List.$form);

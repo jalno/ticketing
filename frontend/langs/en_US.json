@@ -18,7 +18,7 @@
 		"ticketing.ticket.add.user_not_entered": "User is not defined, please define user.",
 		"ticketing.ion_range_slider.prefix.hour": "",
 		"ticketing.ion_range_slider.postfix.hour": ":00",
-
+		"ticketing.error": "Error",
 
 		"cancel": "Cancel",
 		"attention": "Attention",
@@ -98,6 +98,14 @@
 
 		"ticketing.send.with_notification": "Send with notification",
 		"ticketing.send.without_notification": "Send without notification",
+
+		"ticketing.ticket.add.user.select_one_user": "Select one user",
+		"ticketing.ticket.add.user.select_multi_user": "Select multiuser",
+		"ticketing.ticket.add.user.select_multi_user.search": "Search user",
+		"ticketing.ticket.add.user.select_multi_user.search.placeholder": " Type user's name",
+		"ticketing.ticket.add.user.select_multi_user.search.added_users": "Added users",
+		"ticketing.ticket.add.user.select_multi_user.duplicate": "You added this user!",
+		"ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least": "You should add one user at least!",
 
 		"department.edit":"Edit",
 		"department.delete":"Delete",
