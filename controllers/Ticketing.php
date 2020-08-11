@@ -341,8 +341,9 @@ class Ticketing extends Controller {
 			),
 			'file' => array(
 				'type' => 'file',
+				'obj' => true,
+				'multiple' => true,
 				'optional' => true,
-				'multiple' => true
 			),
 			'send_notification' => array(
 				'type' => 'bool',
@@ -398,6 +399,9 @@ class Ticketing extends Controller {
 		if (!$hasAccessToEnableDisableNotification) {
 			$inputs["send_notification"] = $defaultBehavior;
 		}
+		if (isset($inputs['file']) and empty($inputs['file'])) {
+			unset($inputs['file']);
+		}
 
 		$clients = array();
 		if (isset($inputs['clients']) and $inputs['clients']) {
@@ -436,34 +440,20 @@ class Ticketing extends Controller {
 		}
 
 		if (isset($inputs['file'])) {
-			if (!is_array($inputs['file'])) {
-				throw new InputValidationException("file");
-			}
-			if (empty($inputs['file'])) {
-				unset($inputs['file']);
-			}
-		}
-		if (isset($inputs['file'])) {
-			$files = [];
-			foreach ($inputs['file'] as $file) {
-				if ($file['error'] == UPLOAD_ERR_OK) {
-					$files[] = $file;
-				} elseif ($file['error'] != UPLOAD_ERR_NO_FILE) {
-					throw new InputValidationException("file");
-				}
-			}
+			$attachments = $inputs['file'];
 			$inputs['file'] = [];
-			foreach ($files as $file) {
-				$name = md5_file($file['tmp_name']);
-				$directory = Packages::package('ticketing')->getFilePath('storage/private');
-				if (!is_dir($directory)) {
-					IO\mkdir($directory);
+			foreach ($attachments as $attachment) {
+				$md5 = $attachment->md5();
+				$file = Packages::package('ticketing')->getFile("storage/private/{$md5}");
+				$directory = $file->getDirectory();
+				if (!$directory->exists()) {
+					$directory->make(true);
 				}
-				if (move_uploaded_file($file['tmp_name'], $directory . '/' . $name)) {
+				if ($attachment->copyTo($file)) {
 					$inputs['file'][] = [
-						'name' => $file['name'],
-						'size' => $file['size'],
-						'path' => 'private/' . $name,
+						'name' => $attachment->basename,
+						'size' => $file->size(),
+						'path' => "private/{$md5}",
 					];
 				} else {
 					throw new InputValidationException("file");
