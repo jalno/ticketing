@@ -15,6 +15,7 @@
 		"ticketing.request.response.error.message": "درخواست شما توسط سرور قبول نشد",
 		"ticketing.request.response.error.message.data_validation": "داده وارد شده معتبر نیست",
 		"ticketing.request.response.error.message.data_validation.file": "فایل ارسال شده قابل قبول نمی‌باشد.",
+		"ticketing.request.response.error.message.data_duplicate": "داده وارد شده تکراری می باشد",
 		"ticketing.ticket.add.user_not_entered": "کاربر مشخص نشده ، لطفا کاربر را مشخص کنید",
 		"ticketing.ion_range_slider.prefix.hour": "ساعت",
 		"ticketing.ion_range_slider.postfix.hour": "",
@@ -163,7 +164,7 @@
 		"ticketing.ticket.add.user.select_multi_user.search.placeholder": " نام کاربر را وارد کنید",
 		"ticketing.ticket.add.user.select_multi_user.search.added_users": "کاربران اضافه شده",
 		"ticketing.ticket.add.user.select_multi_user.duplicate": "شما این کاربر را اضافه کرده اید!",
-		"ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least": "شما باید حداقل یک کاربر را انتخاب کنید",
+		"error.ticketing.error.ticket.add.user.select_multi_user.should_select_one_user_at_least": "شما باید حداقل یک کاربر را انتخاب کنید",
 
 		"ticketing.choose": "انتخاب کنید ..",
 		"ticketing.active_ticket_shortcut_title.client": "تیکت خوانده نشده دارید",

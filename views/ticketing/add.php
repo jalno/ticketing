@@ -22,7 +22,7 @@ class Add extends Form {
 		$this->setDataForm($client->id, 'client');
 		$this->setDataForm($client->getFullName(), 'client_name');
 	}
-	public function getClient() {
+	public function getClient():? User {
 		return $this->getData('client');
 	}
 	public function setClients(array $clients): void {

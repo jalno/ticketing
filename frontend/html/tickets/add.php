@@ -18,7 +18,7 @@ $this->the_header();
 				<div class="panel-body">
 					<?php
 					$this->createField(array(
-						'name' => 'is_multiuser',
+						'name' => 'multiuser_mode',
 						'type' => 'hidden',
 					));
 					$this->createField(array(
@@ -97,14 +97,12 @@ $this->the_header();
 								),
 							);
 							if ($this->canSpecifyUser) {
-								array_unshift($fields, array(
-									'name' => 'client',
-									'type' => 'hidden'
-								),
-								array(
+								$client_name = array(
 									'name' => 'client_name',
 									'label' => t('newticket.client'),
-									'input-group' => array(
+								);
+								if ($this->canSpecifyMultiUser) {
+									$client_name['input-group'] = array(
 										'right' => array(
 											array(
 												'type' => 'button',
@@ -115,8 +113,15 @@ $this->the_header();
 												),
 											),
 										),
+									);
+								}
+								array_unshift($fields, array(
+									'name' => 'client',
+									'type' => 'hidden',
+									'data' => array(
+										'user' => htmlentities(json\encode($this->getClient() ? $this->getClient()->toArray() : []))
 									),
-								));
+								), $client_name);
 							}
 							if ($this->canEnableDisableNotification) {
 								$fields[] = array(

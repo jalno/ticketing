@@ -105,7 +105,7 @@
 		"ticketing.ticket.add.user.select_multi_user.search.placeholder": " Type user's name",
 		"ticketing.ticket.add.user.select_multi_user.search.added_users": "Added users",
 		"ticketing.ticket.add.user.select_multi_user.duplicate": "You added this user!",
-		"ticketing.ticket.add.user.select_multi_user.should_select_one_user_at_least": "You should add one user at least!",
+		"error.ticketing.error.ticket.add.user.select_multi_user.should_select_one_user_at_least": "You should add one user at least!",
 
 		"department.edit":"Edit",
 		"department.delete":"Delete",

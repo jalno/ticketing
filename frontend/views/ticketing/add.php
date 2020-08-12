@@ -212,6 +212,6 @@ class Add extends TicketAdd {
 	}
 	private function setFormData() {
 		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
-		$this->setDataForm($this->hasPredefinedClients ? 1 : 0, "is_multiuser");
+		$this->setDataForm($this->hasPredefinedClients ? 1 : 0, "multiuser_mode");
 	}
 }
