@@ -5,10 +5,11 @@ use packages\ticketing\{Ticket, ticket_message};
 use packages\ticketing\Authentication;
 
 $this->the_header();
+
 ?>
-<div class="row">
-	<form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data" spellcheck="false">
-		<?php if ($this->canSpecifyMultiUser) { ?>
+<form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data" spellcheck="false">
+	<div class="row">
+	<?php if ($this->isSelectMultiUser or $this->canSpecifyMultiUser) { ?>
 		<div class="multiuser-panel-container col-xs-12 col-sm-4 col-sm-push-8 <?php echo (!$this->hasPredefinedClients ? "display-none" : ""); ?>">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -16,17 +17,17 @@ $this->the_header();
 					<span><?php echo t("ticketing.ticket.add.user.select_multi_user"); ?></span>
 				</div>
 				<div class="panel-body">
-					<?php
-					$this->createField(array(
-						'name' => 'multiuser_mode',
-						'type' => 'hidden',
-					));
-					$this->createField(array(
-						'name' => 'clients_name',
-						'label' => t("ticketing.ticket.add.user.select_multi_user.search"),
-						'placeholder' => t("ticketing.ticket.add.user.select_multi_user.search.placeholder"),
-					));
-					?>
+				<?php
+				$this->createField(array(
+					'name' => 'multiuser_mode',
+					'type' => 'hidden',
+				));
+				$this->createField(array(
+					'name' => 'clients_name',
+					'label' => t("ticketing.ticket.add.user.select_multi_user.search"),
+					'placeholder' => t("ticketing.ticket.add.user.select_multi_user.search.placeholder"),
+				));
+				?>
 					<div class="multiuser-title"><?php echo t("ticketing.ticket.add.user.select_multi_user.search.added_users"); ?></div>
 					<div class="multiuser-users">
 						<table class="table table-striped table-bordered" data-items="<?php echo htmlentities(json\encode($this->getClientsToArray())); ?>">
@@ -37,9 +38,9 @@ $this->the_header();
 				</div>
 			</div>
 		</div>
-		<?php } ?>
+	<?php } ?>
 
-		<div class="new-ticket-panel-container col-xs-12 <?php echo ($this->hasPredefinedClients ? "col-sm-8 col-sm-pull-4" : "col-sm-12"); ?>">
+		<div class="new-ticket-panel-container col-xs-12 <?php echo ($this->isSelectMultiUser ? "col-sm-8 col-sm-pull-4" : "col-sm-12"); ?>">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<i class="fa fa-plus"></i>
@@ -197,8 +198,8 @@ $this->the_header();
 				</div>
 			</div>
 		</div>
-	</form>
-</div>
+	</div>
+</form>
 <?php
 echo $this->generateShortcuts();
 echo $this->generateRows();

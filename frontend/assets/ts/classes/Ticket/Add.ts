@@ -58,10 +58,8 @@ export default class Add {
 				}
 				$clientInput.prop("disabled", true).val("").attr("name", "");
 				$clientNameInput.prop("disabled", true).val("");
-				$btn.blur().css("background-color", "#e6e6e6").html(`<i class="fa fa-user" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_one_user")}`);
+				$btn.blur().html(`<i class="fa fa-user" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_one_user")}`);
 				$newTicketPanelContainer.removeClass("col-sm-12").addClass("col-sm-8");
-				$("select[name=product]", Add.$form).val("").parents(".form-group").hide();
-				$("select[name=service]", Add.$form).val("").parents(".form-group").hide();
 				setTimeout(() => {
 					$multiuserPanelContainer.slideDown();
 					$("input[name=clients_name]", $multiuserPanelContainer).focus();
@@ -71,7 +69,7 @@ export default class Add {
 				$("select[name=department]", Add.$form).trigger("change");
 				$clientInput.prop("disabled", false).attr("name", "client");
 				$clientNameInput.prop("disabled", false);
-				$btn.blur().css("background-color", "inherit").html(`<i class="fa fa-users" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_multi_user")}`);
+				$btn.blur().html(`<i class="fa fa-users" aria-hidden="true"></i> ${t("ticketing.ticket.add.user.select_multi_user")}`);
 				$newTicketPanelContainer.addClass("col-sm-12").removeClass("col-sm-8 col-sm-pull-4");
 				$multiuserPanelContainer.hide();
 				Add.resetMultiuserTable(false);
@@ -125,9 +123,15 @@ export default class Add {
 		</tr>`;
 		const $tr = $(html).appendTo($tbody);
 
+		if ($("tr", $tbody).length > 1) {
+			$("select[name=product]", Add.$form).val("").parents(".form-group").hide();
+			$("select[name=service]", Add.$form).val("").parents(".form-group").hide();
+		}
+
 		let timeout: number;
 		let confirmStep = false;
 		const $btn = $(".btn-remove-user", $tr);
+		const $icon = $("i", $btn);
 		$btn.on("click", (e) => {
 			e.preventDefault();
 			if (confirmStep) {
@@ -135,41 +139,51 @@ export default class Add {
 					clearTimeout(timeout);
 				}
 				$btn.parents("tr").remove();
-				const $rows = $(".multiuser-users .table tbody > tr");
-				if (!$rows.length) {
+				const $users = $("tr", $tbody);
+				if (!$users.length) {
 					$("input[name=clients_name]", Add.$form).val("").focus();
 					return;
 				}
-				$rows.each((item, elemnt) => {
-					const $row = $(elemnt);
-					const $input = $("input", $row);
+				$users.each((item, elemnt) => {
+					const $user = $(elemnt);
+					const $input = $("input", $user);
 					if ($input.length) {
-						$input.attr("name", `clients[${item}]`);
+						$input.attr("name", `client[${item}]`);
 					}
-					$("td.index", $row).html((item + 1).toString());
+					$("td.index", $user).html((item + 1).toString());
 				});
+				if ($users.length < 2) {
+					$("select[name=department]", Add.$form).trigger("change");
+				}
 				return;
 			}
 			confirmStep = true;
-			const $icon = $("i", $btn);
 			$icon.removeClass().addClass("fa fa-info-circle");
-			$btn.removeClass("btn-link").addClass("btn-danger");
+			$btn.addClass("confirm-remove");
+			$btn.tooltip({
+				title: "تایید حذف",
+				trigger: "manual",
+				placement: "top",
+			});
+			$btn.tooltip("show");
 			timeout = setTimeout(() => {
 				confirmStep = false;
 				$icon.removeClass().addClass("fa fa-trash");
-				$btn.addClass("btn-link").removeClass("btn-danger");
+				$btn.removeClass("confirm-remove");
 				timeout = undefined;
-			}, 1000);
+				$btn.tooltip("hide");
+			}, 2000);
 		});
 	}
 	private static runUserSearch() {
 		$("input[name=client_name]", Add.$form).ticketingUserAutoComplete();
 	}
 	private static runDepartmentListener() {
+		const $users = $(".multiuser-users .table tbody", Add.$form);
 		$("select[name=department]", Add.$form).change(function() {
 			const $products = $("select[name=product]", Add.$form).html("");
 			$products.parents(".form-group").hide();
-			if (Add.multiuserMode) {
+			if (Add.multiuserMode && $("tr", $users).length > 1) {
 				return;
 			}
 			const $selectedOption = $("option:selected", this);
@@ -190,10 +204,9 @@ export default class Add {
 			const department = $(this).val() as string;
 			if (isWorking === 0) {
 				AjaxRequest({
-					url: "userpanel/ticketing/new/department/" + department,
-					data: {},
-					success: (data: webuilder.AjaxResponse) => {
-						if (data.department.currentWork.message) {
+					url: "userpanel/ticketing/new/department/" + department + "?ajax=1",
+					success: (response) => {
+						if (response.department.currentWork.message) {
 							$(".alert").slideUp("slow", function() {
 								$(this).remove();
 							});
@@ -202,12 +215,12 @@ export default class Add {
 							code += `<div class="alert alert-block alert-info">`;
 							code += `<button data-dismiss="alert" class="close" type="button">×</button>`;
 							code += `<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>`;
-							code += `<p>` + data.department.currentWork.message + `</p>`;
+							code += `<p>` + response.department.currentWork.message + `</p>`;
 							code += `</div></div></div>`;
 							Add.$form.parents(".panel").before(code);
 						}
 					},
-					error: (error: webuilder.AjaxError) => {
+					error: () => {
 						$.growl.error({
 							title: t("ticketing.request.response.error"),
 							message: t("ticketing.request.response.error.message"),
@@ -224,15 +237,15 @@ export default class Add {
 	private static runServicesListener() {
 		const $services = $("select[name=service]", Add.$form);
 		const $formGroup = $services.parents(".form-group");
-		const $alert = $(".alert-service", Add.$form);
+		const $users = $(".multiuser-users .table tbody", Add.$form);
 		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
 			const product = $("select[name=product]").val() as string;
-			if (!product || Add.multiuserMode) {
+			if (!product || (Add.multiuserMode && $("tr", $users).length > 1)) {
 				$("select[name=service]").parents(".form-group").hide();
 				return;
 			}
 			let user: string;
-			const $user = $("input[name=client]", Add.$form);
+			const $user = Add.multiuserMode ? $('input[name="client[0]"]', $("tr", $users)) : $("input[name=client]", Add.$form);
 			if ($user.length) {
 				user = $user.val() as string;
 				if (!user) {
@@ -251,17 +264,14 @@ export default class Add {
 					client: user,
 					product: product,
 				},
-				success: (data: webuilder.AjaxResponse) => {
-					const length = data.items.length;
+				success: (response) => {
+					const length = response.items.length;
 					if (length) {
 						$formGroup.show();
-						if (!$("input[name=client_name]", Add.$form).length) {
-							$("textarea[name=text]", Add.$form).attr("rows", 8);
-						}
 						for (let i = 0; i < length; i++) {
 							$services.append($("<option>", {
-								value: data.items[i].id,
-								text : data.items[i].title,
+								value: response.items[i].id,
+								text : response.items[i].title,
 							}));
 						}
 					} else {
@@ -269,7 +279,7 @@ export default class Add {
 						$formGroup.hide();
 					}
 				},
-				error: (error: webuilder.AjaxError) => {
+				error: () => {
 					$.growl.error({
 						title: t("ticketing.request.response.error"),
 						message: t("ticketing.request.response.error.message"),
@@ -285,6 +295,7 @@ export default class Add {
 		}
 	}
 	private static runSubmitFormListener() {
+		const $users = $(".multiuser-users .table tbody", Add.$form);
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
 			const product = $("select[name=product]", Add.$form).val();
@@ -292,7 +303,7 @@ export default class Add {
 				$("select[name=service]", Add.$form).val("");
 			}
 			$(".has-error", Add.$form).removeClass("has-error").children(".help-block").remove();
-			if (Add.multiuserMode && !$('input[name^="client[.]"]').length) {
+			if (Add.multiuserMode && !$("tr", $users).length) {
 				$.growl.error({
 					title: t("ticketing.error"),
 					message: t("error.ticketing.error.ticket.add.user.select_multi_user.should_select_one_user_at_least"),

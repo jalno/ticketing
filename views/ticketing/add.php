@@ -7,6 +7,7 @@ use packages\userpanel\User;
 class Add extends Form {
 
 	protected $canSpecifyUser;
+	protected $isSelectMultiUser;
 	protected $canSpecifyMultiUser;
 	protected $canEnableDisableNotification;
 	protected $hasAccessToIgnoreDepartmentProduct;
@@ -26,7 +27,11 @@ class Add extends Form {
 		return $this->getData('client');
 	}
 	public function setClients(array $clients): void {
-		$this->setData($clients, 'clients');
+		if (count($clients) == 1 or !$this->getData("multiuser_mode")) {
+			$this->setClient($clients[0]);
+		} else {
+			$this->setData($clients, 'clients');
+		}
 	}
 	public function getClients(): array {
 		return $this->getData('clients') ?? [];
@@ -48,5 +53,8 @@ class Add extends Form {
 	}
 	public function getProducts(){
 		return $this->getData('products') ?? [];
+	}
+	public function selectMultiUser(bool $isSelect) {
+		$this->isSelectMultiUser = $isSelect;
 	}
 }
