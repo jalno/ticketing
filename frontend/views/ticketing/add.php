@@ -16,11 +16,11 @@ class Add extends TicketAdd {
 
 	public static $shortcuts = array();
 	public static $boxs = array();
-	protected $multiuser = false;
-	private $hasAccessToIgnoreDepartmentProduct;
+	protected $hasPredefinedClients = false;
 	protected $sendNotification = false;
 
-	public function __beforeLoad() {
+	public function __beforeLoad(): void {
+		$this->hasPredefinedClients = !empty($this->getClients());
 		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? Authentication::getUser() : null);
 		$this->setTitle(array(
 			t('ticketing.add')
@@ -30,11 +30,16 @@ class Add extends TicketAdd {
 		$initEvent = new AddingTicket();
 		$initEvent->view = $this;
 		$initEvent->trigger();
-		$this->multiuser = (bool)Authorization::childrenTypes();
-		$this->hasAccessToIgnoreDepartmentProduct = Authorization::is_accessed('add_override-force-product-choose');
 		$this->addBodyClass("ticketing");
 		$this->addBodyClass("tickets-add");
 		$this->setFormData();
+	}
+	public function getClientsToArray(): array {
+		$toArray = array();
+		foreach ($this->getClients() as $client) {
+			$toArray[] = $client->toArray();
+		}
+		return $toArray;
 	}
 	private function setNavigation() {
 		$item = new MenuItem("ticketing");
@@ -207,5 +212,6 @@ class Add extends TicketAdd {
 	}
 	private function setFormData() {
 		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
+		$this->setDataForm($this->hasPredefinedClients ? 1 : 0, "multiuser_mode");
 	}
 }

@@ -1,20 +1,52 @@
 <?php
-use \packages\base\translator;
-use \packages\userpanel;
+use packages\base\{json, Translator};
+use packages\userpanel;
 use packages\ticketing\{Ticket, ticket_message};
-use \packages\ticketing\authentication;
+use packages\ticketing\Authentication;
 
 $this->the_header();
+
 ?>
-<div class="row">
-	<div class="col-xs-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<i class="fa fa-plus"></i>
-				<span><?php echo translator::trans("newticket")?></span>
+<form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data" spellcheck="false">
+	<div class="row">
+	<?php if ($this->isSelectMultiUser or $this->canSpecifyMultiUser) { ?>
+		<div class="multiuser-panel-container col-xs-12 col-sm-4 col-sm-push-8 <?php echo (!$this->hasPredefinedClients ? "display-none" : ""); ?>">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<i class="fa fa-users"></i>
+					<span><?php echo t("ticketing.ticket.add.user.select_multi_user"); ?></span>
+				</div>
+				<div class="panel-body">
+				<?php
+				$this->createField(array(
+					'name' => 'multiuser_mode',
+					'type' => 'hidden',
+				));
+				$this->createField(array(
+					'name' => 'clients_name',
+					'label' => t("ticketing.ticket.add.user.select_multi_user.search"),
+					'placeholder' => t("ticketing.ticket.add.user.select_multi_user.search.placeholder"),
+				));
+				?>
+					<div class="multiuser-title"><?php echo t("ticketing.ticket.add.user.select_multi_user.search.added_users"); ?></div>
+					<div class="multiuser-users">
+						<table class="table table-striped table-bordered" data-items="<?php echo htmlentities(json\encode($this->getClientsToArray())); ?>">
+							<tbody></tbody>
+						</table>
+					</div>
+
+				</div>
 			</div>
-			<div class="panel-body">
-				<form id="ticket-add" action="<?php echo userpanel\url('ticketing/new') ?>" method="post"  enctype="multipart/form-data" spellcheck="false">
+		</div>
+	<?php } ?>
+
+		<div class="new-ticket-panel-container col-xs-12 <?php echo ($this->isSelectMultiUser ? "col-sm-8 col-sm-pull-4" : "col-sm-12"); ?>">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<i class="fa fa-plus"></i>
+					<span><?php echo translator::trans("newticket")?></span>
+				</div>
+				<div class="panel-body">
 					<div class="row">
 						<div class="col-sm-6">
 						<?php
@@ -65,18 +97,32 @@ $this->the_header();
 									'options' => array()
 								),
 							);
-							if ($this->multiuser) {
-								array_unshift($fields, array(
-									'name' => 'client',
-									'type' => 'hidden'
-								),
-								array(
+							if ($this->canSpecifyUser) {
+								$client_name = array(
 									'name' => 'client_name',
 									'label' => t('newticket.client'),
-									'error' => array(
-										'data_validation' => 'newticket.client.data_validation'
+								);
+								if ($this->canSpecifyMultiUser) {
+									$client_name['input-group'] = array(
+										'right' => array(
+											array(
+												'type' => 'button',
+												'text' => '<i class="fa fa-users" aria-hidden="true"></i> ' . t('ticketing.ticket.add.user.select_multi_user'),
+												'class' => 'btn btn-default btn-multiuser',
+												'data' => array(
+													'has-clients' => $this->hasPredefinedClients,
+												),
+											),
+										),
+									);
+								}
+								array_unshift($fields, array(
+									'name' => 'client',
+									'type' => 'hidden',
+									'data' => array(
+										'user' => htmlentities(json\encode($this->getClient() ? $this->getClient()->toArray() : []))
 									),
-								));
+								), $client_name);
 							}
 							if ($this->canEnableDisableNotification) {
 								$fields[] = array(
@@ -90,25 +136,26 @@ $this->the_header();
 							?>
 						</div>
 					</div>
-				<?php $this->createField(array(
-					'name' => 'text',
-					'label' => t('newticket.text'),
-					'type' => 'textarea',
-					'rows' => 4,
-					'required' => true,
-				)); ?>
-
+					<?php
+					$this->createField(array(
+						'name' => 'text',
+						'label' => t('newticket.text'),
+						'type' => 'textarea',
+						'rows' => 4,
+						'required' => true,
+					));
+					?>
 					<hr>
 					<div class="row">
 						<?php
 						$editor = authentication::getUser()->getOption('ticketing_editor');
 						if (!$editor or $editor == ticket_message::html) {
 						?>
-						<div class="col-sm-7">
+						<div class="col-md-5 col-sm-12">
 							<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 						</div>
 						<?php } ?>
-						<div class="col-sm-5 text-left <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
+						<div class="col-md-7 col-sm-12 text-left <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 							<div class="btn-group btn-group-lg" role="group">
 								<?php if ($this->canEnableDisableNotification) { ?>
 								<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
@@ -148,11 +195,11 @@ $this->the_header();
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</form>
 <?php
 echo $this->generateShortcuts();
 echo $this->generateRows();

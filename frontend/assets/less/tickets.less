@@ -170,12 +170,66 @@ body.tickets-add, body.tickets-view {
 }
 body.tickets-add {
 	#ticket-add {
-		textarea {
-			resize: vertical;
+		.display-none {
+			display: none;
 		}
-		select:-moz-focusring {
-			color: transparent;
-			text-shadow: 0 0 0 #000;
+		.multiuser-panel-container {
+			.multiuser-title {
+				position: relative;
+				right: 50%;
+				left: auto;
+				width: 120px;
+				margin-left: 0;
+				margin-right: -65px;
+				text-align: center;
+				border: 0.5px solid #ccc;
+				border-bottom: none;
+				border-top-right-radius: 4px;
+				border-top-left-radius: 4px;
+				user-select: none;
+			}
+			.multiuser-users {
+				border-top: 1px solid #ccc;
+				tr {
+					td {
+						&.index {
+							width: 7%;
+							user-select: none;
+						}
+						&.btn-remove-container {
+							padding: 0;
+							background-color: #d9534f;
+							border-color: #d43f3a;
+							button {
+								border-radius: 0;
+								padding-right: 0;
+								padding-left: 0;
+								color: #fff;
+								&.confirm-remove > i {
+									animation-name: shake-rotate;
+									animation-duration: 1s;
+									animation-timing-function: ease-in-out;
+									animation-iteration-count: infinite;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		.new-ticket-panel-container {
+			transition: width 0.7s;
+			textarea {
+				resize: vertical;
+			}
+			select:-moz-focusring {
+				color: transparent;
+				text-shadow: 0 0 0 #000;
+			}
+			.btn-multiuser {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
 		}
 	}
 }
@@ -201,6 +255,10 @@ body.rtl {
 	&.tickets-add {
 		#ticket-add {
 			font-family: yekan;
+			.btn-multiuser {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
 		}
 	}
 	&.tickets-view {

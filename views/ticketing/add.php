@@ -5,17 +5,36 @@ use packages\ticketing\{Authorization, views\Form};
 use packages\userpanel\User;
 
 class Add extends Form {
+
+	protected $canSpecifyUser;
+	protected $isSelectMultiUser;
+	protected $canSpecifyMultiUser;
 	protected $canEnableDisableNotification;
+	protected $hasAccessToIgnoreDepartmentProduct;
+
 	public function __construct() {
+		$this->canSpecifyUser = (bool) Authorization::childrenTypes();
+		$this->canSpecifyMultiUser = Authorization::is_accessed('add_multiuser');
 		$this->canEnableDisableNotification = Authorization::is_accessed('enable_disabled_notification');
+		$this->hasAccessToIgnoreDepartmentProduct = Authorization::is_accessed('add_override-force-product-choose');
 	}
-	public function setClient(User $client) {
+	public function setClient(User $client): void {
 		$this->setData($client, 'client');
 		$this->setDataForm($client->id, 'client');
 		$this->setDataForm($client->getFullName(), 'client_name');
 	}
-	public function getClient() {
+	public function getClient():? User {
 		return $this->getData('client');
+	}
+	public function setClients(array $clients): void {
+		if (count($clients) == 1 or !$this->getData("multiuser_mode")) {
+			$this->setClient($clients[0]);
+		} else {
+			$this->setData($clients, 'clients');
+		}
+	}
+	public function getClients(): array {
+		return $this->getData('clients') ?? [];
 	}
 	public function setMessageData($data){
 		$this->setData($data, 'ticket');
@@ -34,5 +53,8 @@ class Add extends Form {
 	}
 	public function getProducts(){
 		return $this->getData('products') ?? [];
+	}
+	public function selectMultiUser(bool $isSelect) {
+		$this->isSelectMultiUser = $isSelect;
 	}
 }

@@ -41,6 +41,9 @@ class Department extends dbObject {
 	}
 	protected function isWorking() {
 		$worktime = $this->currentWork();
+		if (!$worktime) {
+			return false;
+		}
 		return($worktime->time_start <= date::format("H") and $worktime->time_end >= date::format("H"));
 	}
 	protected function currentWork() {

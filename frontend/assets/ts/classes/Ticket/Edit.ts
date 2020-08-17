@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import "../jquery.userAutoComplete";
+import "../jquery.ticketingUserAutoComplete";
 
 export default class Edit {
 	public static init(){
@@ -16,6 +16,6 @@ export default class Edit {
 	private static $form = $(".ticket_edit .create_form");
 
 	private static runUserSearch() {
-		$("input[name=client_name]", Edit.$form).userAutoComplete();
+		$("input[name=client_name]", Edit.$form).ticketingUserAutoComplete();
 	}
 }
