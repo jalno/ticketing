@@ -148,14 +148,15 @@ $this->the_header();
 					<hr>
 					<div class="row">
 						<?php
-						$editor = authentication::getUser()->getOption('ticketing_editor');
+						$editor = Authentication::getUser()->getOption('ticketing_editor');
+						$hasAlert = (!$editor or $editor == ticket_message::html);
 						if (!$editor or $editor == ticket_message::html) {
 						?>
 						<div class="col-md-5 col-sm-12">
 							<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 						</div>
 						<?php } ?>
-						<div class="col-md-7 col-sm-12 text-left <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
+						<div class="col-md-7 col-sm-12 text-left <?php echo !$hasAlert ? 'col-md-offset-5' : ''; ?>">
 							<div class="btn-group btn-group-lg" role="group">
 								<?php if ($this->canEnableDisableNotification) { ?>
 								<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
