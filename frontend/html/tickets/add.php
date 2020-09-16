@@ -150,7 +150,7 @@ $this->the_header();
 						<?php
 						$editor = Authentication::getUser()->getOption('ticketing_editor');
 						$hasAlert = (!$editor or $editor == ticket_message::html);
-						if (!$editor or $editor == ticket_message::html) {
+						if ($hasAlert) {
 						?>
 						<div class="col-md-5 col-sm-12">
 							<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
