@@ -2,7 +2,7 @@
 namespace packages\ticketing;
 
 use packages\base\{db, db\dbObject, Options};
-use packages\userpanel\User;
+use packages\userpanel\{User, Authentication};
 
 class ticket extends dbObject{
 	const unread = 1;
@@ -40,6 +40,42 @@ class ticket extends dbObject{
 		}
 		return Options::get("packages.ticketing.send_notification_on_send_ticket");
 	}
+
+	public static function countUnreadTicketCountByUser(?User $user = null): int {
+		if (!$user) {
+			$user = Authentication::getUser();
+		}
+		$accessedDeparments = array();
+		$types = $user->childrenTypes();
+		if ($types) {
+			foreach ((new Department)->get() as $department) {
+				if ($department->users) {
+					if (in_array($user->id, $department->users)) {
+						$accessedDeparments[] = $department->id;
+					}
+				} else {
+					$accessedDeparments[] = $department->id;
+				}
+			}
+			if (!$accessedDeparments){
+				return 0;
+			}
+		}
+		$ticket = new static();
+		$count = 0;
+		if ($types) {
+			db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+			$ticket->where("userpanel_users.type", $types, "IN");
+			$ticket->where("ticketing_tickets.status", array(self::unread, self::read, self::in_progress), "IN");
+			$ticket->where("ticketing_tickets.department", $accessedDeparments, "IN");
+			return $ticket->count();
+		}
+		db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "INNER");
+		db::joinWhere("ticketing_tickets_msgs", "ticketing_tickets_msgs.status", Ticket_message::unread);
+		$ticket->where("ticketing_tickets.client", $user->id);
+		return $ticket->count();
+	}
+
 	protected $dbTable = "ticketing_tickets";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
