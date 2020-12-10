@@ -57,12 +57,17 @@ $this->the_header();
 									<?php echo $message->content; ?>
 									<?php if($message->files){?>
 									<div class="message-files">
-										<p><?php echo translator::trans("attachment.files"); ?></p>
-										<ul>
-											<?php foreach($message->files as $file){ ?>
-												<li><a href="<?php echo userpanel\url('ticketing/download/'.$file->id); ?>" target="_blank"><?php echo $file->name; ?></a></li>
+										<div class="title">
+											<span><?php echo t("attachment.files"); ?></span>
+										</div>
+										<div class="content py-4">
+											<?php foreach ($message->files as $file) { ?>
+												<div class="d-inline-block bg-light-gray py-2 px-3 rounded mt-2 my-4 ml-3">
+													<a href="<?php echo userpanel\url("ticketing/download/{$file->id}"); ?>" target="_blank"><?php echo $file->name; ?></a>
+													<span class="text-success mr-2 check-file-icon"><i class="fa fa-check fa-lg"></i></span>
+												</div>
 											<?php } ?>
-										</ul>
+										</div>
 									</div>
 									<?php } ?>
 								</div>
@@ -81,9 +86,10 @@ $this->the_header();
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="replaycontianer">
-							<h3 style="font-family: b;"><?php echo translator::trans('send.reply'); ?></h3>
+							<h3><?php echo t('send.reply'); ?></h3>
 							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data" spellcheck="false">
-								<?php
+								<div class="ticket-text-wrapper form-group border p-3">
+									<?php
 									$fields = array(
 										array(
 											'name' => 'text',
@@ -91,7 +97,7 @@ $this->the_header();
 											'rows' => 4,
 											'required' => true,
 											'disabled' => !$this->canSend,
-											'class' => 'autosize form-control text-send',
+											'class' => 'form-control autosize text-send border-0 no-resize rounded-0 border-bottom-light-black',
 										),
 									);
 									if ($this->canEnableDisableNotification) {
@@ -103,7 +109,20 @@ $this->the_header();
 									foreach ($fields as $field) {
 										$this->createField($field);
 									}
-								?>
+									?>
+									<div class="attachments mt-3">
+										<div class="title">
+											<span><?php echo t("attachment.files"); ?></span>
+										</div>
+										<div class="content py-4" id="attachmentsContent"></div>
+										<div id="progressBar">
+											<div class="progress d-inline-block">
+												<div class="progress-bar progress-bar-fill bg-blue-gray"></div>
+											</div>
+											<span class="progress-bar-text mr-2 ">0%</span>
+										</div>
+									</div>
+								</div>
 								<hr>
 								<div class="row">
 									<?php
@@ -149,7 +168,7 @@ $this->the_header();
 											<span class="btn btn-file2 <?php echo !$this->canSend ? 'disabled' : ''; ?>">
 												<div class="btn-icons"><i class="fa fa-upload"></i></div>
 											<?php echo translator::trans("upload") ?>
-												<input type="file" name="file[]" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
+												<input type="file" id="uploadFiles" name="_file" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
 										</div>
 									</div>

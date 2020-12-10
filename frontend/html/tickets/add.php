@@ -135,17 +135,31 @@ $this->the_header();
 							}
 							?>
 						</div>
+						<div class="col-xs-12 mt-4">
+							<label><?php echo t('newticket.text'); ?></label>
+							<div class="ticket-text-wrapper form-group border p-3">
+								<?php $this->createField(array(
+									'name' => 'text',
+									'type' => 'textarea',
+									'rows' => 4,
+									'class' => 'form-control border-0 no-resize rounded-0 border-bottom-light-black',
+									'required' => true,
+								)); ?>
+								<div class="attachments mt-3">
+									<div class="title">
+										<span><?php echo t("attachment.files"); ?></span>
+									</div>
+									<div class="content py-4" id="attachmentsContent"></div>
+									<div id="progressBar">
+										<div class="progress d-inline-block">
+											<div class="progress-bar progress-bar-fill bg-blue-gray"></div>
+										</div>
+										<span class="progress-bar-text mr-2 ">0%</span>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
-					<?php
-					$this->createField(array(
-						'name' => 'text',
-						'label' => t('newticket.text'),
-						'type' => 'textarea',
-						'rows' => 4,
-						'required' => true,
-					));
-					?>
-					<hr>
 					<div class="row">
 					<?php
 					$editor = Authentication::getUser()->getOption('ticketing_editor');
@@ -191,7 +205,7 @@ $this->the_header();
 								<span class="btn btn-file2">
 									<div class="btn-icons"><i class="fa fa-upload"></i></div>
 								<?php echo translator::trans("upload") ?>
-									<input type="file" name="file[]" multiple="">
+									<input type="file" id="uploadFiles" name="_file" multiple="">
 								</span>
 							</div>
 						</div>

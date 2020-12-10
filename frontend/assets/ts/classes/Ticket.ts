@@ -12,6 +12,9 @@ import List from "./Ticket/List";
 import Reply from "./Ticket/Reply";
 
 export default class Ticket {
+
+	protected static finalFilesForUpload: File[] = [];
+
 	public static init() {
 		if ($("#ticket-close").length) {
 			Ticket.closeTicketListener();
@@ -46,6 +49,40 @@ export default class Ticket {
 	}
 	public static runTextareaAutosize($form: JQuery) {
 		autosize($("textarea", $form));
+	}
+	public static runChangeFileInputListener($form: JQuery) {
+		const $uploadFileInput = $("#uploadFiles", $form);
+		const $attachmentsContent = $("#attachmentsContent", $form);
+		$uploadFileInput.on("change", (e) => {
+			const input = <HTMLInputElement>$(e.currentTarget)[0];
+			const files = input.files;
+			$.each(files, (_index: number, file: File) => {
+				$attachmentsContent.append(`<div class="upload-file-container d-inline-block bg-light-gray py-2 px-3 rounded mt-2 ml-3 my-4">
+					<span class="upload-file-name">${file.name}</span>
+					<span class="text-danger mr-2 cursor-pointer remove-file-icon">
+						<i class="fa fa-times-circle fa-lg"></i>
+					</span>
+				</div>`);
+				Ticket.finalFilesForUpload.push(file);
+			});
+			$uploadFileInput.val(null);
+			$(".remove-file-icon", $attachmentsContent).on("click", function() {
+				$(this).parent().remove();
+				const nameOfFileToRemove = $(this).siblings().text();
+				for (let i=0; i < Ticket.finalFilesForUpload.length; i++) {
+					if (nameOfFileToRemove == Ticket.finalFilesForUpload[i].name) {
+						Ticket.finalFilesForUpload.splice(i, 1);
+						break;
+					}
+				}
+			});
+		});
+	}
+	public static appendFilesToFormData(formData: FormData): FormData {
+		for (const file of Ticket.finalFilesForUpload) {
+			formData.append('file[]', file);
+		}
+		return formData;
 	}
 	private static closeTicketListener() {
 		$("#ticket-close").on("click", function(e) {

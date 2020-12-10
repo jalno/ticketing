@@ -3,17 +3,11 @@ import "bootstrap-inputmsg";
 import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
+import "webuilder/formAjax";
 import "../jquery.ticketingUserAutoComplete";
 import {IUser} from "../jquery.ticketingUserAutoComplete";
 import Ticket from "../Ticket";
-
-interface IFormAjaxError {
-	input?: string;
-	error: webuilder.error;
-	type: webuilder.errorType;
-	code?: string;
-	message?: string;
-}
+import IFormAjaxError from "../IFormAjaxError"
 
 export default class Add {
 	public static initIfNeeded() {
@@ -36,6 +30,7 @@ export default class Add {
 		Add.runMultiuserBtnChangeListener();
 		Add.runSubmitFormListener();
 		Ticket.runEnableDisableNotificationListener(Add.$form);
+		Ticket.runChangeFileInputListener(Add.$form);
 		Ticket.runTextareaAutosize(Add.$form);
 	}
 	private static runMultiuserBtnChangeListener(): void {
@@ -296,6 +291,7 @@ export default class Add {
 	}
 	private static runSubmitFormListener() {
 		const $users = $(".multiuser-users .table tbody", Add.$form);
+		const $progressBar = $("#progressBar", Add.$form);
 		Add.$form.on("submit", function(e) {
 			e.preventDefault();
 			const product = $("select[name=product]", Add.$form).val();
@@ -310,10 +306,28 @@ export default class Add {
 				});
 				return;
 			}
-			($(this) as any).formAjax({
-				data: new FormData(this as HTMLFormElement),
+			$(this).formAjax({
+				data: Ticket.appendFilesToFormData(new FormData(this as HTMLFormElement)),
+				cache: false,
 				contentType: false,
 				processData: false,
+				beforeSend: () => {
+					$(".progress-bar-fill", Add.$form).width('0%');
+					$(".progress-bar-text", Add.$form).html('0%');
+					$(".remove-file-icon", Add.$form).html('<i class="fa fa-spinner fa-lg"></i>');
+				},
+				xhr: () => {
+					const xhr = new XMLHttpRequest();
+					xhr.upload.addEventListener('progress', (evt) => {
+						if (evt.lengthComputable) {
+							$progressBar.show();
+							const percentComplete = ((evt.loaded / evt.total) * 100);
+							$(".progress-bar-fill", Add.$form).width(percentComplete + "%");
+							$(".progress-bar-text", Add.$form).html(percentComplete + "%");
+						}
+					}, false);
+					return xhr;
+				},
 				success: (response: webuilder.AjaxResponse) => {
 					$.growl.notice({
 						title: t("ticketing.request.response.successful"),
@@ -322,31 +336,30 @@ export default class Add {
 					window.location.href = response.redirect;
 				},
 				error: (error: IFormAjaxError) => {
-					const params = {
+					$(".remove-file-icon").html('<i class="fa fa-times-circle fa-lg"></i>');
+					$progressBar.hide();
+					const params: growl.Options = {
 						title: t("ticketing.request.response.error"),
 						message: t("ticketing.request.response.error.message"),
 					};
 					if (error.error === "data_duplicate" || error.error === "data_validation") {
-						params.message = t(`ticketing.request.response.error.message.${error.error}`);
-						if (error.input === "client") {
-							error.input = "client_name";
-						}
 						const $input = $(`[name="${error.input}"]`);
-						if (error.error === "data_validation") {
-							if (error.input) {
-								if ((new RegExp(/^file\[[0-9]\]/)).test(error.input)) {
-									params.message = t("ticketing.request.response.error.message.data_validation.file");
-								}
-							}
+						params.message = t(`ticketing.request.response.error.message.${error.error}`);
+
+						const fileRegex = /^file\[([0-9])\]/;
+						if (error.error == "data_validation" || fileRegex.test(error.input)) {
+							params.message = t("ticketing.request.response.error.message.data_validation.file");
+							const index = error.input.match(fileRegex)[1];
+							const $file = $("#attachmentsContent .upload-file-container", Add.$form).eq(parseInt(index, 10));
+							$file.addClass("has-error").append(`<span class="help-block text-center">${params.message}</span>`);
+							$(".remove-file-icon", $file).html('<i class="fa fa-ban fa-lg"></i>');
+							return;
 						}
 						if ($input.length) {
 							$input.inputMsg(params);
-						} else {
-							$.growl.error(params);
+							return;
 						}
-						return;
-					}
-					if (error.message) {
+					} else if (error.message) {
 						params.message = error.message;
 					} else if (error.code) {
 						params.message = t(`error.${error.code}`);
