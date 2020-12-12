@@ -56,26 +56,39 @@ export default class Ticket {
 		$uploadFileInput.on("change", (e) => {
 			const input = <HTMLInputElement>$(e.currentTarget)[0];
 			const files = input.files;
-			$.each(files, (_index: number, file: File) => {
-				$attachmentsContent.append(`<div class="upload-file-container d-inline-block bg-light-gray py-2 px-3 rounded mt-2 ml-3 my-4">
+			let addSomFile = false;
+			for (let i = 0; i < files.length; i++) {
+				const file = files.item(i);
+				let key = -1;
+				for (const i in Ticket.finalFilesForUpload) {
+					if (Ticket.finalFilesForUpload[i] !== undefined && Ticket.finalFilesForUpload[i].name === file.name) {
+						key = parseInt(i);
+						break;
+					}
+				}
+				if (key !== -1) {
+					$.growl.error({
+						title: t("ticketing.error"),
+						message: t("ticketing.duplicate_file_error", {
+							name: file.name,
+						}),
+					});
+					continue;
+				}
+				const $el = $(`<div class="upload-file-container d-inline-block bg-light-gray py-2 px-3 rounded mt-2 ml-3 my-4">
 					<span class="upload-file-name">${file.name}</span>
 					<span class="text-danger mr-2 cursor-pointer remove-file-icon">
 						<i class="fa fa-times-circle fa-lg"></i>
 					</span>
-				</div>`);
+				</div>`).appendTo($attachmentsContent);
 				Ticket.finalFilesForUpload.push(file);
-			});
+				Ticket.removeFileListener($el, file);
+				addSomFile = true;
+			};
+			if (addSomFile) {
+				$attachmentsContent.parents(".attachments").show();
+			}
 			$uploadFileInput.val(null);
-			$(".remove-file-icon", $attachmentsContent).on("click", function() {
-				$(this).parent().remove();
-				const nameOfFileToRemove = $(this).siblings().text();
-				for (let i=0; i < Ticket.finalFilesForUpload.length; i++) {
-					if (nameOfFileToRemove == Ticket.finalFilesForUpload[i].name) {
-						Ticket.finalFilesForUpload.splice(i, 1);
-						break;
-					}
-				}
-			});
 		});
 	}
 	public static appendFilesToFormData(formData: FormData): FormData {
@@ -83,6 +96,19 @@ export default class Ticket {
 			formData.append('file[]', file);
 		}
 		return formData;
+	}
+	private static removeFileListener($el: JQuery, file: File) {
+		$(".remove-file-icon", $el).one("click", function() {
+			const $container = $el.parents(".attachments");
+			$el.remove();
+			const key = Ticket.finalFilesForUpload.indexOf(file);
+			if (key !== -1) {
+				Ticket.finalFilesForUpload.splice(key, 1);
+			}
+			if (!Ticket.finalFilesForUpload.length) {
+				$container.hide();
+			}
+		});
 	}
 	private static closeTicketListener() {
 		$("#ticket-close").on("click", function(e) {

@@ -285,14 +285,17 @@ body.tickets-add, body.tickets-view {
 	#progressBar {
 		display: none;
 	}
-	.attachments .progress {
+	.attachments {
+		display: none;
 		.progress {
-			width: 90%;
-			margin-bottom: 0;
-			height: 10px;
-			.progress-bar {
-				border-radius: 100px;
-				width: 50%;
+			.progress {
+				width: 90%;
+				margin-bottom: 0;
+				height: 10px;
+				.progress-bar {
+					border-radius: 100px;
+					width: 50%;
+				}
 			}
 		}
 	}
@@ -350,6 +353,10 @@ body.tickets-add {
 			transition: width 0.7s;
 			textarea {
 				resize: vertical;
+				box-shadow: none;
+				&:hover, &:focus, &:active {
+					box-shadow: none;
+				}
 			}
 			select:-moz-focusring {
 				color: transparent;
@@ -365,6 +372,10 @@ body.tickets-add {
 body.tickets-view {
 	textarea {
 		resize: vertical;
+		box-shadow: none;
+		&:hover, &:focus, &:active {
+			box-shadow: none;
+		}
 	}
 }
 body.rtl {
