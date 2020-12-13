@@ -343,11 +343,8 @@ export default class Add {
 						message: t("ticketing.request.response.error.message"),
 					};
 					if (error.error === "data_duplicate" || error.error === "data_validation") {
-						const $input = $(`[name="${error.input}"]`);
-						params.message = t(`ticketing.request.response.error.message.${error.error}`);
-
 						const fileRegex = /^file\[([0-9])\]/;
-						if (error.error == "data_validation" || fileRegex.test(error.input)) {
+						if (error.error == "data_validation" && fileRegex.test(error.input)) {
 							params.message = t("ticketing.request.response.error.message.data_validation.file");
 							const index = error.input.match(fileRegex)[1];
 							const $file = $("#attachmentsContent .upload-file-container", Add.$form).eq(parseInt(index, 10));
@@ -355,6 +352,12 @@ export default class Add {
 							$(".remove-file-icon", $file).html('<i class="fa fa-ban fa-lg"></i>');
 							return;
 						}
+
+						params.message = t(`ticketing.request.response.error.message.${error.error}`);
+						if (error.input === "client") {
+							error.input = "client_name";
+						}
+						const $input = $(`[name="${error.input}"]`);
 						if ($input.length) {
 							$input.inputMsg(params);
 							return;
