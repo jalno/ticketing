@@ -314,7 +314,7 @@ export default class Add {
 				beforeSend: () => {
 					$(".progress-bar-fill", Add.$form).width('0%');
 					$(".progress-bar-text", Add.$form).html('0%');
-					$(".remove-file-icon", Add.$form).html('<i class="fa fa-spinner fa-lg"></i>');
+					$(".remove-file-icon", Add.$form).removeClass("text-danger").addClass("text-info").html('<i class="fa fa-spinner fa-spin fa-pw fa-lg"></i>');
 				},
 				xhr: () => {
 					const xhr = new XMLHttpRequest();
@@ -336,7 +336,7 @@ export default class Add {
 					window.location.href = response.redirect;
 				},
 				error: (error: IFormAjaxError) => {
-					$(".remove-file-icon").html('<i class="fa fa-times-circle fa-lg"></i>');
+					$(".remove-file-icon").addClass("text-danger").removeClass("text-info").html('<i class="fa fa-times-circle fa-lg"></i>');
 					$progressBar.hide();
 					const params: growl.Options = {
 						title: t("ticketing.request.response.error"),

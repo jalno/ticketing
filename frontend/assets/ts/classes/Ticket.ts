@@ -86,7 +86,9 @@ export default class Ticket {
 				addSomFile = true;
 			};
 			if (addSomFile) {
-				$attachmentsContent.parents(".attachments").show();
+				const $container = $attachmentsContent.parents(".attachments");
+				$container.show();
+				$("textarea", $container.parent()).addClass("border-bottom-light-black");
 			}
 			$uploadFileInput.val(null);
 		});
@@ -100,6 +102,9 @@ export default class Ticket {
 	private static removeFileListener($el: JQuery, file: File) {
 		$(".remove-file-icon", $el).one("click", function() {
 			const $container = $el.parents(".attachments");
+			if (!$(this).hasClass("text-danger")) {
+				return false;
+			}
 			$el.remove();
 			const key = Ticket.finalFilesForUpload.indexOf(file);
 			if (key !== -1) {
@@ -107,6 +112,7 @@ export default class Ticket {
 			}
 			if (!Ticket.finalFilesForUpload.length) {
 				$container.hide();
+				$("textarea", $container.parent()).removeClass("border-bottom-light-black");
 			}
 		});
 	}

@@ -97,7 +97,7 @@ $this->the_header();
 											'rows' => 4,
 											'required' => true,
 											'disabled' => !$this->canSend,
-											'class' => 'form-control autosize text-send border-0 no-resize rounded-0 border-bottom-light-black',
+											'class' => 'form-control autosize text-send border-0 no-resize rounded-0',
 										),
 									);
 									if ($this->canEnableDisableNotification) {

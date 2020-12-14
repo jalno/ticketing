@@ -23,10 +23,10 @@ export default class Reply {
 	private static $form: JQuery;
 	private static runSubmitFormListener() {
 		const $progressBar = $("#progressBar", Reply.$form);
-		const $removeFileIcons = $(".remove-file-icon", Reply.$form);
 		Reply.$form.on("submit", function(e) {
 			e.preventDefault();
 			$(".has-error", Reply.$form).removeClass("has-error").children(".help-block").remove();
+			const $removeFileIcons = $(".remove-file-icon", Reply.$form);
 			$(this).formAjax({
 				data: Ticket.appendFilesToFormData(new FormData(this as HTMLFormElement)),
 				cache: false,
@@ -35,7 +35,7 @@ export default class Reply {
 				beforeSend: () => {
 					$(".progress-bar-fill", Reply.$form).width('0%');
 					$(".progress-bar-text", Reply.$form).html('0%');
-					$removeFileIcons.removeClass("text-danger").addClass("text-info").html('<i class="fa fa-spinner fa-lg"></i>');
+					$removeFileIcons.removeClass("text-danger").addClass("text-info").html('<i class="fa fa-spinner fa-spin fa-pw fa-lg"></i>');
 				},
 				xhr: () => {
 					const xhr = new XMLHttpRequest();

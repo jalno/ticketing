@@ -142,7 +142,7 @@ $this->the_header();
 									'name' => 'text',
 									'type' => 'textarea',
 									'rows' => 4,
-									'class' => 'form-control border-0 no-resize rounded-0 border-bottom-light-black',
+									'class' => 'form-control border-0 no-resize rounded-0',
 									'required' => true,
 								)); ?>
 								<div class="attachments mt-3">
