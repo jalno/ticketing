@@ -565,13 +565,11 @@ class Ticketing extends Controller {
 		if (isset($inputs['file']) and !$inputs['file']) {
 			throw new InputValidationException('file');
 		}
-		if (!is_array($inputs['file'])) {
-			$inputs['file'] = array(
-				$inputs['file'],
-			);
-		}
 		$files = array();
-		if ($inputs['file']) {
+		if (isset($inputs['file']) and $inputs['file']) {
+			if (!is_array($inputs['file'])) {
+				$inputs['file'] = array($inputs['file']);
+			}
 			foreach ($inputs['file'] as $key => $attachment) {
 				if (!($attachment instanceof IO\file)) {
 					continue;
