@@ -90,12 +90,14 @@ class Ticketing extends Controller {
 		}
 		return $message;
 	}
-	public function index(){
-		authorization::haveOrFail('list');
-		$view = view::byName(views\ticketlist::class);
-		$this->response->setView($view);
-		$departments = department::get();
+	public function index(): Response {
+		Authorization::haveOrFail('list');
+		$view = View::byName(views\ticketlist::class);
+		$departments = Department::get();
 		$view->setDepartment($departments);
+		$this->response->setView($view);
+		$me = Authentication::getID();
+		$types = Authorization::childrenTypes();
 		$inputs = $this->checkinputs(array(
 			'id' => array(
 				'type' => 'number',
@@ -108,6 +110,18 @@ class Ticketing extends Controller {
 			'client' => array(
 				'type' => 'number',
 				'optional' => true,
+			),
+			'operator' => array(
+				'type' => User::class,
+				'optional' => true,
+				'query' => function($query) use ($types, $me) {
+					if ($types) {
+						$query->where("type", $types, "IN");
+					} else {
+						$query->where("id", $me->id);
+					}
+				},
+				'fileds' => array('id'),
 			),
 			'status' => array(
 				'type' => function ($data, $rule, $input) {
@@ -143,10 +157,19 @@ class Ticketing extends Controller {
 				'optional' => true,
 				'default' => false,
 			),
+			'message_sender' => array(
+				'type' => User::class,
+				'optional' => true,
+				'query' => function($query) use ($types, $me) {
+					if ($types) {
+						$query->where("type", $types, "IN");
+					} else {
+						$query->where("id", $me->id);
+					}
+				},
+				'fileds' => array('id'),
+			),
 		));
-		$types = authorization::childrenTypes();
-		$unassignedTickets = authorization::is_accessed("unassigned");
-		$me = authentication::getID();
 		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
 		$ticket = new ticket();
 		$ticket->with("client");
@@ -167,17 +190,18 @@ class Ticketing extends Controller {
 			}
 		}
 
-
-		$parenthes = new Parenthesis();
-
-		$haveOperator = new Parenthesis();
-		if ($types) {
-			$haveOperator->where("operator.type", $types, "IN");
-		} else {
-			$haveOperator->where("ticketing_tickets.operator_id", $me);
+		$parenthesis = new Parenthesis();
+		{
+			$haveOperator = new Parenthesis();
+			if ($types) {
+				$haveOperator->where("operator.type", $types, "IN");
+			} else {
+				$haveOperator->where("ticketing_tickets.operator_id", $me);
+			}
+			$parenthesis->where($haveOperator);
 		}
-		$parenthes->where($haveOperator);
 
+		$unassignedTickets = Authorization::is_accessed("unassigned");
 		if ($unassignedTickets) {
 			$notOperator = new Parenthesis();
 			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
@@ -186,11 +210,11 @@ class Ticketing extends Controller {
 			} else {
 				$notOperator->orWhere("ticketing_tickets.client", $me);
 			}
-			$parenthes->orWhere($notOperator);
+			$parenthesis->orWhere($notOperator);
 		} else {
-			$parenthes->orWhere("ticketing_tickets.client", $me);
+			$parenthesis->orWhere("ticketing_tickets.client", $me);
 		}
-		$ticket->where($parenthes);
+		$ticket->where($parenthesis);
 		if ($inputs["unread"]) {
 			$inputs["status"] = Ticket::STATUSES;
 		}
@@ -198,17 +222,28 @@ class Ticketing extends Controller {
 			$ticket->where("ticketing_tickets.status", $inputs["status"], "IN");
 			$view->setDataForm($inputs["status"], "status");
 		}
-		foreach(array('id', 'title', 'client', 'title', 'priority', 'department') as $item){
-			if(isset($inputs[$item]) and $inputs[$item]){
-				$comparison = $inputs['comparison'];
-				if(in_array($item, array('id', 'priority', 'department', 'client'))){
-					$comparison = 'equals';
-				}
-				$ticket->where("ticketing_tickets.{$item}", $inputs[$item], $comparison);
+		foreach (array('id', 'title', 'client', 'operator', 'title', 'priority', 'department') as $item) {
+			if (!isset($inputs[$item]) or !$inputs[$item]) {
+				continue;
 			}
+			$value = $inputs[$item];
+			$key = "ticketing_tickets.{$item}";
+			$comparison = $inputs['comparison'];
+			if (in_array($item, array('id', 'priority', 'department', 'client', 'operator'))) {
+				$comparison = 'equals';
+			}
+			if ($item == 'operator') {
+				$key .= '_id';
+				$value = $value->id;
+			}
+			$ticket->where($key, $value, $comparison);
 		}
-		if (isset($inputs['word']) or $inputs["unread"]) {
+		if (isset($inputs['word']) or isset($inputs['message_sender']) or $inputs["unread"]) {
 			db::join("ticketing_tickets_msgs", "ticketing_tickets_msgs.ticket=ticketing_tickets.id", "LEFT");
+		}
+		if (isset($inputs['message_sender'])) {
+			$ticket->where("ticketing_tickets_msgs.user", $inputs['message_sender']->id);
+			$ticket->where("ticketing_tickets.client", $inputs['message_sender']->id, "!=");
 		}
 		if ($inputs["unread"]) {
 			$ticket->where("ticketing_tickets_msgs.status", Ticket_message::unread);

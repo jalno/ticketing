@@ -106,6 +106,24 @@
 		"ticketing.logs.settings.departments.add": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را اضافه کرد",
 		"ticketing.logs.settings.departments.edit": "دپارتمان <span class=\"tooltips\" title=\"#{department_id}\">{department_title}</span> را ویرایش کرد",
 		"ticketing.active": "فعال",
-		"ticketing.deactive": "غیرفعال"
+		"ticketing.deactive": "غیرفعال",
+
+		"error.packages.ticketing.error.tickets.client.delete_user_warn": "هشدار در خصوص تیکت های این کاربر",
+		"error.packages.ticketing.error.tickets.client.delete_user_warn.message": "این کاربر دارای تیکت یا تیکت هایی می باشد؛ در صورت حذف کاربر، همه تیکت های ایشان نیز حذف خواهند شد!",
+		"packages.ticketing.error.tickets.client.delete_user_warn.view_tickets": "در صورت نیاز می توانید با استفاده از لینک زیر تیکت های این کاربر را مشاهده بفرمایید.",
+		"packages.ticketing.error.tickets.client.delete_user_warn.view_tickets.tell_someone": "در صورتی که قصد مشاهده تیکت های این کاربر را دارید، از شخصی که این دسترسی را دارا می باشد درخواست نمایید!",
+		"packages.ticketing.error.tickets.client.delete_user_warn.view_tickets_btn": "مشاهده تیکت های این کاربر",
+
+		"error.packages.ticketing.error.tickets.operator.delete_user_warn": "هشدار در خصوص تیکت های انتصاب داده شده به این کاربر",
+		"error.packages.ticketing.error.tickets.operator.delete_user_warn.message": "این کاربر دارای تیکت یا تیکت هایی می باشد که ایشان به عنوان اپراتور انتصاب داده شده اند؛ در صورت حذف این کاربر، تیکت های فوق بدون اپراتور خواهند شد.",
+		"packages.ticketing.error.tickets.operator.delete_user_warn.view_tickets": "در صورت نیاز می توانید با استفاده از لینک زیر تیکت های که این کاربر اپراتور آن ها می باشد را مشاهده بفرمایید.",
+		"packages.ticketing.error.tickets.operator.delete_user_warn.view_tickets.tell_someone": "در صورتی که قصد مشاهده تیکت های که این کاربر اپراتور آن ها می باشد را دارید، از شخصی که این دسترسی را دارا می باشد درخواست نمایید!",
+		"packages.ticketing.error.tickets.operator.delete_user_warn.view_tickets_btn": "مشاهده تیکت های منتصب به این کاربر",
+
+		"error.packages.ticketing.error.tickets.messages.user.delete_user_warn": "هشدار در خصوص پیام های این کاربر در تیکت ها",
+		"error.packages.ticketing.error.tickets.messages.user.delete_user_warn.message": "این کاربر دارای پیام هایی در تیکت ها می باشد؛ در صورت حذف این کاربر، تمامی پیام های ایشان در همه تیکت ها حذف خواهد شد!",
+		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets": "در صورت نیاز می توانید با استفاده از لینک زیر، همه تیکت هایی که این کاربر پیامی در آن ارسال کرده است را مشاهده بفرمایید.",
+		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets.tell_someone": "در صورتی که قصد مشاهده تیکت هایی که این کاربر پیامی در آن ها ارسال کرده است را دارید، از شخصی که این دسترسی را دارا می باشد درخواست نمایید.",
+		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets_btn": "مشاهده تیکت های دارای پیام از این کاربر"
 	}
 }
