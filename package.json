@@ -16,6 +16,10 @@
 			"listener": "listeners\\settings\\usertype@permissions_list"
 		},
 		{
+			"name":"packages/userpanel/events/Users/BeforeDelete",
+			"listener": "listeners/userpanel/users/BeforeDelete@check"
+		},
+		{
 			"name":"\\packages\\sms\\events\\templates",
 			"listener": "listeners\\sms@templates"
 		},
