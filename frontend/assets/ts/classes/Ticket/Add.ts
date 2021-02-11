@@ -387,14 +387,14 @@ export default class Add {
 							const $file = $("#attachmentsContent .upload-file-container", Add.$form).eq(parseInt(index, 10));
 							$file.addClass("has-error").append(`<span class="help-block text-center">${params.message}</span>`);
 							$(".remove-file-icon", $file).html('<i class="fa fa-ban fa-lg"></i>');
-						} else if (error.input === "service") {
+						} else if (error.input === "service" && $(`[name="${error.input}"]`, this).parent().is(":hidden")) {
 							params.message = t("ticketing.add.product_empty_error") + "<br>" + t("ticketing.add.noproduct");
 						} else {
 							params.message = t(`ticketing.request.response.error.message.${error.error}`);
 							if (error.input === "client") {
 								error.input = "client_name";
 							}
-							const $input = $(`[name="${error.input}"]`);
+							const $input = $(`[name="${error.input}"]`, this);
 							if ($input.length) {
 								$input.inputMsg(params);
 								return;
