@@ -248,10 +248,15 @@ export default class Add {
 		</div>`);
 		}
 
-		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
+		const removeError = () => {
 			if ($serviceError && $serviceError.length) {
 				$serviceError.remove();
+				$serviceError = undefined;
 			}
+		};
+
+		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
+			removeError();
 
 			$btns.prop("disabled", false);
 			$btnFile.removeClass("disabled");
@@ -281,6 +286,7 @@ export default class Add {
 					product: product,
 				},
 				success: (response) => {
+					removeError();
 					const length = response.items.length;
 					if (length) {
 						$formGroup.show();
@@ -300,7 +306,6 @@ export default class Add {
 								return false;
 							}
 						});
-
 						$serviceError = createError(productIsOptional ? "WARNING" : "FATAL", t("ticketing.add.product_empty_error") + (!productIsOptional ? "<br>" + t("ticketing.add.noproduct") : "")).insertAfter($formGroup);
 
 						$btns.prop("disabled", !productIsOptional);
