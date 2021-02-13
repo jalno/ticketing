@@ -233,10 +233,36 @@ export default class Add {
 		const $services = $("select[name=service]", Add.$form);
 		const $formGroup = $services.parents(".form-group");
 		const $users = $(".multiuser-users .table tbody", Add.$form);
+		let $serviceError: JQuery;
+		const $product = $("select[name=product]", Add.$form);
+		const $btns = $(".new-ticket-panel-container .btn-group button, .new-ticket-panel-container .btn-group .btn-file2 input", Add.$form);
+		const $btnFile = $(".new-ticket-panel-container .btn-group .btn-file2", Add.$form);
+
+		const createError = (type: "FATAL" | "WARNING", text: string): JQuery => {
+			return $(`<div class="alert alert-block alert-${type === "FATAL" ? "danger" : "warning"}">
+			<h4 class="alert-heading">
+				${type === "FATAL" ? `<i class="fa fa-times-circle"></i>` : `<i class="fa fa-exclamation-triangle"></i>`}
+			${t(`error.${type.toLocaleLowerCase()}.title`)}
+		</h4>
+		<div class="alert-body">${text}</div>
+		</div>`);
+		}
+
+		const removeError = () => {
+			if ($serviceError && $serviceError.length) {
+				$serviceError.remove();
+				$serviceError = undefined;
+			}
+		};
+
 		$("select[name=product], input[name=client]", Add.$form).on("change", () => {
-			const product = $("select[name=product]").val() as string;
+			removeError();
+
+			$btns.prop("disabled", false);
+			$btnFile.removeClass("disabled");
+			const product = $product.val() as string;
 			if (!product || (Add.multiuserMode && $("tr", $users).length > 1)) {
-				$("select[name=service]").parents(".form-group").hide();
+				$formGroup.hide();
 				return;
 			}
 			let user: string;
@@ -260,6 +286,7 @@ export default class Add {
 					product: product,
 				},
 				success: (response) => {
+					removeError();
 					const length = response.items.length;
 					if (length) {
 						$formGroup.show();
@@ -272,6 +299,21 @@ export default class Add {
 					} else {
 						$services.val("");
 						$formGroup.hide();
+						let productIsOptional = false;
+						$("option", $product).each(function() {
+							if (!$(this).val()) {
+								productIsOptional = true;
+								return false;
+							}
+						});
+						$serviceError = createError(productIsOptional ? "WARNING" : "FATAL", t("ticketing.add.product_empty_error") + (!productIsOptional ? "<br>" + t("ticketing.add.noproduct") : "")).insertAfter($formGroup);
+
+						$btns.prop("disabled", !productIsOptional);
+						if (productIsOptional) {
+							$btnFile.removeClass("disabled");
+						} else {
+							$btnFile.addClass("disabled");
+						}
 					}
 				},
 				error: () => {
@@ -350,17 +392,18 @@ export default class Add {
 							const $file = $("#attachmentsContent .upload-file-container", Add.$form).eq(parseInt(index, 10));
 							$file.addClass("has-error").append(`<span class="help-block text-center">${params.message}</span>`);
 							$(".remove-file-icon", $file).html('<i class="fa fa-ban fa-lg"></i>');
-							return;
-						}
-
-						params.message = t(`ticketing.request.response.error.message.${error.error}`);
-						if (error.input === "client") {
-							error.input = "client_name";
-						}
-						const $input = $(`[name="${error.input}"]`);
-						if ($input.length) {
-							$input.inputMsg(params);
-							return;
+						} else if (error.input === "service" && $(`[name="${error.input}"]`, this).parent().is(":hidden")) {
+							params.message = t("ticketing.add.product_empty_error") + "<br>" + t("ticketing.add.noproduct");
+						} else {
+							params.message = t(`ticketing.request.response.error.message.${error.error}`);
+							if (error.input === "client") {
+								error.input = "client_name";
+							}
+							const $input = $(`[name="${error.input}"]`, this);
+							if ($input.length) {
+								$input.inputMsg(params);
+								return;
+							}
 						}
 					} else if (error.message) {
 						params.message = error.message;
