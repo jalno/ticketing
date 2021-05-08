@@ -206,12 +206,12 @@ $this->the_header();
 						</div>
 						<div class="form-group">
 							<label class="col-xs-3"><?php echo translator::trans('ticket.client.phone'); ?>:</label>
-							<div class="col-xs-9 ltr"><?php echo $client->phone; ?></div>
+							<div class="col-xs-9 ltr"><?php echo $client->getPhoneWithDialingCode(); ?></div>
 						</div>
 						<div class="form-group">
 							<label class="col-xs-5"><?php echo translator::trans('ticket.client.cellphone'); ?>:</label>
 							<div class="col-xs-7 ltr">
-								<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->cellphone; ?></a>
+								<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->getCellphoneWithDialingCode(); ?></a>
 							</div>
 						</div>
 						<div class="form-group">
