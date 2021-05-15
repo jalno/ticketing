@@ -1,89 +1,59 @@
 <?php
-use \packages\base\translator;
-use \packages\userpanel;
-use \packages\userpanel\date;
-use \packages\ticketing\ticket;
-use \packages\ticketing\authorization;
-use \packages\ticketing\ticket_message;
-use \packages\ticketing\authentication;
+use packages\base\translator;
+use packages\userpanel;
+use packages\userpanel\Date;
+use packages\ticketing\{Authentication, Authorization, Ticket, Ticket_Message};
+use themes\clipone\{Utility};
 
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
 $this->the_header();
 ?>
+<h1 class="visible-print-block"><?php echo t("ticket") . " #" . $this->ticket->id; ?></h1>
 <div class="row">
-
-<div class="<?php echo (($childrenType or $product) ? 'col-md-8' : 'col-sm-12'); ?>">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<i class="fa fa-comment-o"></i>
-				<span><?php echo $this->ticket->title; ?></span>
-				<div class="panel-tools">
-					<?php if($this->canEdit){ ?>
-						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-cog"></i></a>
-						<?php if($this->ticket->status != ticket::in_progress){ ?>
-						<a id="ticket-inProgress" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("in_progress"); ?>" href="<?php echo userpanel\url('ticketing/inprogress/'.$this->ticket->id); ?>"><i class="fa fa-tasks" ></i></a>
-						<?php } ?>
-						<?php if(!$this->isLocked) { ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
-						<?php }else{ ?>
-						<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
-				  <?php }
-					}
-					if($this->canDel){ ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
-					<?php } ?>
-					<?php if($this->ticket->status != ticket::closed and $this->canClose){ ?>
-					<a id="ticket-close" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/close/'.$this->ticket->id); ?>"><i class="fa fa-times" ></i></a>
-					<?php } ?>
-					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
-
-				</div>
-			</div>
-			<div  class="panel-body tecket-message">
-				<div class="row">
-					<div class="col-sm-12">
-						<?php foreach($this->messages as $message){ ?>
-						<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
-							<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo $this->getUserAvatar($message->user); ?>" class="img-polaroid"></a>
-							<div class="text">
-								<div class="info clearfix">
-									<span class="name">
-										<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?></a>
-									</span>
-									<span class="date tooltips" title="<?php echo date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo date::relativeTime($message->date); ?></span>
+	<div class="col-md-8">
+		<div class="panel panel-white panel-ticket-messages">
+			<div  class="panel-body ticket-message">
+				<?php foreach ($this->messages as $message) { ?>
+				<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
+					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo $this->getUserAvatar($message->user); ?>" class="img-polaroid"></a>
+					<div class="text">
+						<div class="info clearfix">
+							<span class="name">
+								<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?><span class="visible-print-inline-block">(#<?php echo $message->user->id; ?>)</span></a>
+							</span>
+							<span class="date tooltips hidden-print" title="<?php echo Date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo Date::relativeTime($message->date); ?></span>
+							<span class="date visible-print-inline-block ltr"><?php echo Date::format('Y/m/d H:i:s', $message->date); ?></span>
+						</div>
+						<div class="msgtext">
+							<?php echo $message->content; ?>
+							<?php if ($message->files) {?>
+							<div class="message-files">
+								<div class="title">
+									<span><?php echo t("attachment.files"); ?></span>
 								</div>
-								<div class="msgtext">
-									<?php echo $message->content; ?>
-									<?php if($message->files){?>
-									<div class="message-files">
-										<div class="title">
-											<span><?php echo t("attachment.files"); ?></span>
+								<div class="content py-4">
+									<?php foreach ($message->files as $file) { ?>
+										<div class="d-inline-block bg-light-gray py-2 px-3 rounded mt-2 my-4 ml-3">
+											<a href="<?php echo userpanel\url("ticketing/download/{$file->id}"); ?>" target="_blank"><?php echo $file->name; ?></a>
+											<span class="text-success mr-2 check-file-icon"><i class="fa fa-check fa-lg"></i></span>
 										</div>
-										<div class="content py-4">
-											<?php foreach ($message->files as $file) { ?>
-												<div class="d-inline-block bg-light-gray py-2 px-3 rounded mt-2 my-4 ml-3">
-													<a href="<?php echo userpanel\url("ticketing/download/{$file->id}"); ?>" target="_blank"><?php echo $file->name; ?></a>
-													<span class="text-success mr-2 check-file-icon"><i class="fa fa-check fa-lg"></i></span>
-												</div>
-											<?php } ?>
-										</div>
-									</div>
 									<?php } ?>
 								</div>
 							</div>
-							<div class="icons">
-								<?php if($this->canEditMessage){ ?>
-								<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo translator::trans("message.edit.notice.title"); ?>"></i></a>
-								<?php } if($this->canDelMessage){ ?>
-								<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo translator::trans("message.delete.warning.title"); ?>"></i></a>
-								<?php } ?>
-							</div>
+							<?php } ?>
 						</div>
+					</div>
+					<div class="icons hidden-print">
+						<?php if ($this->canEditMessage) { ?>
+						<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo t("message.edit.notice.title"); ?>"></i></a>
+						<?php } if ($this->canDelMessage) { ?>
+						<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo t("message.delete.warning.title"); ?>"></i></a>
 						<?php } ?>
 					</div>
 				</div>
-				<div class="row">
+				<?php } ?>
+				<div class="row hidden-print">
 					<div class="col-sm-12">
 						<div class="replaycontianer">
 							<h3><?php echo t('send.reply'); ?></h3>
@@ -181,80 +151,146 @@ $this->the_header();
 		</div>
 	</div>
 
-<?php if($childrenType or $product or $this->canEdit){ ?>
+
 	<div class="col-md-4">
-	<?php if ($childrenType) { ?>
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading"><i class="fa fa-hdd-o"></i> <?php echo translator::trans('ticket.client'); ?>
-						<div class="panel-tools">
-							<?php $client = $this->ticket->client; ?>
-							<a href="<?php echo userpanel\url('users/view/'.$client->id); ?>" target="_blank" class="btn btn-xs btn-link tooltips" title="<?php echo t("user.view_profile"); ?>"><i class="fa fa-user"></i></a>
-							<a href="#" class="btn btn-xs btn-link panel-collapse collapses"></a>
-						</div>
+		<div class="panel panel-white panel-ticket-info">
+			<div class="panel-heading"><i class="fa fa-ticket fa-rotate-45"></i> <?php echo t('ticket'); ?>
+				<div class="panel-tools hidden-print">
+					<?php $client = $this->ticket->client; ?>
+					<?php if ($this->canEdit) { ?>
+						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-cog"></i></a>
+						<?php if($this->ticket->status != ticket::in_progress){ ?>
+							<a id="ticket-inProgress" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("in_progress"); ?>" href="<?php echo userpanel\url('ticketing/inprogress/'.$this->ticket->id); ?>"><i class="fa fa-tasks" ></i></a>
+						<?php } ?>
+
+						<?php if (!$this->isLocked) { ?>
+							<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
+						<?php } else { ?>
+							<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
+						<?php } ?>
+					<?php } ?>
+
+					<?php if ($this->canDel) { ?>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
+					<?php } ?>
+
+					<?php if ($this->ticket->status != ticket::closed and $this->canClose) { ?>
+						<a id="ticket-close" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/close/'.$this->ticket->id); ?>"><i class="fa fa-times" ></i></a>
+					<?php } ?>
+				</div>
+			</div>
+			<div class="panel-body form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3"><?php echo t('ticket.department'); ?></label>
+					<div class="col-xs-9"><?php echo $this->ticket->department->title; ?></div>
+				</div>
+				<div class="form-group"><label class="col-xs-3"><?php echo t('ticket.priority'); ?></label>
+					<div class="col-xs-9 ltr">
+					<?php
+						$priorityClass = Utility::switchcase($this->ticket->priority, array(
+							"label-warning" => Ticket::instantaneous,
+							"label-primary" => Ticket::important,
+							"label-info" => Ticket::ordinary,
+						));
+						$priorityText = Utility::switchcase($this->ticket->priority, array(
+							"instantaneous" => Ticket::instantaneous,
+							"important" => Ticket::important,
+							"ordinary" => Ticket::ordinary,
+						));
+					?>
+						<span class="label <?php echo $priorityClass; ?> label-border ticket-priority"><?php echo t($priorityText); ?></span>
 					</div>
-					<div class="panel-body form-horizontal">
-						<div class="form-group">
-							<label class="col-xs-5"><?php echo translator::trans('ticket.client.type'); ?>:</label>
-							<div class="col-xs-7"><?php echo $client->type->title; ?></div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3"><?php echo t('ticket.status'); ?></label>
+					<div class="col-xs-9 ltr">
+					<?php
+						$statusClass = Utility::switchcase($this->ticket->status, array(
+							"label-primary" => Ticket::unread,
+							"label-info" => Ticket::read,
+							"label-success" => Ticket::answered,
+							"label-warning" => Ticket::in_progress,
+							"label-inverse" => Ticket::closed
+						));
+						$statusText = Utility::switchcase($this->ticket->status, array(
+							"unread" => Ticket::unread,
+							"read" => Ticket::read,
+							"answered" => Ticket::answered,
+							"in_progress" => Ticket::in_progress,
+							"closed" => Ticket::closed
+						));
+					?>
+						<span class="label <?php echo $statusClass; ?> label-border ticket-status"><?php echo t($statusText); ?></span>
+					</div>
+				</div>
+
+				<?php if ($this->canEdit) { ?>
+					<div class="operator-input-container">
+						<form class="hidden-print" id="set-operator-form" data-department="<?php echo $this->ticket->department->id; ?>" action="<?php echo userpanel\url("ticketing/edit/{$this->ticket->id}"); ?>" method="POST">
+					<?php
+						$this->createField(array(
+							"name" => "operator",
+							"type" => "hidden",
+						));
+						$this->createField(array(
+							"name" => "operator_name",
+							"label" => t("ticketing.ticket.operator"),
+							"input-group" => array(
+								"right" => array(
+									array(
+										"type" => "submit",
+										"class" => "btn btn-success",
+										"text" => t("submit"),
+									),
+								),
+							),
+						));
+					?>
+						</form>
+					</div>
+				<?php } ?>
+
+				<?php if ($childrenType) { ?>
+					<div class="client-container">
+						<div class="ticket-info-panel-heading">
+							<div class="client-info">
+								<img src="<?php echo $this->getUserAvatar($this->ticket->client); ?>" class="circle-img" alt="" width="30" height="30">
+								<span class="client-full-name"><?php echo $this->ticket->client->getFullName(); ?></span>
+							</div>
+							<?php if (Authorization::is_accessed("users_view", "userpanel")) { ?>
+							<div class="ticket-info-panel-tools">
+								<a href="<?php echo userpanel\url('users/view/'.$client->id); ?>" target="_blank" class="btn btn-xs btn-link tooltips" title="<?php echo t("user.view_profile"); ?>"><i class="fa fa-user"></i></a>
+							</div>
+							<?php } ?>
 						</div>
-						<div class="form-group"><label class="col-xs-3"><?php echo translator::trans('ticket.client.email'); ?>:</label>
-							<div class="col-xs-9 ltr">
+						<div class="form-group">
+							<label class="col-xs-5"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo t('ticket.client.type'); ?></label>
+							<div class="col-xs-7 ltr"><span class="label label-border label-secondary"><?php echo $client->type->title; ?></span></div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4"><i class="fa fa-envelope-o" aria-hidden="true"></i> <?php echo t('ticket.client.email'); ?></label>
+							<div class="col-xs-8 ltr">
 								<a href="<?php echo userpanel\url('email/send/', ['user' => $client->id]); ?>"><?php echo $client->email; ?></a>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-xs-3"><?php echo translator::trans('ticket.client.phone'); ?>:</label>
-							<div class="col-xs-9 ltr"><?php echo $client->getPhoneWithDialingCode(); ?></div>
-						</div>
-						<div class="form-group">
-							<label class="col-xs-5"><?php echo translator::trans('ticket.client.cellphone'); ?>:</label>
+							<label class="col-xs-5"><i class="fa fa-phone fa-flip-horizontal" aria-hidden="true"></i> <?php echo t('ticket.client.cellphone'); ?></label>
 							<div class="col-xs-7 ltr">
 								<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->getCellphoneWithDialingCode(); ?></a>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-xs-5"><?php echo translator::trans('ticket.client.lastonline'); ?>:</label>
-							<div class="col-xs-7"><?php echo date::relativeTime($client->lastonline); ?></div>
-						</div>
 					</div>
-				</div>
+				<?php } ?>
+
+				<?php if ($product) { ?>
+					<div class="product-container">
+					<?php echo $product->generateRows(); ?>
+					</div>
+				<?php } ?>
 			</div>
 		</div>
-	<?php
-	}
-	if($product){
-		echo $product->generateRows();
-	}
-	if ($this->canEdit) {
-	?>
-		<form id="set-operator-form" data-department="<?php echo $this->ticket->department->id; ?>" action="<?php echo userpanel\url("ticketing/edit/{$this->ticket->id}"); ?>" method="POST">
-	<?php
-		$this->createField(array(
-			"name" => "operator",
-			"type" => "hidden",
-		));
-		$this->createField(array(
-			"name" => "operator_name",
-			"label" => t("ticketing.ticket.operator"),
-			"input-group" => array(
-				"right" => array(
-					array(
-						"type" => "submit",
-						"class" => "btn btn-default",
-						"text" => t("submit"),
-					),
-				),
-			),
-		));
-	}
-	?>
-		</form>
 	</div>
-<?php } ?>
-	
-</div>
+
 <?php if($this->canEdit){ ?>
 <div class="modal fade" id="settings" tabindex="-1" data-show="true" role="dialog">
 	<div class="modal-header">

@@ -46,11 +46,9 @@ abstract class product{
 		}
 		$html = '';
 		foreach($rows as $row){
-			$html .= "<div class=\"row\">";
 			foreach($row as $box){
-				$html .= "<div class=\"col-sm-12\">".$box->getHTML()."</div>";
+				$html .= $box->getHTML();
 			}
-			$html .= "</div>";
 		}
 		return $html;
 	}

@@ -154,6 +154,7 @@ export default class Ticket {
 						title: t("ticketing.request.response.successful"),
 						message: t("ticketing.request.response.successful.message"),
 					});
+					$(this).tooltip("hide");
 					$(this).remove();
 				},
 				error: function(error: webuilder.AjaxError) {

@@ -1,15 +1,7 @@
 <?php
 namespace packages\ticketing\product;
 class panel extends box{
-	public $buttons = array(
-		'collapse' => array(
-			'active' => true,
-			'params' => array(
-				'classes' => array('btn', 'btn-xs', 'btn-link', 'panel-collapse','collapses'),
-				'link' => '#'
-			)
-		)
-	);
+	public $buttons = array();
 	public $title;
 	public function setButton($name, $active, $params = array()){
 		if(!isset($params['classes'])){
@@ -99,19 +91,16 @@ class panel extends box{
 		return $code;
 	}
 	public function getHTML(){
-		$code = '<div class="panel panel-default"><div class="panel-heading">';
+		$code = '<div class="ticket-info-panel-heading">';
 		if($this->icon){
 			$code .= "<i class=\"{$this->icon}\"></i>";
 		}
 		$code .= $this->title;
 		if($this->hasButtons()){
-			$code.= '<div class="panel-tools">'.$this->genButtons().'</div>';
+			$code.= ' <div class="ticket-info-panel-tools">'.$this->genButtons().'</div>';
 		}
 		$code .= '</div>';
-		$code .= '<div class="panel-body form-horizontal">';
 		$code .= $this->html;
-		$code .= '</div>';
-		$code .= '</div>';
 		return $code;
 	}
 }
