@@ -11,18 +11,29 @@ import Edit from "./Ticket/Edit";
 import List from "./Ticket/List";
 import Reply from "./Ticket/Reply";
 
+
+export enum ITicketStatus {
+	UNREAD = 1,
+	READ = 2,
+	IN_PROGRESS = 3,
+	ANSWERED = 4,
+	CLOSED = 5,
+}
+
 export default class Ticket {
 
+	protected static $body: JQuery;
 	protected static finalFilesForUpload: File[] = [];
 
 	public static init() {
-		if ($("#ticket-close").length) {
+		Ticket.$body = $("body.ticketing");
+		if ($("#ticket-close", Ticket.$body).length) {
 			Ticket.closeTicketListener();
 		}
-		if ($("#ticket-inProgress").length) {
+		if ($("#ticket-inProgress", Ticket.$body).length) {
 			Ticket.inProgressTicketListener();
 		}
-		if ($("#settings").length) {
+		if ($("#settings", Ticket.$body).length) {
 			Ticket.editListener();
 		}
 	}
@@ -154,6 +165,8 @@ export default class Ticket {
 						title: t("ticketing.request.response.successful"),
 						message: t("ticketing.request.response.successful.message"),
 					});
+					$("span.ticket-status", Ticket.$body).parent().html(`<span class="label label-warning label-border ticket-status">${t("in_progress")}</span>`);
+					$("#settings select[name=status]", Ticket.$body).val(ITicketStatus.IN_PROGRESS).trigger("change");
 					$(this).tooltip("hide");
 					$(this).remove();
 				},
