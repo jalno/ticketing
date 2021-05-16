@@ -145,6 +145,12 @@ body.ticketing {
 					transform: rotate(45deg);
 				}
 			}
+			.panel-tools {
+				i {
+					font-size: 14px;
+					color: #aeaeae;
+				}
+			}
 		}
 		.panel-body {
 			padding: 0 0 15px 0;
@@ -155,6 +161,13 @@ body.ticketing {
 			.form-group {
 				margin-right: 0;
 				margin-left: 0;
+				margin-bottom: 25px;
+				> :first-child {
+					color: #858585;
+				}
+				> :last-child {
+					text-align: right;
+				}
 				.control-label {
 					font-size: unset;
 				}
@@ -162,8 +175,13 @@ body.ticketing {
 			.label-border {
 				border-radius: 20px;
 			}
+			.form-group-backgrounded {
+				background-color: #f8f8f8;
+				padding-top: 8px;
+			}
 			.client-container {
 				border-top: 1px solid #CDCDCD;
+				margin-top: 2.5em;
 				.ticket-info-panel-heading {
 					padding-bottom: 10px;
 					.client-info {
@@ -171,6 +189,11 @@ body.ticketing {
 						margin-left: 8px;
 						.client-full-name {
 							padding-left: 8px;
+						}
+					}
+					.ticket-info-panel-tools {
+						i {
+							font-size: 15px;
 						}
 					}
 				}
@@ -181,6 +204,9 @@ body.ticketing {
 						padding-right: 0;
 						padding-left: 8px;
 					}
+				}
+				.client-type {
+					color: #333;
 				}
 			}
 			.ordernumber-container {
@@ -222,6 +248,19 @@ body.ticketing {
 		.panel.panel-ticket-info {
 			font-family: koodak;
 			.panel-body {
+				.form-group {
+					> :last-child {
+						text-align: left;
+					}
+				}
+				.font-family-initial {
+					font-family: initial;
+				}
+				.ordernumber-container {
+					.select2 .selection {
+						font-family: initial;
+					}
+				}
 				.client-container {
 					.ticket-info-panel-heading {
 						.client-info {
@@ -232,6 +271,9 @@ body.ticketing {
 								padding-right: 8px;
 							}
 						}
+					}
+					.client-cellphone {
+						font-family: initial;
 					}
 					i {
 						padding-left: 8px;

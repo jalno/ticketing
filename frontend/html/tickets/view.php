@@ -7,6 +7,7 @@ use themes\clipone\{Utility};
 
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
+$isRTL = Translator::getLang()->isRTL();
 $this->the_header();
 ?>
 <h1 class="visible-print-block"><?php echo t("ticket") . " #" . $this->ticket->id; ?></h1>
@@ -182,10 +183,10 @@ $this->the_header();
 			<div class="panel-body form-horizontal">
 				<div class="form-group">
 					<label class="col-xs-3"><?php echo t('ticket.department'); ?></label>
-					<div class="col-xs-9"><?php echo $this->ticket->department->title; ?></div>
+					<div class="col-xs-9 text-<?php echo $isRTL ? "left" : "right"; ?>"><?php echo $this->ticket->department->title; ?></div>
 				</div>
 				<div class="form-group"><label class="col-xs-3"><?php echo t('ticket.priority'); ?></label>
-					<div class="col-xs-9 ltr">
+					<div class="col-xs-9 text-<?php echo $isRTL ? "left" : "right"; ?>">
 					<?php
 						$priorityClass = Utility::switchcase($this->ticket->priority, array(
 							"label-warning" => Ticket::instantaneous,
@@ -203,7 +204,7 @@ $this->the_header();
 				</div>
 				<div class="form-group">
 					<label class="col-xs-3"><?php echo t('ticket.status'); ?></label>
-					<div class="col-xs-9 ltr">
+					<div class="col-xs-9 text-<?php echo $isRTL ? "left" : "right"; ?>">
 					<?php
 						$statusClass = Utility::switchcase($this->ticket->status, array(
 							"label-primary" => Ticket::unread,
@@ -265,17 +266,17 @@ $this->the_header();
 						</div>
 						<div class="form-group">
 							<label class="col-xs-5"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo t('ticket.client.type'); ?></label>
-							<div class="col-xs-7 ltr"><span class="label label-border label-secondary"><?php echo $client->type->title; ?></span></div>
+							<div class="col-xs-7 text-<?php echo $isRTL ? "left" : "right"; ?>"><span class="label label-border label-secondary"><?php echo $client->type->title; ?></span></div>
 						</div>
 						<div class="form-group">
 							<label class="col-xs-4"><i class="fa fa-envelope-o" aria-hidden="true"></i> <?php echo t('ticket.client.email'); ?></label>
-							<div class="col-xs-8 ltr">
+							<div class="col-xs-8 text-<?php echo $isRTL ? "left" : "right"; ?>">
 								<a href="<?php echo userpanel\url('email/send/', ['user' => $client->id]); ?>"><?php echo $client->email; ?></a>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-xs-5"><i class="fa fa-phone fa-flip-horizontal" aria-hidden="true"></i> <?php echo t('ticket.client.cellphone'); ?></label>
-							<div class="col-xs-7 ltr">
+							<div class="col-xs-7 text-<?php echo $isRTL ? "left" : "right"; ?> client-cellphone">
 								<a href="<?php echo userpanel\url('sms/send/', ['user' => $client->id]); ?>"><?php echo $client->getCellphoneWithDialingCode(); ?></a>
 							</div>
 						</div>
