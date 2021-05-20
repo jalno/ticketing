@@ -127,7 +127,7 @@ body.ticketing {
 	}
 	.panel.panel-ticket-info {
 		border: 1px solid #CDCDCD;
-		font-size: 15px;
+		font-size: 14px;
 		.label-secondary {
 			background-color: #dddddd;
 		}
@@ -161,12 +161,15 @@ body.ticketing {
 			.form-group {
 				margin-right: 0;
 				margin-left: 0;
-				margin-bottom: 25px;
+				margin-bottom: 15px;
 				> :first-child {
 					color: #858585;
 				}
 				> :last-child {
 					text-align: right;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 				.control-label {
 					font-size: unset;
@@ -193,7 +196,7 @@ body.ticketing {
 					}
 					.ticket-info-panel-tools {
 						i {
-							font-size: 15px;
+							font-size: 14px;
 						}
 					}
 				}
@@ -209,11 +212,6 @@ body.ticketing {
 					color: #333;
 				}
 			}
-			.ordernumber-container {
-				.form-group .input-group {
-					width: 98%;
-				}
-			}
 			.operator-input-container, .ordernumber-container {
 				padding-right: 15px;
 				padding-left: 15px;
@@ -227,7 +225,7 @@ body.ticketing {
 			}
 			.ticket-info-panel-heading {
 				font-size: 15px;
-				margin-bottom: 15px;
+				margin-bottom: 25px;
 				position: relative;
 				> i {
 					padding-right: 8px;
@@ -236,7 +234,7 @@ body.ticketing {
 				.ticket-info-panel-tools {
 					position: absolute;
 					right: 5px;
-					top: 8px;
+					top: 0;
 					.btn-link {
 						color: #666;
 					}
