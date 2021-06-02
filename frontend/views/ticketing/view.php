@@ -14,6 +14,7 @@ class View extends TicketView {
 	protected $canSend = true;
 	protected $isLocked = false;
 	protected $ticket;
+	protected $types = array();
 	function __beforeLoad(){
 		$this->ticket = $this->getTicket();
 		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? userpanel\Authentication::getUser() : null);
@@ -27,6 +28,8 @@ class View extends TicketView {
 		$this->SetDataView();
 		$this->addBodyClass("ticketing");
 		$this->addBodyClass("tickets-view");
+
+		$this->types = Authorization::childrenTypes();
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
@@ -73,6 +76,16 @@ class View extends TicketView {
 			$this->setFormError($error);
 		}
 		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
+	}
+
+	protected function hasAccessToUser(userpanel\User $other): bool {
+
+		$type = $other->data["type"];
+
+		if ($type instanceof userpanel\Usertype) {
+			$type = $type->id;
+		}
+		return in_array($type, $this->types);
 	}
 	private function formatUrlsInText(string $text):string{
         $reg_exUrl = '/(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\\'\\,]*)?/';

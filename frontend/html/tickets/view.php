@@ -21,7 +21,11 @@ $this->the_header();
 					<div class="text">
 						<div class="info clearfix">
 							<span class="name">
+							<?php if ($this->hasAccessToUser($message->user)) { ?>
 								<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?><span class="visible-print-inline-block">(#<?php echo $message->user->id; ?>)</span></a>
+							<?php } else { ?>
+								<?php echo $message->user->getFullName(); ?><span class="visible-print-inline-block">(#<?php echo $message->user->id; ?>)</span>
+							<?php } ?>
 							</span>
 							<span class="date tooltips hidden-print" title="<?php echo Date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo Date::relativeTime($message->date); ?></span>
 							<span class="date visible-print-inline-block ltr"><?php echo Date::format('Y/m/d H:i:s', $message->date); ?></span>
