@@ -15,13 +15,26 @@ $this->the_header();
 	<div class="col-md-8">
 		<div class="panel panel-white panel-ticket-messages">
 			<div  class="panel-body ticket-message">
-				<?php foreach ($this->messages as $message) { ?>
+				<?php
+				foreach ($this->messages as $message) {
+					$hasAccess = $this->hasAccessToUser($message->user);
+				?>
 				<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
-					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><img src="<?php echo $this->getUserAvatar($message->user); ?>" class="img-polaroid"></a>
+					<?php if ($hasAccess) { ?>
+					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>">
+					<?php } ?>
+						<img class="img-polaroid<?php if (!$hasAccess) echo " image"; ?>" src="<?php echo $this->getUserAvatar($message->user); ?>">
+					<?php if ($hasAccess) { ?>
+					</a>
+					<?php } ?>
 					<div class="text">
 						<div class="info clearfix">
 							<span class="name">
+							<?php if ($this->hasAccessToUser($message->user)) { ?>
 								<a href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>"><?php echo $message->user->getFullName(); ?><span class="visible-print-inline-block">(#<?php echo $message->user->id; ?>)</span></a>
+							<?php } else { ?>
+								<?php echo $message->user->getFullName(); ?><span class="visible-print-inline-block">(#<?php echo $message->user->id; ?>)</span>
+							<?php } ?>
 							</span>
 							<span class="date tooltips hidden-print" title="<?php echo Date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo Date::relativeTime($message->date); ?></span>
 							<span class="date visible-print-inline-block ltr"><?php echo Date::format('Y/m/d H:i:s', $message->date); ?></span>
@@ -46,11 +59,20 @@ $this->the_header();
 						</div>
 					</div>
 					<div class="icons hidden-print">
-						<?php if ($this->canEditMessage) { ?>
+						<?php
+						if ($hasAccess) {
+							if ($this->canEditMessage) {
+						?>
 						<a class="msg-edit" href="<?php echo userpanel\url('ticketing/edit/message/'.$message->id); ?>"><i class="fa fa-edit tip tooltips" title="<?php echo t("message.edit.notice.title"); ?>"></i></a>
-						<?php } if ($this->canDelMessage) { ?>
+						<?php
+							}
+							if ($this->canDelMessage) {
+						?>
 						<a class="msg-del" href="<?php echo userpanel\url('ticketing/delete/message/'.$message->id); ?>"><i class="fa fa-times tip tooltips" title="<?php echo t("message.delete.warning.title"); ?>"></i></a>
-						<?php } ?>
+						<?php
+							}
+						}
+						?>
 					</div>
 				</div>
 				<?php } ?>
