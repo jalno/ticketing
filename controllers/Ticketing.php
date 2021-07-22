@@ -7,89 +7,116 @@ use packages\userpanel\{Date, Log, User};
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
 
 class Ticketing extends Controller {
+
 	protected $authentication = true;
 
-	private function getTicket(int $ticketID) {
-		$unassignedTickets = authorization::is_accessed("unassigned");
-		$types = authorization::childrenTypes();
-		$me = authentication::getID();
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
-		$ticket = new ticket();
-		$ticket->with("client");
-		$ticket->with("department");
-		$ticket->where("ticketing_tickets.id", $ticketID);
-		$parenthes = new Parenthesis();
+	private static $types = [];
+	private static $currentUserID;
+	private static $departments = [];
+	private static $hasAccessTounassignedTickets = false;
 
-		$haveOperator = new Parenthesis();
-		if ($types) {
-			$haveOperator->where("operator.type", $types, "IN");
-		} else {
-			$haveOperator->where("ticketing_tickets.operator_id", $me);
-		}
-		$parenthes->where($haveOperator);
+	private static function prepareCheckAccess() {
 
-		if ($unassignedTickets) {
-			$notOperator = new Parenthesis();
-			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			if ($types) {
-				$notOperator->orWhere("userpanel_users.type", $types, "IN");
-			} else {
-				$notOperator->orWhere("ticketing_tickets.client", $me);
+		self::$types = Authorization::childrenTypes();
+
+		self::$currentUserID = Authentication::getID();
+
+		self::$departments = Department::get();
+
+		self::$hasAccessTounassignedTickets = Authorization::is_accessed("unassigned");
+	}
+
+	private static function checkAccesses(DB\DBObject $model) {
+
+		DB::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+		DB::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
+
+		if (self::$types) {
+			$accessed = array();
+			foreach (self::$departments as $department) {
+				if ($department->users) {
+					if (in_array(self::$currentUserID, $department->users)) {
+						$accessed[] = $department->id;
+					}
+				} else {
+					$accessed[] = $department->id;
+				}
 			}
-			$parenthes->orWhere($notOperator);
-		} else {
-			$parenthes->orWhere("ticketing_tickets.client", $me);
+			if (!empty($accessed)) {
+				$model->where("ticketing_tickets.department", $accessed, "IN");
+			}
 		}
 
-		$ticket->where($parenthes);
+		$parenthesis = new Parenthesis();
+
+		$parenthesis->where("ticketing_tickets.client", self::$currentUserID);
+
+		if (self::$hasAccessTounassignedTickets and self::$types) {
+			$parenthesis->where("ticketing_tickets.operator_id", null, "IS");
+		} else {
+			$parenthesis->orWhere("ticketing_tickets.operator_id", self::$currentUserID);
+		}
+
+		if (self::$types) {
+			$parenthesis->orWhere("userpanel_users.type", self::$types, "IN");
+		}
+
+		$model->where($parenthesis);
+	}
+
+	private static function checkAccessToTickets(): Ticket {
+
+		self::prepareCheckAccess();
+
+		$model = new Ticket();
+
+		$model->with("department");
+
+		self::checkAccesses($model);
+
+		return $model;
+	}
+
+	private function getTicket(int $ticketID) {
+
+		$ticket = self::checkAccessToTickets();
+
+		$ticket->where("ticketing_tickets.id", $ticketID);
 		$ticket = $ticket->getOne();
-		if (!$ticket or ($ticket->client->id != $me and $ticket->department->users and !in_array($me, $ticket->department->users))){
+		if (!$ticket){
 			throw new NotFound;
 		}
-		if ($ticket->data["operator"]) {
+		if (isset($ticket->data["operator"]) and $ticket->data["operator"]) {
 			$ticket->operator = new user($ticket->data["operator"]);
 		}
 		return $ticket;
 	}
 	private function getTicketMessage($messageID) {
-		$unassignedTickets = authorization::is_accessed("unassigned");
-		$types = authorization::childrenTypes();
-		$me = authentication::getID();
-		db::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
-		db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");
+
+		self::prepareCheckAccess();
+
+		DB::join("ticketing_tickets", "ticketing_tickets.id=ticketing_tickets_msgs.ticket", "INNER");
+		DB::join("userpanel_users as message_sender", "message_sender.id=ticketing_tickets_msgs.user", "INNER");
+
 		$message = new ticket_message();
-		$parenthes = new Parenthesis();
 
-		$haveOperator = new Parenthesis();
-		if ($types) {
-			$haveOperator->where("operator.type", $types, "IN");
-		} else {
-			$haveOperator->where("ticketing_tickets.operator_id", $me);
-		}
-		$parenthes->where($haveOperator);
+		self::checkAccesses($message);
 
-		if ($unassignedTickets) {
-			$notOperator = new Parenthesis();
-			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			if ($types) {
-				$notOperator->orWhere("userpanel_users.type", $types, "IN");
-			} else {
-				$notOperator->orWhere("ticketing_tickets.client", $me);
-			}
-			$parenthes->orWhere($notOperator);
-		} else {
-			$parenthes->orWhere("ticketing_tickets.client", $me);
-		}
-
-		$message->where($parenthes);
 		$message->where("ticketing_tickets_msgs.id", $messageID);
+
+		if (self::$types) {
+			$message->where("message_sender.type", self::$types, "IN");
+		} else {
+			$message->where("ticketing_tickets_msgs.user", self::$currentUserID);
+		}
+
 		$message = $message->getOne("ticketing_tickets_msgs.*");
-		if (!$message or ($message->ticket->client->id != $me and $message->ticket->department->users and !in_array($me, $message->ticket->department->users))){
+		if (!$message){
 			throw new NotFound;
 		}
 		return $message;
 	}
+
 	public function index(): Response {
 		Authorization::haveOrFail('list');
 		$view = View::byName(views\ticketlist::class);
@@ -170,51 +197,9 @@ class Ticketing extends Controller {
 				'fileds' => array('id'),
 			),
 		));
-		db::join("userpanel_users as operator", "operator.id=ticketing_tickets.operator_id", "LEFT");
-		$ticket = new ticket();
-		$ticket->with("client");
-		$ticket->with("department");
-		if ($types) {
-			$accessed = array();
-			foreach ($departments as $department) {
-				if ($department->users) {
-					if (in_array($me, $department->users)) {
-						$accessed[] = $department->id;
-					}
-				} else {
-					$accessed[] = $department->id;
-				}
-			}
-			if (!empty($accessed)) {
-				$ticket->where("ticketing_tickets.department", $accessed, "IN");
-			}
-		}
 
-		$parenthesis = new Parenthesis();
-		{
-			$haveOperator = new Parenthesis();
-			if ($types) {
-				$haveOperator->where("operator.type", $types, "IN");
-			} else {
-				$haveOperator->where("ticketing_tickets.operator_id", $me);
-			}
-			$parenthesis->where($haveOperator);
-		}
+		$ticket = self::checkAccessToTickets();
 
-		$unassignedTickets = Authorization::is_accessed("unassigned");
-		if ($unassignedTickets) {
-			$notOperator = new Parenthesis();
-			$notOperator->where("ticketing_tickets.operator_id", null, "IS");
-			if ($types) {
-				$notOperator->orWhere("userpanel_users.type", $types, "IN");
-			} else {
-				$notOperator->orWhere("ticketing_tickets.client", $me);
-			}
-			$parenthesis->orWhere($notOperator);
-		} else {
-			$parenthesis->orWhere("ticketing_tickets.client", $me);
-		}
-		$ticket->where($parenthesis);
 		if ($inputs["unread"]) {
 			$inputs["status"] = Ticket::STATUSES;
 		}
