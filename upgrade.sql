@@ -43,3 +43,8 @@ CREATE TABLE `ticketing_departments_params` (
 	KEY `department` (`department`),
 	CONSTRAINT `ticketing_departments_params_ibfk_1` FOREIGN KEY (`department`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Commit: -
+--
+ALTER TABLE `ticketing_tickets_msgs` CHANGE `text` `text` longtext COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `user`;

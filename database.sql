@@ -63,7 +63,7 @@ CREATE TABLE `ticketing_tickets_msgs` (
 	`ticket` int(11) NOT NULL,
 	`date` int(11) NOT NULL,
 	`user` int(11) NOT NULL,
-	`text` text COLLATE utf8mb4_general_ci NOT NULL,
+	`text` longtext COLLATE utf8mb4_general_ci NOT NULL,
 	`format` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
 	`status` int(11) NOT NULL,
 	PRIMARY KEY (`id`),
