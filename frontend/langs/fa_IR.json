@@ -171,6 +171,7 @@
 		"ticketing.active_ticket_shortcut_title.operator": "تیکت نیاز به پیگیری دارند",
 		"ticketing.duplicate_file_error": "فایل {name} قبلا اضافه شده است",
 		"ticketing.add.product_empty_error": "هیچ محصول یا سرویسی در دپارتمان و نوع سرویس انتخاب شده ندارید.",
-		"ticketing.add.noproduct": "نمیتوانید در این دپارتمان با نوع سرویس انتخاب شده تیکت جدید ایجاد کنید."
+		"ticketing.add.noproduct": "نمیتوانید در این دپارتمان با نوع سرویس انتخاب شده تیکت جدید ایجاد کنید.",
+		"titles.settings_ticketing": "پشتیبانی"
 	}
 }

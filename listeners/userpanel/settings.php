@@ -7,7 +7,7 @@ use \packages\ticketing\ticket_message;
 use \packages\ticketing\controllers\userpanel\settings as controller;
 class settings{
 	public function settings_list(settingsEvent $settings){
-		$tuning = new settingsEvent\tuning("ticketing");
+		$tuning = new settingsEvent\tuning("ticketing", 'fa fa-user-o');
 		$tuning->setController(controller::class);
 		$tuning->addInput([
 			'name' => 'ticketing_editor',
