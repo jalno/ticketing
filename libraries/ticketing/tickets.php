@@ -4,7 +4,8 @@ namespace packages\ticketing;
 use packages\base\{db, db\dbObject, Options};
 use packages\userpanel\{User, Authentication};
 
-class ticket extends dbObject{
+class ticket extends dbObject
+{
 	const unread = 1;
 	const read = 2;
 	const in_progress = 3;
@@ -61,7 +62,7 @@ class ticket extends dbObject{
 				return 0;
 			}
 		}
-		$ticket = new static();
+		$ticket = new Ticket();
 		$count = 0;
 		if ($types) {
 			db::join("userpanel_users", "userpanel_users.id=ticketing_tickets.client", "INNER");

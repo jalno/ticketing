@@ -9,8 +9,12 @@ use packages\ticketing\{Authorization, Parsedown, Products, Ticket};
 use themes\clipone\{BreadCrumb, Navigation, navigation\MenuItem, Utility, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait};
 
-class View extends TicketView {
+class View extends TicketView
+{
 	use ViewTrait, ListTrait, FormTrait;
+
+	public bool $sendNotification = false;
+
 	protected $messages;
 	protected $canSend = true;
 	protected $isLocked = false;

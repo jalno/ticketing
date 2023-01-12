@@ -8,10 +8,13 @@ use \packages\userpanel\user;
 use \themes\clipone\views\formTrait;
 use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
-class edit extends ticketEdit{
+class edit extends ticketEdit
+{
 	use viewTrait, formTrait;
-	protected $thicket;
-	function __beforeLoad(){
+
+	public Ticket $ticket;
+
+	public function __beforeLoad(){
 		$this->ticket = $this->getTicket();
 		$this->setTitle(array(
 			translator::trans('ticketing.edit'),

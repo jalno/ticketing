@@ -6,7 +6,9 @@ use \packages\userpanel\user;
 use \packages\ticketing\ticket;
 use \packages\ticketing\views\form;
 use \packages\ticketing\authorization;
-class view extends form{
+class view extends form
+{
+	public bool $canViewDec;
 	protected $canEdit;
 	protected $canEditMessage;
 	protected $canDel;

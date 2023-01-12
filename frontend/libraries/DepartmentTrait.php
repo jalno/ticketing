@@ -54,6 +54,8 @@ trait DepartmentTrait {
 				return '<span class="label label-success">' . t('ticketing.departments.status.active') . '</span>';
 			case (Department::DEACTIVE):
 					return '<span class="label label-warning">' . t('ticketing.departments.status.deactive') . '</span>';
+			default:
+				throw new \Exception('Department status is invalid');
 		}
 	}
 }

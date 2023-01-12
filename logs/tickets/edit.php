@@ -10,7 +10,8 @@ class edit extends logs{
 	public function getIcon():string{
 		return "fa fa-ticket";
 	}
-	private function getStatusTranslate($status):string{
+	private function getStatusTranslate(int $status): string
+	{
 		switch($status){
 			case(ticket::unread):
 				return translator::trans('unread');
@@ -22,9 +23,12 @@ class edit extends logs{
 				return translator::trans('in_progress');
 			case(ticket::closed):
 				return translator::trans('closed');
+			default:
+				throw new \Exception('Status is invalid');
 		}
 	}
-	private function getPriorityTranslate($priority):string{
+	private function getPriorityTranslate(int $priority): string
+	{
 		switch($priority){
 			case(ticket::instantaneous):
 				return translator::trans('instantaneous');
@@ -34,6 +38,8 @@ class edit extends logs{
 				return translator::trans('answered');
 			case(ticket::ordinary):
 				return translator::trans('ordinary');
+			default:
+				throw new \Exception('Priority is invalid');
 		}
 	}
 	public function buildFrontend(view $view){
