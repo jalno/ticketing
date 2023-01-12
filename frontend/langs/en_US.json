@@ -166,6 +166,7 @@
 		"ticketing.active_ticket_shortcut_title.client": "Unread ticket(s) you have",
 		"ticketing.active_ticket_shortcut_title.operator": "Ticket(s) should be pursued",
 		"ticketing.duplicate_file_error": "{name} Already added",
-		"titles.settings_ticketing": "Support"
+		"titles.settings_ticketing": "Support",
+		"ticketing.reply.deactive_department": "Can not send message to this ticket due ticket department is deactive."
 	}
 }

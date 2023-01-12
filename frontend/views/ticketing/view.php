@@ -2,6 +2,7 @@
 namespace themes\clipone\views\ticketing;
 
 use packages\base\Translator;
+use packages\ticketing\Department;
 use packages\ticketing\views\View as TicketView;
 use packages\userpanel;
 use packages\ticketing\{Authorization, Parsedown, Products, Ticket};
@@ -59,7 +60,11 @@ class View extends TicketView {
 		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
 			$this->isLocked = true;
 		}
-		$this->canSend = (Authorization::is_accessed("reply") and !$this->isLocked);
+		$this->canSend = (
+			Authorization::is_accessed("reply") and
+			!$this->isLocked and
+			$this->ticket->department->status == Department::ACTIVE
+		);
 		if($user = $this->getDataForm('client')){
 			if($user = userpanel\user::byId($user)){
 				$this->setDataForm($user->getFullName(), 'client_name');

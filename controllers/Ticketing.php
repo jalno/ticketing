@@ -550,7 +550,7 @@ class Ticketing extends Controller {
 		$this->response->setStatus(false);
 		Authorization::haveOrFail('reply');
 		$ticket = $this->getTicket($data['ticket']);
-		if ($ticket->param('ticket_lock')) {
+		if ($ticket->param('ticket_lock') or $ticket->department->status == Department::DEACTIVE) {
 			throw new NotFound();
 		}
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
