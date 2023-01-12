@@ -1,7 +1,17 @@
 body.ticketing {
 	.panel.panel-ticket-messages {
 		border: 1px solid #CDCDCD;
-
+		.alert {
+			&.alert-deative-department {
+				.h5 {
+					margin-top: 0;
+					i {
+						vertical-align: middle;
+						margin-right: 7px;
+					}
+				}
+			}
+		}
 		.ticket-message{
 			.msgbox{
 				.message-files{
@@ -243,6 +253,19 @@ body.ticketing {
 		}
 	}
 	&.rtl {
+		.panel-ticket-messages {
+			.alert {
+				font-family: yekan;
+				&.alert-deative-department {
+					.h5 {
+						i {
+							margin-right: 0;
+							margin-left: 5px;
+						}
+					}
+				}
+			}
+		}
 		.panel.panel-ticket-info {
 			font-family: koodak;
 			.panel-body {

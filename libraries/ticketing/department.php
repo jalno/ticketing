@@ -12,8 +12,8 @@ class Department extends dbObject {
 	const DEACTIVE = 2;
 
 	const STATUSES = array(
-		Self::ACTIVE,
-		Self::DEACTIVE,
+		self::ACTIVE,
+		self::DEACTIVE,
 	);
 
 	protected $dbTable = "ticketing_departments";

@@ -172,6 +172,7 @@
 		"ticketing.duplicate_file_error": "فایل {name} قبلا اضافه شده است",
 		"ticketing.add.product_empty_error": "هیچ محصول یا سرویسی در دپارتمان و نوع سرویس انتخاب شده ندارید.",
 		"ticketing.add.noproduct": "نمیتوانید در این دپارتمان با نوع سرویس انتخاب شده تیکت جدید ایجاد کنید.",
-		"titles.settings_ticketing": "پشتیبانی"
+		"titles.settings_ticketing": "پشتیبانی",
+		"ticketing.reply.deactive_department": "دپارتمان تیکت غیرفعال شده است، نمیتوانید در این تیکت پیام جدید ارسال کنید."
 	}
 }

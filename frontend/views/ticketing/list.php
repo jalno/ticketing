@@ -167,6 +167,8 @@ class ListView extends TicketListView {
 				ticket::closed,
 			);
 		}
+
+		return false;
 	}
 	protected function getOrderedTickets(): array {
 		$tickets = $this->getTickets();

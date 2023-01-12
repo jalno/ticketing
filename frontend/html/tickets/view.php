@@ -1,5 +1,7 @@
 <?php
+
 use packages\base\translator;
+use packages\ticketing\Department;
 use packages\userpanel;
 use packages\userpanel\Date;
 use packages\ticketing\{Authentication, Authorization, Ticket, Ticket_Message};
@@ -15,10 +17,18 @@ $this->the_header();
 	<div class="col-md-8">
 		<div class="panel panel-white panel-ticket-messages">
 			<div  class="panel-body ticket-message">
-				<?php
-				foreach ($this->messages as $message) {
-					$hasAccess = $this->hasAccessToUser($message->user);
-				?>
+			<?php if ($this->ticket->department->status == Department::DEACTIVE) { ?>
+				<div class="alert alert-danger alert-block alert-deative-department">
+					<p class="alert-heading h5">
+						<i class="fa fa-warning"></i>
+					<?php echo t('ticketing.reply.deactive_department'); ?>
+					</p>
+				</div>
+			<?php
+			}
+			foreach ($this->messages as $message) {
+				$hasAccess = $this->hasAccessToUser($message->user);
+			?>
 				<div class="msgbox <?php echo ($message->user->id == $this->ticket->client->id) ? 'itemIn' : 'itemOut'; ?>" id="message-<?php echo $message->id; ?>">
 					<?php if ($hasAccess) { ?>
 					<a class="image" href="<?php echo userpanel\url('users/view/'.$message->user->id); ?>">
@@ -75,7 +85,7 @@ $this->the_header();
 						?>
 					</div>
 				</div>
-				<?php } ?>
+			<?php } ?>
 				<div class="row hidden-print">
 					<div class="col-sm-12">
 						<div class="replaycontianer">
@@ -117,6 +127,7 @@ $this->the_header();
 									</div>
 								</div>
 								<hr>
+							<?php if ($this->canSend) { ?>
 								<div class="row">
 									<?php
 									$editor = authentication::getUser()->getOption('ticketing_editor');
@@ -166,6 +177,14 @@ $this->the_header();
 										</div>
 									</div>
 								</div>
+							<?php } elseif ($this->ticket->department->status == Department::DEACTIVE) { ?>
+								<div class="alert alert-danger alert-block alert-deative-department">
+									<p class="alert-heading h5">
+										<i class="fa fa-warning"></i>
+									<?php echo t('ticketing.reply.deactive_department'); ?>
+									</p>
+								</div>
+							<?php } ?>
 							</form>
 						</div>
 					</div>
