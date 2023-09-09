@@ -48,3 +48,23 @@ CREATE TABLE `ticketing_departments_params` (
 -- Commit: -
 --
 ALTER TABLE `ticketing_tickets_msgs` CHANGE `text` `text` longtext COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `user`;
+
+--
+-- Commit: 15712a4da48f6f4419d917217dac347411ae033c
+--
+
+CREATE TABLE `ticketing_templates` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `title` varchar(255) NOT NULL,
+ `subject` varchar(255) DEFAULT NULL,
+ `department_id` int(11) DEFAULT NULL,
+ `content` text NOT NULL,
+ `message_type` enum('1','2') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+ `message_format` enum('html','markdown') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'html',
+ `status` enum('1','2') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `title` (`title`),
+ KEY `department_id` (`department_id`),
+ CONSTRAINT `ticketing_templates_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
