@@ -8,14 +8,17 @@ use packages\userpanel;
 use packages\userpanel\Date;
 use themes\clipone\views\{DepartmentTrait, FormTrait};
 use themes\clipone\{Breadcrumb, navigation\MenuItem, Navigation, ViewTrait};
+use themes\clipone\views\ticketing\HelperTrait;
 
 class Edit extends DepartmentEdit {
 	use DepartmentTrait, FormTrait, ViewTrait;
+	use HelperTrait;
+
 	protected $department;
 	function __beforeLoad(){
 		$this->department = $this->getDepartment();
 		$this->setTitle(t("department_edit"));
-		Navigation::active("settings/departments/list");
+		Navigation::active($this->getTicketingSettingsMenuItemName("departments"));
 		$this->addBodyClass("departments");
 		$this->addBodyClass("departments-add");
 	}

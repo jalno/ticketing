@@ -2,9 +2,11 @@
 namespace packages\ticketing\controllers;
 
 use packages\base\{db, db\DuplicateRecord, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, Response, response\file as Responsefile, Translator, Validator};
+use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
+use packages\ticketing\Parsedown;
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
-use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
+use packages\userpanel\AuthorizationException;
 
 class Ticketing extends Controller {
 
@@ -1042,6 +1044,34 @@ class Ticketing extends Controller {
 			$data["currentWork"] =  $currentWork->toArray();
 		}
 		$this->response->setData($data, "department");
+		return $this->response;
+	}
+
+	public function previewMessage(): Response
+	{
+		if (
+			!Authorization::is_accessed('reply') and
+			!Authorization::is_accessed('add') and
+			!Authorization::is_accessed('settings_templates_add') and
+			!Authorization::is_accessed('settings_templates_edit')
+		) {
+			throw new AuthorizationException('ticketing_editor_preview');
+		}
+
+		$inputs = $this->checkInputs([
+			'format' => [
+				'type' => 'string',
+				'values' => [Ticket_message::html, Ticket_message::markdown],
+			],
+			'content' => [
+				'type' => 'string',
+				'multiLine' => true,
+			],
+		]);
+
+		$this->response->setData(Ticket_message::convertContent($inputs['content'], $inputs['format']), 'content');
+		$this->response->setStatus(true);
+
 		return $this->response;
 	}
 }

@@ -52,15 +52,6 @@ class View extends TicketView
 	}
 	protected function SetDataView(){
 		$this->messages = $this->ticket->message;
-		foreach($this->messages as $message){
-			if($message->format == "markdown"){
-				$Parsedown = new Parsedown();
-				$text = $Parsedown->text($message->text);
-			}elseif($message->format == "html"){
-				$text = "<p>".($this->formatUrlsInText(nl2br($message->text)))."</p>";
-			}
-			$message->content = $text;
-		}
 		if($this->ticket->param('ticket_lock') or $this->ticket->param('ticket_lock') != ticket::canSendMessage){
 			$this->isLocked = true;
 		}
@@ -96,18 +87,7 @@ class View extends TicketView
 		}
 		return in_array($type, $this->types);
 	}
-	private function formatUrlsInText(string $text):string{
-        $reg_exUrl = '/(http|ftp|https):\\/\\/([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\\'\\,]*)?/';
-        preg_match_all($reg_exUrl, $text, $matches);
-        $usedPatterns = array();
-        foreach($matches[0] as $pattern){
-            if(!array_key_exists($pattern, $usedPatterns)){
-                $usedPatterns[$pattern]=true;
-                $text = str_replace($pattern, "<a href=\"{$pattern}\" rel=\"nofollow\">{$pattern}</a> ", $text);
-            }
-        }
-        return $text;
-    }
+
 	protected function getProductService(){
 		foreach(products::get() as $product){
 			if($product->getName() == $this->ticket->param('product')){

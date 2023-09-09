@@ -125,5 +125,45 @@
 		"path": "userpanel/ticketing/:department/operators",
 		"controller": "controllers/Userpanel@operators",
 		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates",
+		"controller": "controllers/settings/Templates@search",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/add",
+		"controller": "controllers/settings/Templates@add",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/ticketing/editor/preview",
+		"controller": "controllers/Ticketing@previewMessage",
+		"method": "post"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/add",
+		"controller": "controllers/settings/Templates@store",
+		"method": "post"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/edit/:id",
+		"controller": "controllers/settings/Templates@edit",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/edit/:id",
+		"controller": "controllers/settings/Templates@update",
+		"method": "post"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/delete/:id",
+		"controller": "controllers/settings/Templates@delete",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/templates/delete/:id",
+		"controller": "controllers/settings/Templates@terminate",
+		"method": "post"
 	}
 ]

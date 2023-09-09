@@ -50,8 +50,10 @@ $this->the_header();
 							<span class="date visible-print-inline-block ltr"><?php echo Date::format('Y/m/d H:i:s', $message->date); ?></span>
 						</div>
 						<div class="msgtext">
-							<?php echo $message->content; ?>
-							<?php if ($message->files) {?>
+						<?php
+						echo $message->getContent();
+						if ($message->files) {
+						?>
 							<div class="message-files">
 								<div class="title">
 									<span><?php echo t("attachment.files"); ?></span>
@@ -65,7 +67,7 @@ $this->the_header();
 									<?php } ?>
 								</div>
 							</div>
-							<?php } ?>
+						<?php } ?>
 						</div>
 					</div>
 					<div class="icons hidden-print">

@@ -7,15 +7,17 @@ use packages\userpanel;
 use themes\clipone\{navigation\MenuItem, Navigation, ViewTrait};
 use themes\clipone\views\{DepartmentTrait, FormTrait, ListTrait};
 use packages\ticketing\views\settings\department\listview as DepartmentList;
+use themes\clipone\views\ticketing\HelperTrait;
 
 class listview extends DepartmentList {
 	use DepartmentTrait, FormTrait, ListTrait, ViewTrait;
+	use HelperTrait;
 
 	function __beforeLoad() {
 		$this->setTitle(t("departments"));
 		$this->setButtons();
 		$this->onSourceLoad();
-		Navigation::active("settings/departments/list");
+		Navigation::active($this->getTicketingSettingsMenuItemName("departments"));
 		if (empty($this->getDepartments())) {
 			$this->addNotFoundError();
 		}
@@ -68,13 +70,11 @@ class listview extends DepartmentList {
 	public static function onSourceLoad(){
 		parent::onSourceLoad();
 		if(parent::$navigation){
-			if($item = navigation::getByName("settings")){
-				$departments = new menuItem("departments");
-				$departments->setTitle(t('departments'));
-				$departments->setURL(userpanel\url('settings/departments'));
-				$departments->setIcon('fa fa-university');
-				$item->addItem($departments);
-			}
+			$departments = new menuItem("departments");
+			$departments->setTitle(t('departments'));
+			$departments->setURL(userpanel\url('settings/departments'));
+			$departments->setIcon('fa fa-university');
+			self::getTicketingSettingsMenu()->addItem($departments);
 		}
 	}
 }

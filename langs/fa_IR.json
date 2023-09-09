@@ -124,6 +124,16 @@
 		"error.packages.ticketing.error.tickets.messages.user.delete_user_warn.message": "این کاربر دارای پیام هایی در تیکت ها می باشد؛ در صورت حذف این کاربر، تمامی پیام های ایشان در همه تیکت ها حذف خواهد شد!",
 		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets": "در صورت نیاز می توانید با استفاده از لینک زیر، همه تیکت هایی که این کاربر پیامی در آن ارسال کرده است را مشاهده بفرمایید.",
 		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets.tell_someone": "در صورتی که قصد مشاهده تیکت هایی که این کاربر پیامی در آن ها ارسال کرده است را دارید، از شخصی که این دسترسی را دارا می باشد درخواست نمایید.",
-		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets_btn": "مشاهده تیکت های دارای پیام از این کاربر"
+		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets_btn": "مشاهده تیکت های دارای پیام از این کاربر",
+
+		"usertype.permissions.ticketing_settings_templates": "قالب پیام های پشتیبانی",
+		"usertype.permissions.ticketing_settings_templates_search": "جستجو قالب پیام های پشتیبانی",
+		"usertype.permissions.ticketing_settings_templates_add": "افزودن قالب پیام های پشتیبانی",
+		"usertype.permissions.ticketing_settings_templates_edit": "ویرایش قالب پیام های پشتیبانی",
+		"usertype.permissions.ticketing_settings_templates_delete": "حذف قالب پیام های پشتیبانی",
+
+		"ticketing.logs.templates.add": "قالب پیام #{id} را اضافه کرد.",
+		"ticketing.logs.templates.edit": "قالب پیام #{id} را بروز کرد.",
+		"ticketing.logs.templates.delete": "قالب پیام #{id} را حذف کرد."
 	}
 }

@@ -13,16 +13,19 @@ use \themes\clipone\viewTrait;
 use \themes\clipone\navigation;
 use \themes\clipone\breadcrumb;
 use \themes\clipone\navigation\menuItem;
+use themes\clipone\views\ticketing\HelperTrait;
 
 use \packages\ticketing\ticket;
 
 class delete extends departmentDelete{
 	use viewTrait,listTrait;
+	use HelperTrait;
+
 	protected $messages;
 	function __beforeLoad(){
 		$this->setTitle(t("department.delete.warning.title"));
 		$this->setNavigation();
-		navigation::active("settings/departments/list");
+		Navigation::active($this->getTicketingSettingsMenuItemName("departments"));
 	}
 	private function setNavigation(){
 		$item = navigation::getByName("settings");

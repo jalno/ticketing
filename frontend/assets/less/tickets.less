@@ -376,6 +376,13 @@ body.tickets-view {
 		}
 	}
 }
+
+body.ticketing-templates {
+	.btn-acion {
+		margin-bottom: 10px;
+	}
+}
+
 body.rtl {
 	.ticket-status-search {
 		font-family: yekan;
@@ -417,4 +424,118 @@ body.rtl {
 			}
 		}
 	}
+
+	&.ticketing-templates {
+		.container {
+			.panel {
+				font-family: yekan;
+			}
+		}
+		#search-templates-modal {
+			font-family: yekan;
+		}
+	}
+
+	#ticketing-editor {
+		font-family: yekan;
+	}
+
+	#tutorial-templates-modal {
+		font-family: yekan;
+	}
+}
+
+#ticketing-editor {
+	.nav-tabs {
+		li:not(.active) {
+			a {
+				&:hover {
+					color: #999;
+				}
+			}
+		}
+	}
+	#editor-tab {
+		.form-group {
+			margin-bottom: 0;
+			textarea {
+				resize: none;
+				border: none;
+				border-radius: 0 !important;
+				box-shadow: none;
+				font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+			}
+		}
+	}
+	#preview-tab {
+		.ticket-preview-container {
+			padding: 6px 12px;
+			font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+			p {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+#tutorial-templates-modal {
+	.modal-body {
+		padding: 0;
+		text-align: justify;
+		h5 {
+			font-weight: bold;
+		}
+		.list-group-item {
+			border: none;
+		}
+		table {
+			tbody {
+				tr {
+					td {
+						code {
+							cursor: pointer;
+						}
+					}
+				}
+			}
+		}
+		.tutorial-samples {
+			> a {
+				&:after {
+					content: " ";
+					border-top: 1px solid #eeeeee;
+					margin-top: 20px;
+					margin-bottom: 20px;
+					display: block;
+				}
+				&:last-child {
+					&::after {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (min-width: 992px) {
+	.modal-lg {
+		width: 900px !important;
+		margin-left: -450px !important;
+	}
+}
+@media (max-width: 992px) {
+	.modal-lg {
+		width: auto !important;
+		margin: 0 !important;
+		left: 1% !important;;
+		right: 1% !important;;
+	}
+}
+
+.lg-backdrop {
+	z-index: 9998;
+}
+.lg-outer {
+	z-index: 9999;
 }

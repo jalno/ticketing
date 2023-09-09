@@ -110,6 +110,7 @@ export default class Ticket {
 		}
 		return formData;
 	}
+
 	private static removeFileListener($el: JQuery, file: File) {
 		$(".remove-file-icon", $el).one("click", function() {
 			const $container = $el.parents(".attachments");

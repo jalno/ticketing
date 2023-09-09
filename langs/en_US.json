@@ -124,6 +124,14 @@
 		"error.packages.ticketing.error.tickets.messages.user.delete_user_warn.message": "This user has messages on tickets; If you delete this user, all their messages on all tickets will be deleted!",
 		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets": "You can use the link below to see all the tickets that this user has sent a message.",
 		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets.tell_someone": "If you want to see the tickets that this user has sent a message to, ask the person who has this access.",
-		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets_btn": "View tickets with messages from this user"
+		"packages.ticketing.error.tickets.messages.user.delete_user_warn.view_tickets_btn": "View tickets with messages from this user",
+		"usertype.permissions.ticketing_settings_templates": "Message Templates",
+		"usertype.permissions.ticketing_settings_templates_search": "Serach Message Templates",
+		"usertype.permissions.ticketing_settings_templates_add": "Add Message Templates",
+		"usertype.permissions.ticketing_settings_templates_edit": "Edit Message Templates",
+		"usertype.permissions.ticketing_settings_templates_delete": "Delete Message Templates",
+		"ticketing.logs.templates.add": "Add Message Template with ID #{id}.",
+		"ticketing.logs.templates.update": "Update Message Template with ID #{id}.",
+		"ticketing.logs.templates.delete": "Delete Message Template with ID #{id}."
 	}
 }

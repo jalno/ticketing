@@ -18,7 +18,6 @@ class usertype{
 			'unassigned',
 			'enable_disabled_notification',
 
-
 			'message_delete',
 			'message_edit',
 
@@ -27,8 +26,12 @@ class usertype{
 			'settings_departments_list',
 			'settings_departments_add',
 			'settings_departments_edit',
-			'settings_departments_delete'
+			'settings_departments_delete',
 
+			'settings_templates_search',
+			'settings_templates_add',
+			'settings_templates_edit',
+			'settings_templates_delete',
 		);
 		foreach($permissions as $permission){
 			permissions::add('ticketing_'.$permission);
