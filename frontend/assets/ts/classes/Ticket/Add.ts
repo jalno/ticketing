@@ -2,12 +2,13 @@ import "@jalno/translator";
 import "bootstrap-inputmsg";
 import * as $ from "jquery";
 import "jquery.growl";
-import { AjaxRequest, Router , webuilder } from "webuilder";
+import { AjaxRequest, Router, webuilder } from "webuilder";
 import "webuilder/formAjax";
 import "../jquery.ticketingUserAutoComplete";
-import {IUser} from "../jquery.ticketingUserAutoComplete";
+import { IUser } from "../jquery.ticketingUserAutoComplete";
 import Ticket from "../Ticket";
 import IFormAjaxError from "../IFormAjaxError"
+import TemplateSelector from '../TemplateSelector';
 
 export default class Add {
 	public static initIfNeeded() {
@@ -31,7 +32,7 @@ export default class Add {
 		Add.runSubmitFormListener();
 		Ticket.runEnableDisableNotificationListener(Add.$form);
 		Ticket.runChangeFileInputListener(Add.$form);
-		Ticket.runTextareaAutosize(Add.$form);
+		Ticket.runTemplateselector(Add.$form);
 	}
 	private static runMultiuserBtnChangeListener(): void {
 		const $btn = $("button.btn-multiuser", Add.$form);
@@ -175,18 +176,42 @@ export default class Add {
 	}
 	private static runDepartmentListener() {
 		const $users = $(".multiuser-users .table tbody", Add.$form);
-		$("select[name=department]", Add.$form).change(function() {
+		const $template = $('select[name="template"]', Add.$form);
+		const $templates = $('option', $template);
+		$("select[name=department]", Add.$form).on('change', function () {
+			if ($template.length) {
+				const val = $(this).val() as string;
+
+				if (val) {
+					$template.prop('disabled', false);
+					$templates.each(function () {
+						if (!$(this).val()) {
+							return;
+						}
+
+						if (!$(this).data('department') || val == $(this).data('department')) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+				} else {
+					$template.prop('disabled', true);
+					$templates.show();
+				}
+			}
+
 			const $products = $("select[name=product]", Add.$form).html("");
 			$products.parents(".form-group").hide();
 			if (Add.multiuserMode && $("tr", $users).length > 1) {
 				return;
 			}
 			const $selectedOption = $("option:selected", this);
-			const products = $selectedOption.data("products") as Array<{title: string, value: string}>;
+			const products = $selectedOption.data("products") as Array<{ title: string, value: string }>;
 			if (products) {
 				for (const product of products) {
 					$products.append($("<option>", {
-						text : product.title,
+						text: product.title,
 						value: product.value,
 					}));
 				}
@@ -202,17 +227,15 @@ export default class Add {
 					url: "userpanel/ticketing/new/department/" + department + "?ajax=1",
 					success: (response) => {
 						if (response.department.currentWork.message) {
-							$(".alert").slideUp("slow", function() {
+							$(".alert.department-working-message-alert").slideUp("slow", function () {
 								$(this).remove();
 							});
-							let code: string = `<div class="row">`;
-							code += `<div class="col-xs-12">`;
-							code += `<div class="alert alert-block alert-info">`;
-							code += `<button data-dismiss="alert" class="close" type="button">×</button>`;
-							code += `<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>`;
-							code += `<p>` + response.department.currentWork.message + `</p>`;
-							code += `</div></div></div>`;
-							Add.$form.parents(".panel").before(code);
+
+							Add.$form.parents(".panel").before(`<div class="alert alert-block department-working-message-alert alert-block alert-info">
+							<button data-dismiss="alert" class="close" type="button">×</button>
+							<h4 class="alert-heading"><i class="fa fa-info-circle"></i> توجه</h4>
+							<p>${response.department.currentWork.message}</p>
+						</div>`);
 						}
 					},
 					error: () => {
@@ -223,7 +246,7 @@ export default class Add {
 					},
 				});
 			} else {
-				$(".alert").slideUp("slow", function() {
+				$(".alert.department-working-message-alert").slideUp("slow", function () {
 					$(this).remove();
 				});
 			}
@@ -293,14 +316,14 @@ export default class Add {
 						for (let i = 0; i < length; i++) {
 							$services.append($("<option>", {
 								value: response.items[i].id,
-								text : response.items[i].title,
+								text: response.items[i].title,
 							}));
 						}
 					} else {
 						$services.val("");
 						$formGroup.hide();
 						let productIsOptional = false;
-						$("option", $product).each(function() {
+						$("option", $product).each(function () {
 							if (!$(this).val()) {
 								productIsOptional = true;
 								return false;
@@ -334,7 +357,7 @@ export default class Add {
 	private static runSubmitFormListener() {
 		const $users = $(".multiuser-users .table tbody", Add.$form);
 		const $progressBar = $("#progressBar", Add.$form);
-		Add.$form.on("submit", function(e) {
+		Add.$form.on("submit", function (e) {
 			e.preventDefault();
 			const product = $("select[name=product]", Add.$form).val();
 			if (!product) {
@@ -363,7 +386,7 @@ export default class Add {
 					xhr.upload.addEventListener('progress', (evt) => {
 						if (evt.lengthComputable) {
 							$progressBar.show();
-							const percentComplete = ((evt.loaded / evt.total) * 100);
+							const percentComplete = ((evt.loaded / evt.total) * 100).toFixed(2);
 							$(".progress-bar-fill", Add.$form).width(percentComplete + "%");
 							$(".progress-bar-text", Add.$form).html(percentComplete + "%");
 						}

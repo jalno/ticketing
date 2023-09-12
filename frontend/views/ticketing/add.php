@@ -2,6 +2,7 @@
 namespace themes\clipone\views\ticketing;
 
 use packages\ticketing\{Authorization, Department, Ticket};
+use packages\ticketing\Ticket_message as Message;
 use packages\userpanel;
 use packages\userpanel\{User, Authentication};
 use themes\clipone\{Breadcrumb, Navigation, ViewTrait};
@@ -10,18 +11,31 @@ use themes\clipone\Navigation\MenuItem;
 use themes\clipone\views\FormTrait;
 use themes\clipone\views\dashboard\{Box, Shortcut};
 use packages\ticketing\views\Add as TicketAdd;
+use themes\clipone\views\ticketing\HelperTrait;
 
 class Add extends TicketAdd {
 	use ViewTrait, FormTrait;
+	use HelperTrait;
 
 	public static $shortcuts = array();
 	public static $boxs = array();
+
+	public ?string $messageFormat = null; 
+	public bool $canUseTemplates = false;
 	protected $hasPredefinedClients = false;
 	protected $sendNotification = false;
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->canUseTemplates = Authorization::is_accessed('use_templates');
+	}
 
 	public function __beforeLoad(): void {
 		$this->hasPredefinedClients = !empty($this->getClients());
 		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? Authentication::getUser() : null);
+		$this->messageFormat = Authentication::getUser()->getOption('ticketing_editor') ?: Message::html;
+		$this->accessedDepartments = $this->getDepartmentData();
 		$this->setTitle(array(
 			t('ticketing.add')
 		));
@@ -211,7 +225,9 @@ class Add extends TicketAdd {
 		return $html;
 	}
 	private function setFormData() {
+		$this->setDataForm($this->messageFormat, 'message_format');
 		$this->setDataForm($this->sendNotification ? 1 : 0, "send_notification");
 		$this->setDataForm($this->hasPredefinedClients ? 1 : 0, "multiuser_mode");
+		$this->setData(!$this->canUseTemplates, 'content_editor_preview_disabled');
 	}
 }

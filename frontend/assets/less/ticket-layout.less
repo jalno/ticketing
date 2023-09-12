@@ -36,6 +36,12 @@ body.ticketing {
 					min-height: 86px;
 					.msgtext {
 						word-wrap: break-word;
+
+						&.message-format-html {
+							> p {
+								margin-bottom: 0;
+							}
+						}
 					}
 				}
 				.icons {

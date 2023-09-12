@@ -2,9 +2,12 @@
 namespace packages\ticketing\controllers;
 
 use packages\base\{db, db\DuplicateRecord, view\Error, views\FormError, http, InputValidation, InputValidationException, IO, NotFound, Options, Packages, db\parenthesis, Response, response\file as Responsefile, Translator, Validator};
+use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
+use packages\ticketing\Template;
+use packages\ticketing\Parsedown;
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
-use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
+use packages\userpanel\AuthorizationException;
 
 class Ticketing extends Controller {
 
@@ -328,6 +331,7 @@ class Ticketing extends Controller {
 		$canAddMultiuser = Authorization::is_accessed('add_multiuser');
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
 		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
+		$canUseTemplate = Authorization::is_accessed('use_templates');
 		
 		$rules = array(
 			'title' => array(
@@ -351,8 +355,9 @@ class Ticketing extends Controller {
 				'type' => 'number',
 				'optional' => true,
 			),
-			'text' => array(
-				'type' => 'string'
+			'content' => array(
+				'type' => 'string',
+				'multiLine' => true,
 			),
 			'file' => array(
 				'type' => 'file',
@@ -366,6 +371,15 @@ class Ticketing extends Controller {
 				'default' => $defaultBehavior,
 			),
 		);
+
+		if ($canUseTemplate) {
+			$rules['message_format'] = [
+				'type' => 'string',
+				'values' => [Ticket_message::html, Ticket_message::markdown],
+				'optional' => true,
+			];
+		}
+
 		if ($children) {
 			$rules['client'] = array(
 				'type' => function ($data, $rule, $input) use ($children, $canAddMultiuser) {
@@ -468,6 +482,7 @@ class Ticketing extends Controller {
 			$currentUser->setOption(Ticket::SEND_NOTIFICATION_USER_OPTION_NAME, $inputs["send_notification"]);
 		}
 		$hasAccessedToUnassigned = Authorization::is_accessed("unassigned");
+
 		foreach ($inputs['client'] as $client) {
 			$ticket = new Ticket();
 			$ticket->title	= $inputs['title'];
@@ -484,6 +499,16 @@ class Ticketing extends Controller {
 				$ticket->setParam("product", $inputs["product"]->getName());
 				$ticket->setParam("service", $inputs["service"]->getId());
 			}
+
+			$content = $inputs['content'];
+			if ($canUseTemplate) {
+				$content = str_replace(
+					Template::PREDEFINED_VARIABLES,
+					[$client->name, $client->lastname, $client->getFullName(), $client->email, $client->getCellphoneWithDialingCode()],
+					$content,
+				);
+			}
+
 			$message = new Ticket_message();
 			if (isset($inputs['file'])) {
 				foreach ($inputs['file'] as $file) {
@@ -491,9 +516,14 @@ class Ticketing extends Controller {
 				}
 			}
 			$message->ticket = $ticket->id;
-			$message->text = $inputs['text'];
+			$message->text = $content;
 			$message->user = $currentUser->id;
 			$message->status = ($currentUser->id == $client->id ? Ticket_message::read : Ticket_message::unread);
+			
+			if (isset($inputs['message_format'])) {
+				$message->format = $inputs['message_format'];
+			}
+			
 			$message->save();
 
 			$log = new Log();
@@ -556,9 +586,12 @@ class Ticketing extends Controller {
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
 		$currentUser = Authentication::getUser();
 		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
+		$canUseTemplate = Authorization::is_accessed('use_templates');
+
 		$inputsRules = array(
-			'text' => array(
-				'type' => 'string'
+			'content' => array(
+				'type' => 'string',
+				'multiLine' => true,
 			),
 			'file' => array(
 				'type' => 'file',
@@ -572,6 +605,15 @@ class Ticketing extends Controller {
 				'default' => $defaultBehavior,
 			),
 		);
+
+		if ($canUseTemplate) {
+			$inputsRules['message_format'] = [
+				'type' => 'string',
+				'values' => [Ticket_message::html, Ticket_message::markdown],
+				'optional' => true,
+			];
+		}
+
 		if (!$hasAccessToEnableDisableNotification) {
 			unset($inputsRules["send_notification"]);
 		}
@@ -579,9 +621,7 @@ class Ticketing extends Controller {
 		if (!$hasAccessToEnableDisableNotification) {
 			$inputs["send_notification"] = $defaultBehavior;
 		}
-		if (!$inputs['text'] = strip_tags($inputs['text'])) {
-			throw new InputValidationException('text');
-		}
+
 		if (isset($inputs['file']) and !$inputs['file']) {
 			throw new InputValidationException('file');
 		}
@@ -611,16 +651,32 @@ class Ticketing extends Controller {
 				);
 			}
 		}
+
+		$content = $inputs['content'];
+		if ($canUseTemplate) {
+			$content = str_replace(
+				Template::PREDEFINED_VARIABLES,
+				[$ticket->client->name, $ticket->client->lastname, $ticket->client->getFullName(), $ticket->client->email, $ticket->client->getCellphoneWithDialingCode()],
+				$content,
+			);
+		}
+
 		$ticket_message = new Ticket_message();
 		$ticket_message->ticket = $ticket->id;
 		$ticket_message->date = Date::time();
 		$ticket_message->user = Authentication::getID();
-		$ticket_message->text = $inputs['text'];
+		$ticket_message->text = $content;
 		$ticket_message->status = ((Authentication::getID() == $ticket->client->id) ? Ticket_message::read : Ticket_message::unread);
 		foreach ($files as $file) {
 			$ticket_message->addFile($file);
 		}
+		
+		if (isset($inputs['message_format'])) {
+			$ticket_message->format = $inputs['message_format'];
+		}
+
 		$ticket_message->save();
+
 		$ticket->status = ((Authorization::childrenTypes() and $ticket->client->id != $ticket_message->user->id) ? Ticket::answered : Ticket::unread);
 		$ticket->reply_at = Date::time();
 		$ticket->save();
@@ -667,17 +723,30 @@ class Ticketing extends Controller {
 		authorization::haveOrFail('message_edit');
 		$ticket_message = $this->getTicketMessage($data['ticket']);
 		$view->setMessageData($ticket_message);
+
 		if(http::is_post()){
 			$this->response->setStatus(false);
 			$inputsRules = array(
-				'text' => array(
+				'content' => array(
 					'type' => 'string',
-				)
+					'multiLine' => true,
+				),
 			);
 			try {
 				$inputs = $this->checkinputs($inputsRules);
+
+				$content = $inputs['content'];
+				if (Authorization::is_accessed('use_templates')) {
+					$ticket = $ticket_message->ticket;
+					$content = str_replace(
+						Template::PREDEFINED_VARIABLES,
+						[$ticket->client->name, $ticket->client->lastname, $ticket->client->getFullName(), $ticket->client->email, $ticket->client->getCellphoneWithDialingCode()],
+						$content,
+					);
+				}
+
 				$parameters = ['oldData' => ['message' => $ticket_message]];
-				$ticket_message->text = $inputs['text'];
+				$ticket_message->text = $content;
 				$ticket_message->save();
 
 				$log = new log();
@@ -1042,6 +1111,83 @@ class Ticketing extends Controller {
 			$data["currentWork"] =  $currentWork->toArray();
 		}
 		$this->response->setData($data, "department");
+		return $this->response;
+	}
+
+	public function previewMessage(): Response
+	{
+		if (
+			!Authorization::is_accessed('reply') and
+			!Authorization::is_accessed('add') and
+			!Authorization::is_accessed('settings_templates_add') and
+			!Authorization::is_accessed('settings_templates_edit')
+		) {
+			throw new AuthorizationException('ticketing_editor_preview');
+		}
+
+		$inputs = $this->checkInputs([
+			'format' => [
+				'type' => 'string',
+				'values' => [Ticket_message::html, Ticket_message::markdown],
+			],
+			'content' => [
+				'type' => 'string',
+				'multiLine' => true,
+			],
+		]);
+
+		$this->response->setData(Ticket_message::convertContent($inputs['content'], $inputs['format']), 'content');
+		$this->response->setStatus(true);
+
+		return $this->response;
+	}
+
+	public function getTemplate(array $data): Response
+	{
+		Authorization::haveOrFail('use_templates');
+
+		$canAdd = Authorization::is_accessed('add');
+		$canReply = Authorization::is_accessed('reply');
+
+		if (!$canAdd and $canReply) {
+			throw new NotFound();
+		}
+
+		$query = new Template();
+		
+		$parenthesis = new Parenthesis();
+		$parenthesis->where('message_type', NULL, 'is');
+		if ($canAdd) {
+			$parenthesis->orWhere('message_type', Template::ADD);
+		}
+		if ($canReply) {
+			$parenthesis->orWhere('message_type', Template::REPLY);
+		}
+
+		$query->where($parenthesis);
+		$query->where('id', $data['id']);
+
+		$template = $query->getOne();
+
+		if (!$template) {
+			throw new NotFound();
+		}
+
+		$this->response->setData([
+			'data' => [
+				'message_format' => $template->getMessageFormat(),
+				'subject' => [
+					'value' => $template->getSubject(),
+					'variables' => $template->getSubject() ? Template::extractVariables($template->getSubject()) : [],
+				],
+				'content' => [
+					'value' => $template->getContent(),
+					'variables' => Template::extractVariables($template->getContent()),
+				],
+			],
+		]);
+		$this->response->setStatus(true);
+
 		return $this->response;
 	}
 }

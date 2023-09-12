@@ -17,7 +17,7 @@ export default class Reply {
 		Reply.runSubmitFormListener();
 		Ticket.runEnableDisableNotificationListener(Reply.$form);
 		Ticket.runChangeFileInputListener(Reply.$form);
-		Ticket.runTextareaAutosize(Reply.$form);
+		Ticket.runTemplateselector(Reply.$form, true);
 	}
 
 	private static $form: JQuery;

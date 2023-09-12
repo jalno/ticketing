@@ -1,15 +1,34 @@
 <?php
 namespace packages\ticketing;
+
+use packages\base\Exception;
 use \packages\base\db\dbObject;
 use \packages\userpanel\user;
 use \packages\userpanel\date;
 use \packages\userpanel\user_option;
 use \packages\userpanel\usertype_option;
-class ticket_message extends dbObject{
+
+class ticket_message extends dbObject
+{
 	const unread = 0;
 	const read = 1;
 	const html = 'html';
 	const markdown = 'markdown';
+
+	public static function convertContent(string $content, string $format): string
+	{
+		switch ($format) {
+			case self::markdown:
+				return (new Parsedown())->text($content);
+			case self::html:
+				$content = str_replace("\r\n", "\n", $content);
+				$content = preg_replace('@([https|http|ftp]+://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', '<a href="$1" rel="nofollow">$1</a>', $content);
+				return preg_replace('/([^\n]+)(\n?)/', '<p dir="auto">$1</p>$2', $content);
+			default:
+				throw new Exception('Unknown format '.$format.' for convert');
+		}
+	}
+
 	protected $dbTable = "ticketing_tickets_msgs";
 	protected $primaryKey = "id";
 	protected $dbFields = array(
@@ -25,6 +44,12 @@ class ticket_message extends dbObject{
 		'user' => array('hasOne', 'packages\\userpanel\\user', 'user'),
 		'files' => array('hasMany', 'packages\\ticketing\\ticket_file', 'message')
 	);
+
+	public function getContent(): string
+	{
+		return self::convertContent($this->text, $this->format);
+	}
+
 	protected function preLoad($data){
 		if(!isset($data['format'])){
 			$user = user::where('id', $data['user'])->getOne();

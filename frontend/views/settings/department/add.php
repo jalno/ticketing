@@ -8,9 +8,12 @@ use packages\userpanel;
 use packages\userpanel\Date;
 use themes\clipone\{Navigation, ViewTrait};
 use themes\clipone\views\{DepartmentTrait, FormTrait};
+use themes\clipone\views\ticketing\HelperTrait;
 
 class add extends DepartmentAdd {
 	use DepartmentTrait, FormTrait, ViewTrait;
+	use HelperTrait;
+
 	protected $days = array();
 	function __beforeLoad(){
 		$this->setTitle(array(
@@ -20,7 +23,7 @@ class add extends DepartmentAdd {
 		));
 		$this->setNavigation();
 		$this->setDaysValue();
-		navigation::active("settings/departments/list");
+		Navigation::active($this->getTicketingSettingsMenuItemName("departments"));
 		$this->addBodyClass("departments");
 		$this->addBodyClass("departments-add");
 	}

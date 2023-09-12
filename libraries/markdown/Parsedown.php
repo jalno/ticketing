@@ -1393,6 +1393,10 @@ class Parsedown
     {
         $markup = '<'.$Element['name'];
 
+        if (in_array($Element['name'], ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'])) {
+            $markup .= ' dir="auto"';
+        }
+
         if (isset($Element['attributes']))
         {
             foreach ($Element['attributes'] as $name => $value)
