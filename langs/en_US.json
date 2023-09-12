@@ -132,6 +132,7 @@
 		"usertype.permissions.ticketing_settings_templates_delete": "Delete Message Templates",
 		"ticketing.logs.templates.add": "Add Message Template with ID #{id}.",
 		"ticketing.logs.templates.update": "Update Message Template with ID #{id}.",
-		"ticketing.logs.templates.delete": "Delete Message Template with ID #{id}."
+		"ticketing.logs.templates.delete": "Delete Message Template with ID #{id}.",
+		"usertype.permissions.ticketing_use_templates": "Use Templates in reply or add new tickets"
 	}
 }

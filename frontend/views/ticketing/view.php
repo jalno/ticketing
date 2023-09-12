@@ -6,29 +6,46 @@ use packages\ticketing\Department;
 use packages\ticketing\views\View as TicketView;
 use packages\userpanel;
 use packages\ticketing\{Authorization, Parsedown, Products, Ticket};
+use packages\ticketing\Ticket_message as Message;
 use themes\clipone\{BreadCrumb, Navigation, navigation\MenuItem, Utility, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait};
+use themes\clipone\views\ticketing\HelperTrait;
 
 class View extends TicketView
 {
 	use ViewTrait, ListTrait, FormTrait;
+	use HelperTrait;
 
 	public bool $sendNotification = false;
+	public bool $canUseTemplates = false;
+	public string $messageFormat = Message::html;
 
 	protected $messages;
 	protected $canSend = true;
 	protected $isLocked = false;
 	protected $ticket;
 	protected $types = array();
-	function __beforeLoad(){
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->canUseTemplates = Authorization::is_accessed('use_templates');
+	}
+
+	public function __beforeLoad()
+	{
 		$this->ticket = $this->getTicket();
 		$this->sendNotification = Ticket::sendNotificationOnSendTicket($this->canEnableDisableNotification ? userpanel\Authentication::getUser() : null);
+		$this->accessedDepartments = [$this->ticket->department];
+		$this->messageFormat = userpanel\Authentication::getUser()->getOption('ticketing_editor') ?: Message::html;
+
 		$this->setTitle([
-			translator::trans('ticketing.view'),
-			translator::trans('ticket'),
+			t('ticketing.view'),
+			t('ticket'),
 			"#".$this->ticket->id
 		]);
-		$this->setShortDescription(translator::trans('ticketing.view').' '.translator::trans('ticket'));
+
+		$this->setShortDescription(t('ticketing.view').' '.t('ticket'));
 		$this->setNavigation();
 		$this->SetDataView();
 		$this->addBodyClass("ticketing");
@@ -38,7 +55,7 @@ class View extends TicketView
 	}
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
-		$item->setTitle(translator::trans('ticketing'));
+		$item->setTitle(t('ticketing'));
 		$item->setURL(userpanel\url('ticketing'));
 		$item->setIcon('clip-paperplane');
 		breadcrumb::addItem($item);
@@ -60,6 +77,13 @@ class View extends TicketView
 			!$this->isLocked and
 			$this->ticket->department->status == Department::ACTIVE
 		);
+		$this->setData(!$this->canSend, 'ticketing_editor_disabled');
+		$this->setData(!$this->canUseTemplates, 'content_editor_preview_disabled');
+
+		if (!$this->getDataForm('message_format')) {
+			$this->setDataForm($this->messageFormat, 'message_format');
+		}
+
 		if($user = $this->getDataForm('client')){
 			if($user = userpanel\user::byId($user)){
 				$this->setDataForm($user->getFullName(), 'client_name');
@@ -110,23 +134,23 @@ class View extends TicketView
 	protected function getStatusForSelect(){
 		return [
 			[
-	            'title' => translator::trans('unread'),
+	            'title' => t('unread'),
 	            'value' => ticket::unread
         	],
 			[
-	            'title' => translator::trans('read'),
+	            'title' => t('read'),
 	            'value' => ticket::read
         	],
 			[
-	            'title' => translator::trans('answered'),
+	            'title' => t('answered'),
 	            'value' => ticket::answered
         	],
 			[
-	            'title' => translator::trans('in_progress'),
+	            'title' => t('in_progress'),
 	            'value' => ticket::in_progress
         	],
 			[
-	            'title' => translator::trans('closed'),
+	            'title' => t('closed'),
 	            'value' => ticket::closed
         	]
 		];
@@ -134,15 +158,15 @@ class View extends TicketView
 	protected function getpriortyForSelect(){
 		return [
 			[
-	            'title' => translator::trans('instantaneous'),
+	            'title' => t('instantaneous'),
 	            'value' => ticket::instantaneous
         	],
 			[
-	            'title' => translator::trans('important'),
+	            'title' => t('important'),
 	            'value' => ticket::important
         	],
 			[
-	            'title' => translator::trans('ordinary'),
+	            'title' => t('ordinary'),
 	            'value' => ticket::ordinary
         	]
 		];

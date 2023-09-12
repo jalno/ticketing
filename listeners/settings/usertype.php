@@ -32,6 +32,8 @@ class usertype{
 			'settings_templates_add',
 			'settings_templates_edit',
 			'settings_templates_delete',
+
+			'use_templates',
 		);
 		foreach($permissions as $permission){
 			permissions::add('ticketing_'.$permission);

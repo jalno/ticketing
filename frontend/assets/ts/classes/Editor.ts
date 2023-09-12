@@ -20,6 +20,7 @@ export default class Editor
 	{
 		Ticket.runTextareaAutosize(Editor.$container);
 		Editor.showPreviewListener();
+		Editor.setEvents();
 	}
 
 	private static showPreviewListener()
@@ -96,6 +97,15 @@ export default class Editor
 			} else {
 				$btn.data('disabled', true);
 			}
+		});
+	}
+
+	private static setEvents()
+	{
+		$("#editor-tab textarea", Editor.$container).on('resize', function() {
+			console.log('resize', ($(this).get(0).scrollHeight + 2) + 'px');
+			$(this).css('height', ($(this).get(0).scrollHeight + 2) + 'px');
+			$(this).trigger('change');
 		});
 	}
 }

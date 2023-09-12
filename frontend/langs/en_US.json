@@ -190,7 +190,7 @@
 		"titles.ticketing.templates.status.active": "Active",
 		"titles.ticketing.templates.status.deactive": "Deactive",
 		"titles.ticketing.templates.message_type.both": "Both",
-		"title.ticketing.loading": "Loading ..",
+		"titles.ticketing.loading": "Loading ..",
 		"titles.ticketing.tutorial": "Tutorial",
 		"ticketing.templates.title": "The titles of the templates are displayed when selecting the template. The titles of the templates are not repeatable and each template has a unique title.",
 		"ticketing.templates.subject": "You can also specify the title of the ticket in the templates. In this case, when selecting the template, the specified title is placed for the title of the ticket. You can also use variables in the title of the ticket.",
@@ -221,6 +221,7 @@
 		"titiles.ticketing.templates.tutorial.sample_3": "Using predefined variables. Also use variable in ticket title and template content in HTML format",
 		"titiles.ticketing.form_fields": "Form fields",
 		"titles.ticketing.actions": "Actions",
-		"ticketing.template.delete": "Be careful when deleting templates.<br>All information is deleted and cannot be returned."
+		"ticketing.template.delete": "Be careful when deleting templates.<br>All information is deleted and cannot be returned.",
+		"titiles.ticketing.template": "Template"
 	}
 }

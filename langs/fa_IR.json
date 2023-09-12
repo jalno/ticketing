@@ -134,6 +134,8 @@
 
 		"ticketing.logs.templates.add": "قالب پیام #{id} را اضافه کرد.",
 		"ticketing.logs.templates.edit": "قالب پیام #{id} را بروز کرد.",
-		"ticketing.logs.templates.delete": "قالب پیام #{id} را حذف کرد."
+		"ticketing.logs.templates.delete": "قالب پیام #{id} را حذف کرد.",
+
+		"usertype.permissions.ticketing_use_templates": "استفاده از قالب های پیام در ایجاد و پاسخ تیکت"
 	}
 }

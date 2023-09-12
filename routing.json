@@ -165,5 +165,10 @@
 		"path": "userpanel/settings/ticketing/templates/delete/:id",
 		"controller": "controllers/settings/Templates@terminate",
 		"method": "post"
+	},
+	{
+		"path": "userpanel/ticketing/templates/:id",
+		"controller": "controllers/ticketing@getTemplate",
+		"method": "get"
 	}
 ]

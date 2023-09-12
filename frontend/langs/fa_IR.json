@@ -196,7 +196,7 @@
 		"titles.ticketing.templates.message_type.add": "ایجاد تیکت جدید",
 		"titles.ticketing.templates.message_type.reply": "پاسخ تیکت",
 		"titles.ticketing.templates.variable": "اسم_متغیر",
-		"title.ticketing.loading": "در حال دریافت اطلاعات ..",
+		"titles.ticketing.loading": "در حال دریافت اطلاعات ..",
 		"titles.ticketing.tutorial": "آموزش",
 		"ticketing.templates.title": "عنوان قالب ها در زمان انتخاب قالب نمایش داده میشود و بایستی به نحوی باشد تا در زمان انتخاب قالب بتوان از روی آن محتوای قالب را متوجه شد. عنوان قالب ها تکرار پذیر نبوده و هر قالبی عنوان یکتا دارد.",
 		"ticketing.templates.subject": "میتوانید در قالب ها عنوان تیکت را نیز تعیین کنید. در این صورت در هنگام انتخاب قالب، عنوان مشخص شده برای عنوان  تیکت قرار داده میشود. میتوانید در عنوان تیکت نیز از متغیر ها استفاده کنید.",
@@ -227,6 +227,7 @@
 		"titiles.ticketing.templates.tutorial.sample_3": "استفاده از متغیرهای پیش تعریف شده و همچنین استفاده از متغیر در عنوان تیکت در فرمت ساده",
 		"titiles.ticketing.form_fields": "فیلد های فرم",
 		"titles.ticketing.actions": "اقدامات",
-		"ticketing.template.delete": "در حذف قالب ها دقت کنید.<br>تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد."
+		"ticketing.template.delete": "در حذف قالب ها دقت کنید.<br>تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد.",
+		"titiles.ticketing.template": "قالب پیام"
 	}
 }

@@ -1,4 +1,5 @@
 <div class="tabbable" id="ticketing-editor">
+<?php if (!$this->getData('content_editor_preview_disabled') and !$this->getData('ticketing_editor_disabled')) { ?>
 	<ul class="nav nav-tabs tab-bricky">
 		<li class="active">
 			<a href="#editor-tab" data-toggle="tab"><?php echo t('titles.ticketing.editor'); ?></a>
@@ -7,6 +8,7 @@
 			<a id="preview-ticket-btn" href="#preview-tab" data-toggle="tab"><?php echo t('titles.ticketing.preview'); ?></a>
 		</li>
 	</ul>
+<?php } ?>
 	<div class="tab-content">
 		<div class="tab-pane in active" id="editor-tab">
 		<?php $this->createField([
@@ -21,10 +23,10 @@
 		]); ?>
 		</div>
 		<div class="tab-pane" id="preview-tab">
-			<div class="alert alert-block alert-loading alert-info">
+			<div class="alert alert-block alert-info">
 				<p>
-					<i class="fa fa-spin fa-spiner"></i>
-				<?php echo t('title.ticketing.loading'); ?>
+					<i class="fa fa-spin fa-spinner"></i>
+				<?php echo t('titles.ticketing.loading'); ?>
 				</p>
 			</div>
 

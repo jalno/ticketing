@@ -2,6 +2,7 @@
 
 use packages\base\translator;
 use packages\ticketing\Department;
+use packages\ticketing\Template;
 use packages\userpanel;
 use packages\userpanel\Date;
 use packages\ticketing\{Authentication, Authorization, Ticket, Ticket_Message};
@@ -49,7 +50,7 @@ $this->the_header();
 							<span class="date tooltips hidden-print" title="<?php echo Date::format('Y/m/d H:i:s', $message->date); ?>"><?php echo Date::relativeTime($message->date); ?></span>
 							<span class="date visible-print-inline-block ltr"><?php echo Date::format('Y/m/d H:i:s', $message->date); ?></span>
 						</div>
-						<div class="msgtext">
+						<div class="msgtext message-format-<?php echo $message->format; ?>">
 						<?php
 						echo $message->getContent();
 						if ($message->files) {
@@ -93,29 +94,31 @@ $this->the_header();
 						<div class="replaycontianer">
 							<h3><?php echo t('send.reply'); ?></h3>
 							<form id="ticket-reply" action="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" method="post" enctype="multipart/form-data" spellcheck="false">
-								<div class="ticket-text-wrapper form-group border p-3">
-									<?php
-									$fields = array(
-										array(
-											'name' => 'text',
-											'type' => 'textarea',
-											'rows' => 4,
-											'required' => true,
-											'disabled' => !$this->canSend,
-											'class' => 'form-control autosize text-send border-0 no-resize rounded-0',
-										),
-									);
+								<div class="ticket-text-wrapper form-group">
+								<?php
+								if ($this->canSend) {
+									if ($this->canUseTemplates) {
+										$this->createField([
+											'name' => 'template',
+											'label' => t('titiles.ticketing.template'),
+											'type' => 'select',
+											'options' => $this->getTemplatesForSelect(Template::ADD),
+										]);
+										$this->createField([
+											'name' => 'message_format',
+											'type' => 'hidden',
+										]);
+									}
 									if ($this->canEnableDisableNotification) {
-										$fields[] = array(
-											'name' => "send_notification",
-											"type" => "hidden",
-										);
+										$this->createField([
+											'name' => 'send_notification',
+											'type' => 'hidden',
+										]);
 									}
-									foreach ($fields as $field) {
-										$this->createField($field);
-									}
-									?>
-									<div class="attachments mt-3">
+								}
+								$this->loadContentEditor();
+								?>
+									<div class="attachments">
 										<div class="title">
 											<span><?php echo t("attachment.files"); ?></span>
 										</div>
@@ -132,14 +135,13 @@ $this->the_header();
 							<?php if ($this->canSend) { ?>
 								<div class="row">
 									<?php
-									$editor = authentication::getUser()->getOption('ticketing_editor');
-									if(!$editor or $editor == ticket_message::html){
+									if(ticket_message::html == $this->messageFormat){
 									?>
 									<div class="col-sm-7">
 										<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 									</div>
 									<?php } ?>
-									<div class="col-sm-5 text-center <?php echo $editor != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
+									<div class="col-sm-5 text-center <?php echo $this->messageFormat != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
 										<?php if ($this->canEnableDisableNotification) { ?>
 											<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">

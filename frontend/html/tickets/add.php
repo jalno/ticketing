@@ -1,5 +1,6 @@
 <?php
 use packages\base\{json, Translator};
+use packages\ticketing\Template;
 use packages\userpanel;
 use packages\ticketing\{Ticket, ticket_message};
 use packages\ticketing\Authentication;
@@ -78,6 +79,18 @@ $this->the_header();
 						foreach($fields as $field){
 							$this->createField($field);
 						}
+						if ($this->canUseTemplates) {
+							$this->createField([
+								'name' => 'template',
+								'label' => t('titiles.ticketing.template'),
+								'type' => 'select',
+								'options' => $this->getTemplatesForSelect(Template::ADD),
+							]);
+							$this->createField([
+								'name' => 'message_format',
+								'type' => 'hidden',
+							]);
+						}
 						?>
 						</div>
 						<div class="col-sm-6">
@@ -137,33 +150,24 @@ $this->the_header();
 						</div>
 						<div class="col-xs-12 mt-4">
 							<label><?php echo t('newticket.text'); ?></label>
-							<div class="ticket-text-wrapper form-group border p-3">
-								<?php $this->createField(array(
-									'name' => 'text',
-									'type' => 'textarea',
-									'rows' => 4,
-									'class' => 'form-control border-0 no-resize rounded-0',
-									'required' => true,
-								)); ?>
-								<div class="attachments mt-3">
-									<div class="title">
-										<span><?php echo t("attachment.files"); ?></span>
+						<?php $this->loadContentEditor(); ?>
+							<div class="attachments">
+								<div class="title">
+									<span><?php echo t("attachment.files"); ?></span>
+								</div>
+								<div class="content py-4" id="attachmentsContent"></div>
+								<div id="progressBar">
+									<div class="progress d-inline-block">
+										<div class="progress-bar progress-bar-fill bg-blue-gray"></div>
 									</div>
-									<div class="content py-4" id="attachmentsContent"></div>
-									<div id="progressBar">
-										<div class="progress d-inline-block">
-											<div class="progress-bar progress-bar-fill bg-blue-gray"></div>
-										</div>
-										<span class="progress-bar-text mr-2 ">0%</span>
-									</div>
+									<span class="progress-bar-text mr-2 ">0%</span>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 					<?php
-					$editor = Authentication::getUser()->getOption('ticketing_editor');
-					$hasAlert = (!$editor or $editor == ticket_message::html);
+					$hasAlert = (ticket_message::html == $this->messageFormat);
 					if ($hasAlert) {
 					?>
 						<div class="col-sm-5 col-xs-12">

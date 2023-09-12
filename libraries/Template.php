@@ -21,6 +21,8 @@ use packages\ticketing\ticket_message as Message;
  */
 class Template extends DBObject implements ITemplate
 {
+    public const PREDEFINED_VARIABLES = ['{{user_name}}', '{{user_lastname}}', '{{user_full_name}}', '{{user_email}}', '{{user_cellphone}}'];
+
     public const ADD = 1;
     public const REPLY = 2;
 
@@ -33,9 +35,7 @@ class Template extends DBObject implements ITemplate
             return [];
         }
 
-        $predefinedVariables = ['{{user_name}}', '{{user_lastname}}', '{{user_full_name}}', '{{user_email}}', '{{user_cellphone}}'];
-
-        return array_diff($matches[0], $predefinedVariables);
+        return array_values(array_unique(array_diff($matches[0], self::PREDEFINED_VARIABLES)));
     }
 
     /**

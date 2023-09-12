@@ -144,8 +144,7 @@
 body.tickets-add, body.tickets-view {
 	.btn-group-notification-behavior {
 		.btn-select-notification-behavior {
-			padding-right: 6px;
-			padding-left: 6px;
+			padding: 13px 6px;
 			i {
 				vertical-align: middle;
 			}
@@ -287,6 +286,11 @@ body.tickets-add, body.tickets-view {
 	}
 	.attachments {
 		display: none;
+		padding: 16px 12px;
+		border: 1px solid #DDD;
+		border-top: none;
+		margin-bottom: 3em;
+		margin-top: -15px;
 		.progress {
 			width: 90%;
 			margin-bottom: 0;
@@ -443,6 +447,13 @@ body.rtl {
 	#tutorial-templates-modal {
 		font-family: yekan;
 	}
+
+	#template-selector-modal {
+		font-family: yekan;
+		.list-group-item-heading {
+			font-family: koodak;
+		}
+	}
 }
 
 #ticketing-editor {
@@ -511,6 +522,25 @@ body.rtl {
 				&:last-child {
 					&::after {
 						display: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+#template-selector-modal {
+	.modal-body {
+		.list-group {
+			margin: -15px;
+			.list-group-item {
+				border: none;
+				.list-group-item-text {
+					input,textarea {
+						font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+					}
+					textarea {
+						resize: none;
 					}
 				}
 			}

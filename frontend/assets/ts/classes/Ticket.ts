@@ -10,6 +10,7 @@ import Close from "./Ticket/Close";
 import Edit from "./Ticket/Edit";
 import List from "./Ticket/List";
 import Reply from "./Ticket/Reply";
+import TemplateSelector from "./TemplateSelector";
 
 
 export enum ITicketStatus {
@@ -99,7 +100,6 @@ export default class Ticket {
 			if (addSomFile) {
 				const $container = $attachmentsContent.parents(".attachments");
 				$container.show();
-				$("textarea", $container.parent()).addClass("border-bottom-light-black");
 			}
 			$uploadFileInput.val(null);
 		});
@@ -109,6 +109,32 @@ export default class Ticket {
 			formData.append('file[]', file);
 		}
 		return formData;
+	}
+
+	public static runTemplateselector($form: JQuery, isReply: boolean = false)
+	{
+		const $template = $('select[name="template"]', $form);
+		if ($template.length) {
+			const $editor = $("#editor-tab textarea", $form);
+			const $title = $('input[name="title"]', $form);
+			const $messageFormat = $('input[name="message_format"]', $form);
+
+			const selector = new TemplateSelector($template);
+			selector.run();
+			selector.isReply(isReply);
+
+			selector.onSubmit((subject, content, messageFormat) => {
+				$editor.val(content);
+				$editor.trigger('resize');
+				$editor.data('message_format', messageFormat);
+
+				$messageFormat.val(messageFormat);
+
+				if ($title.length && subject.length) {
+					$title.val(subject);
+				}
+			});
+		}
 	}
 
 	private static removeFileListener($el: JQuery, file: File) {
@@ -124,7 +150,6 @@ export default class Ticket {
 			}
 			if (!Ticket.finalFilesForUpload.length) {
 				$container.hide();
-				$("textarea", $container.parent()).removeClass("border-bottom-light-black");
 			}
 		});
 	}
