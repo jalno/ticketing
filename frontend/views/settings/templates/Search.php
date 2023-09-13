@@ -108,7 +108,7 @@ class Search extends Listview
         return [
             [
                 'title' => t('choose'),
-                'value' => 'all',
+                'value' => '',
             ],
             [
                 'title' => t('titles.ticketing.templates.status.active'),

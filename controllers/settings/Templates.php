@@ -275,9 +275,14 @@ class Templates extends Controller
                 'default' => $template->getMessageFormat(),
                 'optional' => true,
             ],
+            'status' => [
+                'type' => 'int',
+                'values' => [Template::ACTIVE, Template::DEACTIVE],
+                'optional' => true,
+            ],
         ]);
 
-        if (isset($inputs['deplartment'])) {
+        if (isset($inputs['department'])) {
             $inputs['department'] = $inputs['department']->id;
         }
 

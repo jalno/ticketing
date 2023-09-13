@@ -52,6 +52,12 @@ $this->the_header();
                     'type' => 'select',
                     'options' => $this->getDepartmentsForSelect(),
                 ]);
+                $this->createField([
+                    'name' => 'status',
+                    'label' => t('titles.ticketing.templates.status'),
+                    'type' => 'select',
+                    'options' => $this->getStatusesForSelect(),
+                ]);
                 ?>
 				</div>
 			</div>
