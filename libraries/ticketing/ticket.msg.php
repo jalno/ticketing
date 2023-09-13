@@ -21,9 +21,10 @@ class ticket_message extends dbObject
 			case self::markdown:
 				return (new Parsedown())->text($content);
 			case self::html:
-				$content = str_replace("\r\n", "\n", $content);
+				$content = str_replace(["\r\n", "\n\r", "\r"], "\n", $content);
 				$content = preg_replace('@([https|http|ftp]+://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', '<a href="$1" rel="nofollow">$1</a>', $content);
-				return preg_replace('/([^\n]+)(\n?)/', '<p dir="auto">$1</p>$2', $content);
+
+				return implode("\n", array_map(fn (string $line) => '<p dir="auto">'.("\n" !== $line ? $line : '&nbsp;')."</p>\n", explode("\n", $content)));
 			default:
 				throw new Exception('Unknown format '.$format.' for convert');
 		}
