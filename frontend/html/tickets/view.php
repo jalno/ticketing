@@ -102,7 +102,7 @@ $this->the_header();
 											'name' => 'template',
 											'label' => t('titiles.ticketing.template'),
 											'type' => 'select',
-											'options' => $this->getTemplatesForSelect(Template::ADD),
+											'options' => $this->getTemplatesForSelect(Template::REPLY),
 										]);
 										$this->createField([
 											'name' => 'message_format',
