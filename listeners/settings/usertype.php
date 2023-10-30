@@ -34,6 +34,13 @@ class usertype{
 			'settings_templates_delete',
 
 			'use_templates',
+
+			'settings_labels_search',
+			'settings_labels_add',
+			'settings_labels_edit',
+			'settings_labels_delete',
+
+			'view_labels',
 		);
 		foreach($permissions as $permission){
 			permissions::add('ticketing_'.$permission);

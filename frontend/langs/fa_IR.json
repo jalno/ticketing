@@ -228,6 +228,17 @@
 		"titiles.ticketing.form_fields": "فیلد های فرم",
 		"titles.ticketing.actions": "اقدامات",
 		"ticketing.template.delete": "در حذف قالب ها دقت کنید.<br>تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد.",
-		"titiles.ticketing.template": "قالب پیام"
+		"titiles.ticketing.template": "قالب پیام",
+		"titles.ticketing.labels": "برچسب ها",
+		"titles.ticketing.labels.add": "افزودن برچسب جدید",
+		"titles.ticketing.labels.edit": "ویرایش برچسب ها",
+		"titles.ticketing.labels.delete": "حذف برچسب ها",
+		"titles.ticketing.labels.title": "عنوان",
+		"titles.ticketing.labels.description": "توضیحات",
+		"titles.ticketing.labels.color": "رنگ",
+		"titles.ticketing.labels.status": "وضعیت",
+		"titles.ticketing.labels.status.active": "فعال",
+		"titles.ticketing.labels.status.deactive": "غیرفعال",
+		"ticketing.label.delete": "در حذف برچسب ها دقت کنید<br>تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد"
 	}
 }
