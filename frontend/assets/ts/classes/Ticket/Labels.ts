@@ -353,6 +353,23 @@ export default class Labels {
 		}
 	}
 
+	private static removeSelected(id: number) {
+		const index = Labels.selectedLabels.indexOf(id);
+
+		if (index > -1) {
+			Labels.selectedLabels.splice(index, 1);
+
+			$('.popover-content .select-container .label-popover-body .list-group .list-group-item.selected').each(function() {
+				const label = $(this).data('label') as ILabel;
+
+				if (id == label.id) {
+					$(this).removeClass('selected');
+					return false;
+				}
+			});
+		}
+	}
+
 	private id: number;
 	public constructor(private ticketId: number, private permissions: {can_delete: boolean}, private label?: ILabel, private $btn?: JQuery) {
 		if (label) {
@@ -375,14 +392,37 @@ export default class Labels {
 			}
 		}
 
+		let confirmed = false;
+		let confirmTimeout = undefined;
+
+		const $icon = $('i', this.$btn);
 		this.$btn.on('click', (e) => {
 			e.preventDefault();
-			
+
+			if (!confirmed) {
+				confirmed = true;
+				$icon.attr('class', 'fa fa-info-circle').tooltip({
+					title: 'برای تایید حذف مجددا کلیک کنید',
+					trigger: 'manual',
+					container: 'body',
+				}).tooltip('show');
+				confirmTimeout = setTimeout(() => {
+					confirmed = false;
+					$icon.attr('class', 'fa fa-times').tooltip('destroy');
+				}, 3000);
+
+				return false;
+			}
+
+			if (confirmTimeout) {
+				clearTimeout(confirmTimeout);	
+			}
+
 			const $btns = $('.label .btn-delete', Labels.$container);
 			$btns.prop('disabled', true);
 			$btns.addClass('disabled');
 
-			$('i', this.$btn).attr('class', 'fa fa-spinner fa-spin');
+			$icon.attr('class', 'fa fa-spinner fa-spin');
 
 			AjaxRequest({
 				url: Router.url(`userpanel/ticketing/edit/${this.ticketId}`, {ajax: 1} as any),
@@ -391,7 +431,9 @@ export default class Labels {
 					'delete-labels': this.id,
 				},
 				success: () => {
+					$icon.tooltip('destroy');
 					this.$btn.parents('.ticket-label').remove();
+					Labels.removeSelected(this.id);
 
 					$.growl.notice({
 						title: t('userpanel.success'),

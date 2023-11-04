@@ -210,9 +210,6 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 				<?php } ?>
 					<span><?php echo t("ticketing.ticket.list.info.create.in_department") . " " . $ticket->department->title . " "; ?></span>
 				</p>
-			<?php if ($this->canViewLabels) { ?>
-				<div class="ticket-labels"><?php echo $this->getLabelsForShow($ticket->labels); ?></div>
-			<?php } ?>
 			</div>
 			<div class="col-sm-4 col-xs-12 ticket-info">
 				<p>
@@ -246,6 +243,10 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 			<?php } ?>
 			</div>
 		</div>
+
+		<?php if ($this->canViewLabels) { ?>
+			<div class="ticket-labels"><?php echo $this->getLabelsForShow($ticket->labels); ?></div>
+		<?php } ?>
 	</div>
 <?php } ?>
 </div>
