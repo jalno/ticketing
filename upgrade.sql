@@ -68,3 +68,26 @@ CREATE TABLE `ticketing_templates` (
  CONSTRAINT `ticketing_templates_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `ticketing_departments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Commit: fba3f9fda3fe1c0af321e40f6495be80e2fd49d7
+--
+
+CREATE TABLE `ticketing_labels` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `title` varchar(100) NOT NULL,
+ `description` varchar(255) DEFAULT NULL,
+ `color` varchar(7) NOT NULL,
+ `status` enum('1','2') NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ticketing_tickets_labels` (
+ `ticket_id` int(11) NOT NULL,
+ `label_id` int(11) NOT NULL,
+ PRIMARY KEY (`ticket_id`,`label_id`),
+ KEY `label_id` (`label_id`),
+ CONSTRAINT `ticketing_tickets_labels_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `ticketing_tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ CONSTRAINT `ticketing_tickets_labels_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `ticketing_labels` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
