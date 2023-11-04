@@ -1012,15 +1012,36 @@ class Ticketing extends Controller {
 			$deleted = array_diff($old, $new);
 			if ($deleted) {
 				$parameters['oldData']['labels'] = array_map(
-					fn (Label $label) => $label->toArray(),
+					fn (Label $label) => [
+						'id' => $label->getID(),
+						'title' => $label->getTitle(),
+						'color' => $label->getColor(),
+					],
 					array_filter($oldLabels, fn (Label $label) => in_array($label->id, $deleted))
 				);
+			}
+			$added = array_diff($new, $old);
+			if ($added) {
+				$parameters['newData'] = [
+					'labels' => array_map(
+						fn (Label $label) => [
+							'id' => $label->getID(),
+							'title' => $label->getTitle(),
+							'color' => $label->getColor(),
+						],
+						array_filter($newLabels, fn (Label $label) => in_array($label->id, $added))
+					),
+				];
 			}
 		} elseif (isset($inputs['delete-labels'])) {
 			$deletedLabels = $ticket->deleteLabels(array_column($inputs['delete-labels'], 'id'));
 			if ($deletedLabels) {
 				$parameters['oldData']['labels'] = array_map(
-					fn (Label $label) => $label->toArray(),
+					fn (Label $label) => [
+						'id' => $label->getID(),
+						'title' => $label->getTitle(),
+						'color' => $label->getColor(),
+					],
 					$deletedLabels
 				);
 			}

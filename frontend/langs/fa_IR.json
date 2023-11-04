@@ -239,9 +239,10 @@
 		"titles.ticketing.labels.status": "وضعیت",
 		"titles.ticketing.labels.status.active": "فعال",
 		"titles.ticketing.labels.status.deactive": "غیرفعال",
-		"ticketing.label.delete": "در حذف برچسب ها دقت کنید<br>تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد",
+		"ticketing.label.delete": "در حذف برچسب ها دقت کنید.<br>.تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد",
 		"titles.ticketing.labels.none": "بدون برچسب",
 		"titles.ticketing.labels.assign": "انتخاب برچسب",
-		"titles.ticketing.labels.manage": "مدیریت برچسب ها"
+		"titles.ticketing.labels.manage": "مدیریت برچسب ها",
+		"titles.ticketing.logs.added_data": "فیلد های اضافه شده"
 	}
 }

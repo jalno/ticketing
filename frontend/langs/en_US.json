@@ -236,6 +236,7 @@
 		"ticketing.label.delete": "Be careful in deleting labels.<br>All information wil be delete and cannot be returned.",
 		"titles.ticketing.labels.none": "Mone",
 		"titles.ticketing.labels.assign": "Assign",
-		"titles.ticketing.labels.manage": "Manage Labels"
+		"titles.ticketing.labels.manage": "Manage Labels",
+		"titles.ticketing.logs.added_data": "Added Fields"
 	}
 }
