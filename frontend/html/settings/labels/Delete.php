@@ -43,7 +43,12 @@ $this->the_header();
 
 		<div class="alert alert-danger alert-block">
 			<h4 class="alert-heading"><?php echo t('error.warning.title'); ?></h4>
-			<p><?php echo t('ticketing.label.delete'); ?></p>
+			<p>
+			<?php
+			$ticketsCount = $this->getTicketsCount();
+			echo $ticketsCount ? t('ticketing.label.delete.with_tickets', ['tickets' => $ticketsCount, 'url' => url('ticketing', ['labels' => $this->label->getID()])]) : t('ticketing.label.delete');
+			?>
+			</p>
 		</div>
 	</div>
 	<div class="panel-footer">

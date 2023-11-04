@@ -2,6 +2,7 @@
 
 namespace themes\clipone\views\ticketing\settings\labels;
 
+use packages\base\DB;
 use packages\ticketing\contracts\ILabel;
 use packages\userpanel\views\Form;
 use themes\clipone\Navigation;
@@ -31,5 +32,11 @@ class Delete extends Form
         $this->label = $label;
 
         $this->setDataForm($label->toArray());
+    }
+
+    public function getTicketsCount(): int
+    {
+        $query = DB::where('label_id', $this->label->getID());
+        return $query->getValue('ticketing_tickets_labels', 'COUNT(*)');
     }
 }

@@ -240,6 +240,7 @@
 		"titles.ticketing.labels.status.active": "فعال",
 		"titles.ticketing.labels.status.deactive": "غیرفعال",
 		"ticketing.label.delete": "در حذف برچسب ها دقت کنید.<br>.تمامی اطلاعات حذف شده و قابل بازگشت نمیباشد",
+		"ticketing.label.delete.with_tickets": "در حذف برچسب ها دقت کنید.<br>تعداد #{tickets} تیکت با این برچسب وجود دارد و بعد از حذف برچسب، امکان جستجو و پیدا کردن این تیکت ها وجود نخواهد داشت. <a href=\"{url}\" target=\"_blank\">مشاهده تیکت ها</a>",
 		"titles.ticketing.labels.none": "بدون برچسب",
 		"titles.ticketing.labels.assign": "انتخاب برچسب",
 		"titles.ticketing.labels.manage": "مدیریت برچسب ها",
