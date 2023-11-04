@@ -4,11 +4,13 @@ namespace themes\clipone\views\ticketing;
 use packages\userpanel;
 use packages\base\{view\Error, views\traits\Form, Translator, HTTP};
 use themes\clipone\{navigation\MenuItem, Navigation, ViewTrait};
-use themes\clipone\views\{FormTrait, ListTrait, TabTrait};
+use themes\clipone\views\{FormTrait, ListTrait, TabTrait, ticketing\LabelTrait};
 use packages\ticketing\{Authentication, Authorization, Ticket, views\ticketlist as ticketListView};
+use packages\ticketing\Label;
 
-class ListView extends TicketListView {
-	use Form, ViewTrait, ListTrait, FormTrait, TabTrait;
+class ListView extends TicketListView
+{
+	use Form, ViewTrait, ListTrait, FormTrait, TabTrait, LabelTrait;
 
 	protected $multiuser;
 	protected $hasAccessToUsers = false;
@@ -64,6 +66,53 @@ class ListView extends TicketListView {
 			parent::output();
 		}
 	}
+
+	public function export(): array
+	{
+		$data = [
+			'items' => array_map(function (Ticket $ticket) {
+				$data = $ticket->toArray();
+				$data['client'] = [
+					'id' => $ticket->client->id,
+					'name' => $ticket->client->name,
+					'lastname' => $ticket->client->lastname,
+				];
+
+				if ($ticket->operator) {
+					$data['operator'] = [
+						'id' => $ticket->operator->id,
+						'name' => $ticket->operator->name,
+						'lastname' => $ticket->operator->lastname,
+					];
+				}
+
+				return $data;
+			}, $this->getDataList()),
+			'items_per_page' => (int) $this->itemsPage,
+			'current_page' => (int) $this->currentPage,
+			'total_items' => (int) $this->totalItems,
+		];
+
+		if ($this->canViewLabels) {
+			$data['labels'] = array_map(fn (Label $label) => $label->toArray(), $this->labels);
+		}
+
+		return ['data' => $data];
+	}
+
+	/**
+	 * @return Label[]
+	 */
+	public function getLabels(array $ids): array
+	{
+		return array_filter($this->labels, fn (Label $label) => in_array($label->getID(), $ids));
+	}
+
+	public function getLabelsForShow(array $ids): string
+	{
+		return implode(" ", array_map(fn (Label $label) => $this->getLabel($label, $this->isTab ? 'users/tickets/'.$this->getNewTicketClientID() : 'ticketing'), $this->getLabels($ids)));
+	}
+
 	protected function getNewTicketURL(): string {
 		$newTicketClientID = $this->getNewTicketClientID();
 		$params = array();

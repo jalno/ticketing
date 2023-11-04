@@ -233,6 +233,9 @@
 		"titles.ticketing.labels.status": "Status",
 		"titles.ticketing.labels.status.active": "Active",
 		"titles.ticketing.labels.status.deactive": "Deactive",
-		"ticketing.label.delete": "Be careful in deleting labels.<br>All information wil be delete and cannot be returned."
+		"ticketing.label.delete": "Be careful in deleting labels.<br>All information wil be delete and cannot be returned.",
+		"titles.ticketing.labels.none": "Mone",
+		"titles.ticketing.labels.assign": "Assign",
+		"titles.ticketing.labels.manage": "Manage Labels"
 	}
 }

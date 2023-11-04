@@ -115,9 +115,6 @@ class Labels extends Controller
     {
         Authorization::haveOrFail('settings_labels_add');
 
-        $view = View::byName(views\Add::class);
-        $this->response->setView($view);
-
         $inputs = $this->checkInputs([
             'title' => [
                 'type' => 'string',
@@ -135,6 +132,12 @@ class Labels extends Controller
 
         logs\Add::create($label, Authentication::getUser());
 
+        $this->response->setData([
+            'id' => $label->getID(),
+            'title' => $label->getTitle(),
+            'description' => $label->getDescription() ?: '',
+            'color' => $label->getColor(),
+        ], 'label');
         $this->response->setStatus(true);
 
         return $this->response;

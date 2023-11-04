@@ -63,7 +63,7 @@ if ($this->canAdd) {
                     ?>
 					<tr>
 						<td class="center"><?php echo $label->getID(); ?></td>
-						<td><?php echo $this->getLabel($label->getTitle(), $label->getColor()); ?></td>
+						<td><?php echo $this->getLabel($label, 'ticketing'); ?></td>
 						<td class="center">
 							<span class="<?php echo $statusClass; ?>"><?php echo t($statusTranslate); ?></span>
 						</td>

@@ -1,20 +1,24 @@
 <?php
 namespace themes\clipone\views\ticketing;
 
-use packages\base\Translator;
 use packages\ticketing\Department;
 use packages\ticketing\views\View as TicketView;
 use packages\userpanel;
 use packages\ticketing\{Authorization, Parsedown, Products, Ticket};
 use packages\ticketing\Ticket_message as Message;
+use packages\ticketing\Label;
 use themes\clipone\{BreadCrumb, Navigation, navigation\MenuItem, Utility, ViewTrait};
 use themes\clipone\views\{FormTrait, ListTrait};
 use themes\clipone\views\ticketing\HelperTrait;
+use themes\clipone\views\ticketing\LabelTrait;
 
 class View extends TicketView
 {
 	use ViewTrait, ListTrait, FormTrait;
 	use HelperTrait;
+	use LabelTrait {
+		LabelTrait::getStatusForSelect as getLabelStatusForSelect;
+	}
 
 	public bool $sendNotification = false;
 	public bool $canUseTemplates = false;
@@ -52,7 +56,55 @@ class View extends TicketView
 		$this->addBodyClass("tickets-view");
 
 		$this->types = Authorization::childrenTypes();
+		$this->addPageData();
 	}
+
+	public function export(): array
+	{
+		$ticket = $this->getTicket();
+
+		$data = [
+			'ticket' => $ticket->toArray(),
+		];
+
+		$data['ticket']['client'] = [
+			'id' => $ticket->client->id,
+			'name' => $ticket->client->name,
+			'lastname' => $ticket->client->lastname,
+		];
+
+		if ($ticket->operator) {
+			$data['ticket']['operator'] = [
+				'id' => $ticket->operator->id,
+				'name' => $ticket->operator->name,
+				'lastname' => $ticket->operator->lastname,
+			];
+		}
+
+		if ($this->canViewLabels) {
+			$data['ticket']['labels'] = array_map(fn (Label $label) => [
+				'id' => $label->getID(),
+				'title' => $label->getTitle(),
+				'description' => $label->getDescription() ?? '',
+				'color' => $label->getColor(),
+			], $ticket->labels);
+		}
+
+		return ['data' => $data];
+	}
+
+	/**
+	 * @return array{string,boolean}
+	 */
+	public function getLabelsPermissions(): array
+	{
+		return [
+			'can_search' => Authorization::is_accessed('settings_labels_search'),
+			'can_add' => Authorization::is_accessed('settings_labels_add'),
+			'can_delete' => Authorization::is_accessed('settings_labels_delete'),
+		];
+	}
+
 	private function setNavigation(){
 		$item = new menuItem("ticketing");
 		$item->setTitle(t('ticketing'));
@@ -170,5 +222,17 @@ class View extends TicketView
 	            'value' => ticket::ordinary
         	]
 		];
+	}
+
+	private function addPageData(): void
+	{
+		if ($this->canEdit) {
+			$this->dynamicData->setData('packages_ticketing_labels', array_map(fn (Label $label) => [
+				'id' => $label->getID(),
+				'title' => $label->getTitle(),
+				'color' => $label->getColor(),
+				'description' => $label->getDescription() ?: '',
+			], $this->getAllLabels()));
+		}
 	}
 }

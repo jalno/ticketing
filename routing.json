@@ -6,7 +6,7 @@
 	},
 	{
 		"path": "userpanel/users/tickets/:id",
-		"controller": "controllers/Userpanel@getUserTickets",
+		"controller": "controllers/ticketing@index",
 		"method": "get"
 	},
 	{

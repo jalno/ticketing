@@ -196,4 +196,81 @@ class ticket extends dbObject
 		$message->where("ticketing_tickets_msgs.user", "ticketing_tickets.client", "!=");
 		return $message->has();
 	}
+
+	/**
+	 * @return ILabel[]
+	 */
+	public function getLabels(): array
+	{
+		DB::join('ticketing_tickets_labels', 'ticketing_tickets_labels.label_id=ticketing_labels.id', 'inner');
+
+		$query = new Label();
+		$query->where('ticketing_labels.status', Label::ACTIVE);
+		$query->where('ticketing_tickets_labels.ticket_id', $this->id);
+
+		return $query->get(null, 'ticketing_labels.*');
+	}
+
+	/**
+	 * @param int[] $ids
+	 * 
+	 * @return ILabel[] ticket labels
+	 */
+	public function setLabels(array $ids): array
+	{
+		$labels = [];
+		$mustBeDeleted = [];
+		$mustBeAdded = [];
+
+		$query = DB::where('ticketing_tickets_labels.ticket_id', $this->id);
+		$existsLabelsIds = array_column($query->get('ticketing_tickets_labels', null, 'ticketing_tickets_labels.label_id'), 'label_id');
+
+		if ($ids) {
+			$query = new Label();
+			$query->where('id', $ids, 'in');
+			$query->where('status', Label::ACTIVE);
+			$labels = $query->get(null, ['id', 'title', 'color']);
+
+			$mustBeAdded = array_values(array_diff($ids, $existsLabelsIds));
+			$mustBeDeleted = array_values(array_diff($existsLabelsIds, $ids));
+		} else {
+			$mustBeDeleted = $ids;
+		}
+
+		if ($mustBeDeleted or !$ids) {
+			$query = DB::where('ticketing_tickets_labels.ticket_id', $this->id);
+			if ($mustBeDeleted) {
+				$query->where('ticketing_tickets_labels.label_id', $mustBeDeleted, 'in');
+			}
+			$query->delete('ticketing_tickets_labels');
+		}
+
+		if ($mustBeAdded) {
+			DB::insertMulti('ticketing_tickets_labels', array_map(fn ($id) => ['label_id' => $id, 'ticket_id' => $this->id], $mustBeAdded));
+		}
+
+		return $labels;
+	}
+
+	/**
+	 * @param int[] $ids
+	 * 
+	 * @return ILabel[] deleted labels
+	 */
+	public function deleteLabels(array $ids): array
+	{
+		$query = new Label();
+		$query->where('id', $ids, 'in');
+		$labels = $query->get(null, ['id', 'title', 'color']);
+
+		$ids = array_column($labels, 'id');
+
+		$query = DB::where('ticketing_tickets_labels.ticket_id', $this->id);
+		if ($ids) {
+			$query->where('ticketing_tickets_labels.label_id', $ids, 'in');
+		}
+		$query->delete('ticketing_tickets_labels');
+
+		return $labels;
+	}
 }
