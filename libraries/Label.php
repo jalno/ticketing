@@ -4,10 +4,11 @@ namespace packages\ticketing;
 
 use packages\base\DB\DBObject;
 use packages\ticketing\contracts\ILabel;
+use packages\ticketing\contracts\ILabelManager;
 
 /**
- * @phpstan-import-type StoreLabelDataType from IlabelManager
- * @phpstan-import-type UpdateLabelDataType from IlabelManager
+ * @phpstan-import-type StoreLabelDataType from ILabelManager
+ * @phpstan-import-type UpdateLabelDataType from ILabelManager
  *
  * @property int         $id
  * @property string      $title
