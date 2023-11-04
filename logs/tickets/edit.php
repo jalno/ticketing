@@ -1,9 +1,15 @@
 <?php
 namespace packages\ticketing\logs\tickets;
 use \packages\base\{view, translator};
-use \packages\userpanel\{logs\panel, logs};
+use packages\ticketing\Label;
 use \packages\ticketing\ticket;
-class edit extends logs{
+use \packages\userpanel\{logs\panel, logs};
+use themes\clipone\views\ticketing\LabelTrait;
+
+class edit extends logs
+{
+	use LabelTrait;
+
 	public function getColor():string{
 		return "circle-teal";
 	}
@@ -86,13 +92,50 @@ class edit extends logs{
 				$html .= "</div>";
 				unset($oldData['message']);
 			}
+
+			if (isset($oldData['labels'])) {
+				$labels = '';
+				foreach ($oldData['labels'] as $label) {
+					$labels .= $this->getLabel(new Label($label), 'ticketing');
+				}
+
+				$html .= '<div class="form-group">';
+				$html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels').': </label>';
+				$html .= '<div class="col-xs-8 ltr ticket-labels">'.$labels.'</div>';
+				$html .= "</div>";
+				unset($oldData['labels']);
+			}
+
 			foreach($oldData as $field => $val){
 				$html .= '<div class="form-group">';
 				$html .= '<label class="col-xs-4 control-label">'.translator::trans("ticket.{$field}").': </label>';
 				$html .= '<div class="col-xs-8">'.$val.'</div>';
 				$html .= "</div>";
 			}
-			
+
+			$panel->setHTML($html);
+			$this->addPanel($panel);
+		}
+
+		$newData = $parameters['newData'] ?? [];
+
+		if (isset($newData['labels'])) {
+			$panel = new panel('ticketing.logs.ticket.edit.added');
+			$panel->icon = 'fa fa-plus';
+			$panel->size = 6;
+			$panel->title = t('titles.ticketing.logs.added_data');
+			$html = '';
+
+			$labels = '';
+			foreach ($newData['labels'] as $label) {
+				$labels .= $this->getLabel(new Label($label), 'ticketing');
+			}
+
+			$html .= '<div class="form-group">';
+			$html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels').': </label>';
+			$html .= '<div class="col-xs-8 ltr ticket-labels">'.$labels.'</div>';
+			$html .= "</div>";
+
 			$panel->setHTML($html);
 			$this->addPanel($panel);
 		}

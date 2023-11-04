@@ -133,6 +133,15 @@
 		"ticketing.logs.templates.add": "Add Message Template with ID #{id}.",
 		"ticketing.logs.templates.update": "Update Message Template with ID #{id}.",
 		"ticketing.logs.templates.delete": "Delete Message Template with ID #{id}.",
-		"usertype.permissions.ticketing_use_templates": "Use Templates in reply or add new tickets"
+		"usertype.permissions.ticketing_use_templates": "Use Templates in reply or add new tickets",
+		"usertype.permissions.ticketing_settings_labels": "Labels",
+		"usertype.permissions.ticketing_settings_labels_search": "Search Labels",
+		"usertype.permissions.ticketing_settings_labels_add": "Add Labels",
+		"usertype.permissions.ticketing_settings_labels_edit": "Edit Labels",
+		"usertype.permissions.ticketing_settings_labels_delete": "Delete Labels",
+		"usertype.permissions.ticketing_view_labels": "View Ticket Labels",
+		"ticketing.logs.labels.add": "Add label #{id}.",
+		"ticketing.logs.labels.edit": "Edit label #{id}.",
+		"ticketing.logs.labels.delete": "Delete label #{id}."
 	}
 }

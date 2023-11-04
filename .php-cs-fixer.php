@@ -10,6 +10,10 @@ $finder = PhpCsFixer\Finder::create()
     ->path('frontend/views/settings/templates')
     ->path('frontend/html/settings/templates')
     ->path('frontend/libraries/views')
+    ->path('controllers/settings/Labels.php')
+    ->path('libraries/LabelManager.php')
+    ->path('libraries/Label.php')
+    ->path('logs/labels')
     ;
 
 $config = new PhpCsFixer\Config();

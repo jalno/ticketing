@@ -5,6 +5,7 @@ use packages\base\{db, db\DuplicateRecord, view\Error, views\FormError, http, In
 use packages\ticketing\{Authentication, Authorization, Controller, Department, Events, Logs, Products, Ticket, Ticket_file, Ticket_message, Ticket_param, View, Views};
 use packages\ticketing\Template;
 use packages\ticketing\Parsedown;
+use packages\ticketing\Label;
 use packages\Userpanel;
 use packages\userpanel\{Date, Log, User};
 use packages\userpanel\AuthorizationException;
@@ -120,12 +121,43 @@ class Ticketing extends Controller {
 		return $message;
 	}
 
-	public function index(): Response {
+	public function index(?array $data = []): Response
+	{
 		Authorization::haveOrFail('list');
-		$view = View::byName(views\ticketlist::class);
-		$departments = Department::get();
-		$view->setDepartment($departments);
+
+		$view = null;
+		if (isset($data['id'])) {
+			if (!is_numeric($data['id']) or $data['id'] == Authentication::getID()) {
+				throw new NotFound();
+			}
+
+			$types = Authorization::childrenTypes();
+			if (!$types) {
+				throw new NotFound();
+			}
+
+			$query = new User();
+			$query->where('type', $types, 'in');
+			$user = $query->byId($data['id']);
+			if (!$user) {
+				throw new NotFound();
+			}
+
+			$view = View::byName(\themes\clipone\views\users\View::class);
+
+			$view->setData($user, 'user');
+			$view->isTab(true);
+			$view->triggerTabs();
+			$view->activeTab('ticket');
+		} else {
+			$view = View::byName(views\ticketlist::class);
+		}
+
 		$this->response->setView($view);
+
+		$departments = (new Department)->where('status', Department::ACTIVE)->get();
+		$view->setDepartment($departments);
+
 		$me = Authentication::getID();
 		$types = Authorization::childrenTypes();
 		$inputs = $this->checkinputs(array(
@@ -199,6 +231,15 @@ class Ticketing extends Controller {
 				},
 				'fileds' => array('id'),
 			),
+			'labels' => [
+				'type' => 'array',
+				'explode' => ',',
+				'duplicate' => 'remove',
+				'each' => [
+					'type' => 'int',
+				],
+				'optional' => true,
+			],
 		));
 
 		$ticket = self::checkAccessToTickets();
@@ -250,6 +291,13 @@ class Ticketing extends Controller {
 			$ticket->setQueryOption("DISTINCT");
 			$view->setDataForm($inputs['word'], "word");
 		}
+
+		if (isset($inputs['labels'])) {
+			DB::join('ticketing_tickets_labels', 'ticketing_tickets_labels.ticket_id=ticketing_tickets.id', 'inner');
+
+			$ticket->where('ticketing_tickets_labels.label_id', $inputs['labels'], 'in');
+			$ticket->setQueryOption("DISTINCT");
+		}
 		$ticket->orderBy('ticketing_tickets.reply_at', 'DESC');
 		$ticket->pageLimit = $this->items_per_page;
 		$tickets = $ticket->paginate($this->page, array(
@@ -258,13 +306,44 @@ class Ticketing extends Controller {
 			"userpanel_users.*",
 			"ticketing_departments.*",
 		));
+
+		$canViewLabels = (
+			Authorization::is_accessed('view_labels') or
+			Authorization::is_accessed('edit')
+		);
+
+		$labelIds = [];
 		foreach ($tickets as $ticket) {
 			if ($ticket->data["operator"]) {
 				$ticket->operator = new user($ticket->data["operator"]);
 			}
+
+			$ticket->client = new User($ticket->data['userpanel_users']);
+			unset($ticket->data['userpanel_users']);
+
+			if ($canViewLabels) {
+				$query = DB::where('ticketing_tickets_labels.ticket_id', $ticket->id);
+				$labels = array_column($query->get('ticketing_tickets_labels', null, 'label_id'), 'label_id');
+
+				$ticket->labels = $labels;
+				$labelIds = array_unique(array_merge($labelIds, $labels));
+			}
 		}
+
 		$view->setDataList($tickets);
 		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
+
+		if ($labelIds and $canViewLabels) {
+			$query = new Label();
+			$query->where('id', $labelIds, 'in');
+			$query->where('status', Label::ACTIVE);
+			$labels = $query->get();
+
+			$view->labels = $labels;
+
+			$view->canViewLabels = $canViewLabels;
+		}
+		
 		$this->response->setStatus(true);
 		return $this->response;
 	}
@@ -542,13 +621,28 @@ class Ticketing extends Controller {
 		return $this->response;
 	}
 
-	public function view($data) {
+	public function view($data)
+	{
 		Authorization::haveOrFail('view');
 		$view = View::byName(Views\View::class);
 		$this->response->setView($view);
+
 		$ticket = $this->getTicket($data['ticket']);
+		$canViewLabels = (
+			Authorization::is_accessed('view_labels') or
+			Authorization::is_accessed('edit')
+		);
+		if ($canViewLabels) {
+			$ticket->labels = $ticket->getLabels();
+		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
+
+		$view->canViewLabels = $canViewLabels;
 		$view->setTicket($ticket);
-		$view->setDepartment(Department::get());
+		$departments = (new Department)->where('status', Department::ACTIVE)->get();
+		$view->setDepartment($departments);
+
 		if (!$ticket->department->isWorking()) {
 			$work = $ticket->department->currentWork();
 			if ($work->message) {
@@ -583,6 +677,8 @@ class Ticketing extends Controller {
 		if ($ticket->param('ticket_lock') or $ticket->department->status == Department::DEACTIVE) {
 			throw new NotFound();
 		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$hasAccessToEnableDisableNotification = Authorization::is_accessed("enable_disabled_notification");
 		$currentUser = Authentication::getUser();
 		$defaultBehavior = Ticket::sendNotificationOnSendTicket($hasAccessToEnableDisableNotification ? $currentUser : null);
@@ -770,7 +866,17 @@ class Ticketing extends Controller {
 		$view = View::byName(Views\Edit::class);
 		Authorization::haveOrFail('edit');
 		$ticket = $this->getTicket($data['ticket']);
-		$view->setDepartment(Department::get());
+		$canViewLabels = (
+			Authorization::is_accessed('view_labels') or
+			Authorization::is_accessed('edit')
+		);
+		if ($canViewLabels) {
+			$ticket->labels = $ticket->getLabels();
+		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
+		$departments = (new Department)->where('status', Department::ACTIVE)->get();
+		$view->setDepartment($departments);
 		$view->setTicket($ticket);
 		$this->response->setView($view);		
 		$inputs = $this->checkinputs(array(
@@ -791,7 +897,17 @@ class Ticketing extends Controller {
 		$view = View::byName(Views\Edit::class);
 		Authorization::haveOrFail('edit');
 		$ticket = $this->getTicket($data['ticket']);
-		$view->setDepartment(Department::get());
+		$canViewLabels = (
+			Authorization::is_accessed('view_labels') or
+			Authorization::is_accessed('edit')
+		);
+		if ($canViewLabels) {
+			$ticket->labels = $ticket->getLabels();
+		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
+		$departments = (new Department)->where('status', Department::ACTIVE)->get();
+		$view->setDepartment($departments);
 		$view->setTicket($ticket);
 		$this->response->setView($view);
 		$users = $ticket->department->users;
@@ -832,6 +948,26 @@ class Ticketing extends Controller {
 					$query->where("type", $permission, "IN");
 				}
 			),
+			'labels' => [
+				'type' => 'array',
+				'explode' => ',',
+				'each' => [
+					'type' => Label::class,
+					'query' => function (Label $query) {
+						$query->where('status', Label::ACTIVE);
+					},
+				],
+				'optional' => true,
+				'empty' => true,
+			],
+			'delete-labels' => [
+				'type' => 'array',
+				'explode' => ',',
+				'each' => [
+					'type' => Label::class,
+				],
+				'optional' => true,
+			],
 		));
 		if (isset($inputs["operator"]) and $users) {
 			if (! in_array($inputs["operator"]->id, $users)) {
@@ -865,6 +1001,56 @@ class Ticketing extends Controller {
 			}
 		}
 		$ticket->save();
+
+		if (array_key_exists('labels', $inputs)) {
+			$oldLabels = $ticket->getLabels();
+			$newLabels = $ticket->setLabels($inputs['labels'] ? array_column($inputs['labels'], 'id') : []);
+
+			$old = array_column($oldLabels, 'id');
+			$new = array_column($newLabels, 'id');
+
+			$deleted = array_diff($old, $new);
+			if ($deleted) {
+				$parameters['oldData']['labels'] = array_map(
+					fn (Label $label) => [
+						'id' => $label->getID(),
+						'title' => $label->getTitle(),
+						'color' => $label->getColor(),
+					],
+					array_filter($oldLabels, fn (Label $label) => in_array($label->id, $deleted))
+				);
+			}
+			$added = array_diff($new, $old);
+			if ($added) {
+				$parameters['newData'] = [
+					'labels' => array_map(
+						fn (Label $label) => [
+							'id' => $label->getID(),
+							'title' => $label->getTitle(),
+							'color' => $label->getColor(),
+						],
+						array_filter($newLabels, fn (Label $label) => in_array($label->id, $added))
+					),
+				];
+			}
+		} elseif (isset($inputs['delete-labels'])) {
+			$deletedLabels = $ticket->deleteLabels(array_column($inputs['delete-labels'], 'id'));
+			if ($deletedLabels) {
+				$parameters['oldData']['labels'] = array_map(
+					fn (Label $label) => [
+						'id' => $label->getID(),
+						'title' => $label->getTitle(),
+						'color' => $label->getColor(),
+					],
+					$deletedLabels
+				);
+			}
+		}
+
+		if ($canViewLabels) {
+			$ticket->labels = $ticket->getLabels();
+		}
+
 		if (isset($inputs['oldStatus'])) {
 			if ($inputs['oldStatus'] != $ticket->status) {
 				if ($ticket->status == Ticket::closed) {
@@ -894,6 +1080,8 @@ class Ticketing extends Controller {
 		authorization::haveOrFail('lock');
 
 		$ticket = $this->getTicket($data['ticket']);
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -918,6 +1106,8 @@ class Ticketing extends Controller {
 		authorization::haveOrFail('unlock');
 
 		$ticket = $this->getTicket($data['ticket']);
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -942,6 +1132,8 @@ class Ticketing extends Controller {
 		$view = view::byName("\\packages\\ticketing\\views\\delete");
 		authorization::haveOrFail('delete');
 		$ticket = $this->getTicket($data['ticket']);
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view->setTicketData($ticket);
 		$this->response->setStatus(false);
 		if(http::is_post()){
@@ -1027,6 +1219,8 @@ class Ticketing extends Controller {
 		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
 			throw new NotFound();
 		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view = view::byName("\\packages\\ticketing\\views\\close");
 		$view->setTicket($ticket);
 		$this->response->setStatus(true);
@@ -1039,6 +1233,8 @@ class Ticketing extends Controller {
 		if($ticket->status == ticket::closed or $ticket->param('ticket_lock')){
 			throw new NotFound();
 		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view = view::byName("\\packages\\ticketing\\views\\close");
 		$view->setTicket($ticket);
 		$this->response->setStatus(false);
@@ -1066,6 +1262,8 @@ class Ticketing extends Controller {
 		if($ticket->status == ticket::in_progress){
 			throw new NotFound();
 		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view = view::byName("\\packages\\ticketing\\views\\inprogress");
 		$view->setTicket($ticket);
 		$this->response->setStatus(true);
@@ -1078,6 +1276,8 @@ class Ticketing extends Controller {
 		if($ticket->status == ticket::in_progress){
 			throw new NotFound();
 		}
+		$ticket->client = new User($ticket->data['userpanel_users']);
+		unset($ticket->data['userpanel_users']);
 		$view = view::byName("\\packages\\ticketing\\views\\inprogress");
 		$view->setTicket($ticket);
 		$this->response->setStatus(false);

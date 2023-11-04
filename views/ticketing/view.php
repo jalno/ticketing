@@ -9,6 +9,8 @@ use \packages\ticketing\authorization;
 class view extends form
 {
 	public bool $canViewDec;
+	public bool $canViewLabels = false;
+
 	protected $canEdit;
 	protected $canEditMessage;
 	protected $canDel;

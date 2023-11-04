@@ -144,7 +144,7 @@
 body.tickets-add, body.tickets-view {
 	.btn-group-notification-behavior {
 		.btn-select-notification-behavior {
-			padding: 13px 6px;
+			padding: 10px 6px;
 			i {
 				vertical-align: middle;
 			}
@@ -387,6 +387,18 @@ body.ticketing-templates {
 	}
 }
 
+body.ticketing-labels {
+	.btn-acion {
+		margin-bottom: 10px;
+	}
+}
+
+#labels-add-edit-form {
+	textarea {
+		resize: vertical;
+	}
+}
+
 body.rtl {
 	.ticket-status-search {
 		font-family: yekan;
@@ -438,6 +450,21 @@ body.rtl {
 		#search-templates-modal {
 			font-family: yekan;
 		}
+	}
+
+	&.ticketing-labels {
+		.container {
+			.panel {
+				font-family: yekan;
+			}
+		}
+		#search-templates-modal {
+			font-family: yekan;
+		}
+	}
+
+	#labels-add-edit-form {
+		font-family: yekan;
 	}
 
 	#ticketing-editor {

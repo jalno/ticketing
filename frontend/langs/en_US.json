@@ -222,6 +222,24 @@
 		"titiles.ticketing.form_fields": "Form fields",
 		"titles.ticketing.actions": "Actions",
 		"ticketing.template.delete": "Be careful when deleting templates.<br>All information is deleted and cannot be returned.",
-		"titiles.ticketing.template": "Template"
+		"titiles.ticketing.template": "Template",
+		"titles.ticketing.labels": "Labels",
+		"titles.ticketing.labels.add": "Add new Label",
+		"titles.ticketing.labels.edit": "Edit Labels",
+		"titles.ticketing.labels.delete": "Delete Labels",
+		"titles.ticketing.labels.title": "Title",
+		"titles.ticketing.labels.description": "Description",
+		"titles.ticketing.labels.color": "Color",
+		"titles.ticketing.labels.status": "Status",
+		"titles.ticketing.labels.status.active": "Active",
+		"titles.ticketing.labels.status.deactive": "Deactive",
+		"ticketing.label.delete": "Be careful in deleting labels.<br>All information wil be delete and cannot be returned.",
+		"ticketing.label.delete.with_tickets": "Be careful in deleting labels.<br> There is #{tickets} ticket(s) with this laebel and can not retrieve them after deleting labels. <a href=\"{url}\" target=\"_blank\">View Tickets</a>",
+		"titles.ticketing.labels.none": "Mone",
+		"titles.ticketing.labels.assign": "Assign",
+		"titles.ticketing.labels.manage": "Manage Labels",
+		"titles.ticketing.logs.added_data": "Added Fields",
+		"titles.ticketing.logs.labels.old": "Old Data",
+		"titles.ticketing.logs.labels.new": "New Data"
 	}
 }

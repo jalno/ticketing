@@ -132,10 +132,22 @@
 		"usertype.permissions.ticketing_settings_templates_edit": "ویرایش قالب پیام های پشتیبانی",
 		"usertype.permissions.ticketing_settings_templates_delete": "حذف قالب پیام های پشتیبانی",
 
+		"usertype.permissions.ticketing_settings_labels": "برچسب ها",
+		"usertype.permissions.ticketing_settings_labels_search": "جستجو برچسب ها",
+		"usertype.permissions.ticketing_settings_labels_add": "افزودن برچسب ها",
+		"usertype.permissions.ticketing_settings_labels_edit": "ویرایش برچسب ها",
+		"usertype.permissions.ticketing_settings_labels_delete": "حذف برچسب ها",
+
+		"usertype.permissions.ticketing_view_labels": "مشاهده برچسب های تیکت",
+
 		"ticketing.logs.templates.add": "قالب پیام #{id} را اضافه کرد.",
 		"ticketing.logs.templates.edit": "قالب پیام #{id} را بروز کرد.",
 		"ticketing.logs.templates.delete": "قالب پیام #{id} را حذف کرد.",
 
-		"usertype.permissions.ticketing_use_templates": "استفاده از قالب های پیام در ایجاد و پاسخ تیکت"
+		"usertype.permissions.ticketing_use_templates": "استفاده از قالب های پیام در ایجاد و پاسخ تیکت",
+
+		"ticketing.logs.labels.add": "برچسب تیکت #{id} را اضافه کرد.",
+		"ticketing.logs.labels.edit": "برچسب تیکت #{id} را بروز کرد.",
+		"ticketing.logs.labels.delete": "برچسب تیکت #{id} را حذف کرد."
 	}
 }

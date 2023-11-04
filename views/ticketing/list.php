@@ -1,11 +1,19 @@
 <?php
 namespace packages\ticketing\views;
 
-use packages\financial\views\listview as list_view;
 use packages\base\views\traits\form as formTrait;
 use packages\ticketing\Authorization;
+use packages\ticketing\contracts\ILabel;
+use packages\ticketing\views\listview as list_view;
 
-class ticketlist extends list_view {
+class ticketlist extends list_view
+{
+	/**
+	 * @var ILabel[]
+	 */
+	public array $labels = [];
+	public bool $canViewLabels = false;
+
 	protected $canAdd;
 	protected $canView;
 	protected $canEdit;
@@ -21,8 +29,9 @@ class ticketlist extends list_view {
 		$this->canDel = Authorization::is_accessed('delete');
 		$this->multiuser = (bool)Authorization::childrenTypes();
 	}
-	public function getTickets(){
-		return $this->dataList;
+	public function getTickets(): array
+	{
+		return $this->getDataList();
 	}
 	public function setNewTicketClientID(int $clientID = 0): void {
 		$this->setData($clientID, 'newTicketClientID');

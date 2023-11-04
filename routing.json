@@ -6,7 +6,7 @@
 	},
 	{
 		"path": "userpanel/users/tickets/:id",
-		"controller": "controllers/Userpanel@getUserTickets",
+		"controller": "controllers/ticketing@index",
 		"method": "get"
 	},
 	{
@@ -170,5 +170,40 @@
 		"path": "userpanel/ticketing/templates/:id",
 		"controller": "controllers/ticketing@getTemplate",
 		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels",
+		"controller": "controllers/settings/Labels@search",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/add",
+		"controller": "controllers/settings/Labels@add",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/add",
+		"controller": "controllers/settings/Labels@store",
+		"method": "post"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/edit/:id",
+		"controller": "controllers/settings/Labels@edit",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/edit/:id",
+		"controller": "controllers/settings/Labels@update",
+		"method": "post"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/delete/:id",
+		"controller": "controllers/settings/Labels@delete",
+		"method": "get"
+	},
+	{
+		"path": "userpanel/settings/ticketing/labels/delete/:id",
+		"controller": "controllers/settings/Labels@terminate",
+		"method": "post"
 	}
 ]

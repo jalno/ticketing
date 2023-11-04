@@ -3,10 +3,12 @@
 use packages\base\translator;
 use packages\ticketing\Department;
 use packages\ticketing\Template;
+use packages\ticketing\Label;
 use packages\userpanel;
 use packages\userpanel\Date;
 use packages\ticketing\{Authentication, Authorization, Ticket, Ticket_Message};
-use themes\clipone\{Utility};
+use themes\clipone\Utility;
+use function packages\base\json\encode;
 
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
@@ -293,6 +295,25 @@ $this->the_header();
 						));
 					?>
 						</form>
+					</div>
+					<div class="form-group ticket-label-group">
+						<label class="col-xs-8"><?php echo t('titles.ticketing.labels'); ?></label>
+						<div class="col-xs-4 text-left">
+							<button class="btn btn-link btn-edit-labels" data-permissions='<?php echo encode($this->getLabelsPermissions()); ?>' data-labels="<?php echo encode(array_map(fn (Label $label) => $label->getID(), $this->ticket->labels)); ?>"><?php echo t('ticketing.edit'); ?></button>
+						</div>
+						<div class="col-xs-12">
+							<div class="ticket-labels" data-ticket="<?php echo $this->ticket->id; ?>">
+							<?php
+							if ($this->ticket->labels) {
+								foreach ($this->ticket->labels as $label) {
+									echo $this->getLabel($label, 'ticketing', true);
+								}
+							} else {
+								echo '<p class="text-muted">'.t('titles.ticketing.labels.none').'</p>';
+							}
+							?>
+							</div>
+						</div>
 					</div>
 				<?php } ?>
 

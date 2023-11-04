@@ -3,6 +3,7 @@ namespace themes\clipone\views\ticketing;
 use \packages\base\translator;
 use \packages\ticketing\views\edit as ticketEdit;
 use \packages\ticketing\ticket;
+use packages\ticketing\Label;
 use \packages\userpanel;
 use \packages\userpanel\user;
 use \themes\clipone\views\formTrait;
@@ -25,6 +26,41 @@ class edit extends ticketEdit
 		$this->setNavigation();
 		$this->setFormData();
 	}
+
+	public function export(): array
+	{
+		$ticket = $this->getTicket();
+
+		$data = [
+			'ticket' => $ticket->toArray(),
+		];
+
+		$data['ticket']['client'] = [
+			'id' => $ticket->client->id,
+			'name' => $ticket->client->name,
+			'lastname' => $ticket->client->lastname,
+		];
+
+		if ($ticket->operator) {
+			$data['ticket']['operator'] = [
+				'id' => $ticket->operator->id,
+				'name' => $ticket->operator->name,
+				'lastname' => $ticket->operator->lastname,
+			];
+		}
+
+		if ($ticket->labels) {
+			$data['ticket']['labels'] = array_map(fn (Label $label) => [
+				'id' => $label->getID(),
+				'title' => $label->getTitle(),
+				'description' => $label->getDescription() ?? '',
+				'color' => $label->getColor(),
+			], $ticket->labels);
+		}
+
+		return ['data' => $data];
+	}
+
 	private function setFormData(){
 		if($user = $this->getDataForm('client')){
 			if($user = user::byId($user)){

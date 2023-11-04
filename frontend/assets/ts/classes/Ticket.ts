@@ -11,6 +11,7 @@ import Edit from "./Ticket/Edit";
 import List from "./Ticket/List";
 import Reply from "./Ticket/Reply";
 import TemplateSelector from "./TemplateSelector";
+import Labels from "./Ticket/Labels";
 
 
 export enum ITicketStatus {
@@ -44,6 +45,7 @@ export default class Ticket {
 		Reply.initIfNeeded();
 		Edit.initIfNeeded();
 		Close.initIfNeeded();
+		Labels.initIfNeeded();
 		Ticket.init();
 	}
 	public static runEnableDisableNotificationListener($form: JQuery) {

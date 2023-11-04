@@ -4,6 +4,7 @@ use themes\clipone\utility;
 use packages\userpanel\date;
 use packages\base\translator;
 use packages\ticketing\ticket;
+use packages\ticketing\Label;
 if (!$this->isActiveTab()) {
 	$this->the_header();
 }
@@ -74,10 +75,10 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 				<div class="row more-field">
 					<div class="col-sm-6 col-xs-12">
 						<?php
-						 $this->createField(array(
-						 	"name" => "status",
-						 	"type" => "hidden",
-						 ));
+						$this->createField(array(
+							"name" => "status",
+							"type" => "hidden",
+						));
 						$this->createField(array(
 							"name" => "id",
 							"type" => "number",
@@ -106,15 +107,32 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 							"label" => t("ticket.department"),
 							"options" => $this->getDepartmentsForSelect()
 						));
-						if ($this->multiuser and !$this->isTab) {
-							$this->createField(array(
-								"name" => "client",
-								"type" => "hidden",
-							));
-							$this->createField(array(
-								"name" => "client_name",
-								"label" => t("ticket.client"),
-							));
+						if ($this->multiuser) {
+							if (!$this->isTab) {
+								$this->createField(array(
+									"name" => "client",
+									"type" => "hidden",
+								));
+								$this->createField(array(
+									"name" => "client_name",
+									"label" => t("ticket.client"),
+								));
+							}
+
+							if ($this->canViewLabels) {
+								$this->createField(array(
+									'name' => 'labels',
+									'type' => 'hidden',
+								));
+
+								$this->createField(array(
+									'name' => 'labels_select',
+									'type' => 'select',
+									'label' => t('titles.ticketing.labels'),
+									'multiple' => true,
+									'options' => $this->getLabelsForSelect(),
+								));
+							}
 						}
 						?>
 						<div class="row">
@@ -195,9 +213,7 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 			</div>
 			<div class="col-sm-4 col-xs-12 ticket-info">
 				<p>
-				<?php
-				if ($ticket->operator_id) {
-				?>
+				<?php if ($ticket->operator_id) { ?>
 					<span>
 						<a target="_blank" href="<?php echo $this->hasAccessToUsers ? userpanel\url("users", array("id" => $ticket->operator_id)) : "javascript::void()"; ?>" class="tooltips" title="<?php echo $ticket->operator->getFullName(); ?>">
 							<img class="img-circle" src="<?php echo $ticket->operator->getAvatar(16, 16); ?>" alt="<?php echo $ticket->operator->getFullName(); ?>">
@@ -227,6 +243,10 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 			<?php } ?>
 			</div>
 		</div>
+
+		<?php if ($this->canViewLabels) { ?>
+			<div class="ticket-labels"><?php echo $this->getLabelsForShow($ticket->labels); ?></div>
+		<?php } ?>
 	</div>
 <?php } ?>
 </div>
