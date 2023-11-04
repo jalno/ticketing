@@ -244,6 +244,8 @@
 		"titles.ticketing.labels.none": "بدون برچسب",
 		"titles.ticketing.labels.assign": "انتخاب برچسب",
 		"titles.ticketing.labels.manage": "مدیریت برچسب ها",
-		"titles.ticketing.logs.added_data": "فیلد های اضافه شده"
+		"titles.ticketing.logs.added_data": "فیلد های اضافه شده",
+		"titles.ticketing.logs.labels.old": "اطلاعات قدیم",
+		"titles.ticketing.logs.labels.new": "اطلاعات جدید"
 	}
 }

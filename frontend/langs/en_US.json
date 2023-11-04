@@ -238,6 +238,8 @@
 		"titles.ticketing.labels.none": "Mone",
 		"titles.ticketing.labels.assign": "Assign",
 		"titles.ticketing.labels.manage": "Manage Labels",
-		"titles.ticketing.logs.added_data": "Added Fields"
+		"titles.ticketing.logs.added_data": "Added Fields",
+		"titles.ticketing.logs.labels.old": "Old Data",
+		"titles.ticketing.logs.labels.new": "New Data"
 	}
 }

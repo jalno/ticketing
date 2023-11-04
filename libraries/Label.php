@@ -71,7 +71,7 @@ class Label extends DBObject implements ILabel
     {
         $changes = ['new' => [], 'old' => []];
         foreach (['title', 'color', 'status', 'description'] as $item) {
-            if ($origin->$item !== $this->$item) {
+            if ($origin->$item != $this->$item) {
                 $changes['old'][$item] = $origin->$item;
                 $changes['new'][$item] = $this->$item;
             }

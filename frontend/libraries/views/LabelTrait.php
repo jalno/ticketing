@@ -86,7 +86,7 @@ trait LabelTrait
             $title = ' title="'.$label->getDescription().'"';
         }
 
-        return '<span class="'.$class.'"'.$title.' style="background-color: '.$label->getColor().';">
+        return '<span class="'.$class.'"'.$title.' style="background-color: '.$label->getColor().';" data-container="body">
             '.($deleteable ? '<a href="#" class="btn btn-link btn-xs btn-delete '.$textColor.'" data-id="'.$label->getID().'"><i class="fa fa-times"></i></a>' : '').'
             <a href="'.$this->getSearchLink($label, $path).'" class="btn btn-link btn-xs '.$textColor.'">'.$label->getTitle().'</a>
         </span>';
