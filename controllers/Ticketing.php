@@ -153,8 +153,6 @@ class Ticketing extends Controller {
 			$view = View::byName(views\ticketlist::class);
 		}
 
-		$this->response->setView($view);
-
 		$departments = (new Department)->where('status', Department::ACTIVE)->get();
 		$view->setDepartment($departments);
 
@@ -306,6 +304,7 @@ class Ticketing extends Controller {
 			"userpanel_users.*",
 			"ticketing_departments.*",
 		));
+		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
 
 		$canViewLabels = (
 			Authorization::is_accessed('view_labels') or
@@ -329,9 +328,7 @@ class Ticketing extends Controller {
 				$labelIds = array_unique(array_merge($labelIds, $labels));
 			}
 		}
-
 		$view->setDataList($tickets);
-		$view->setPaginate($this->page, db::totalCount(), $this->items_per_page);
 
 		if ($labelIds and $canViewLabels) {
 			$query = new Label();
@@ -343,7 +340,8 @@ class Ticketing extends Controller {
 
 			$view->canViewLabels = $canViewLabels;
 		}
-		
+
+		$this->response->setView($view);
 		$this->response->setStatus(true);
 		return $this->response;
 	}
