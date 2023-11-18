@@ -125,6 +125,7 @@ class Ticketing extends Controller {
 	{
 		Authorization::haveOrFail('list');
 
+		$user = null;
 		$view = null;
 		if (isset($data['id'])) {
 			if (!is_numeric($data['id']) or $data['id'] == Authentication::getID()) {
@@ -241,6 +242,10 @@ class Ticketing extends Controller {
 		));
 
 		$ticket = self::checkAccessToTickets();
+
+		if ($user) {
+			$inputs["client"] = $user->id;
+		}
 
 		if ($inputs["unread"]) {
 			$inputs["status"] = Ticket::STATUSES;
