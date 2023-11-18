@@ -339,13 +339,10 @@ class Ticketing extends Controller {
 			$query = new Label();
 			$query->where('id', $labelIds, 'in');
 			$query->where('status', Label::ACTIVE);
-			$labels = $query->get();
-
-			$view->labels = $labels;
-
-			$view->canViewLabels = $canViewLabels;
+			$view->labels = $query->get();
 		}
 
+		$view->canViewLabels = $canViewLabels;
 		$this->response->setView($view);
 		$this->response->setStatus(true);
 		return $this->response;
