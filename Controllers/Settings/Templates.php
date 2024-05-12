@@ -15,8 +15,9 @@ use packages\ticketing\Template;
 use packages\ticketing\TicketMessage as Message;
 use packages\userpanel\Authentication;
 use packages\userpanel\Controller;
-use function packages\userpanel\url;
 use themes\clipone\Views\Ticketing\Settings\Templates as Views;
+
+use function packages\userpanel\url;
 
 class Templates extends Controller
 {

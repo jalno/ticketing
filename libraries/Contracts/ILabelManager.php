@@ -23,8 +23,6 @@ interface ILabelManager
     public function store(array $data): ILabel;
 
     /**
-     * @param UpdateLabelDataType $data
-     *
      * @throws Error on failure update or find label
      */
     public function update(int $id, array $changes): ILabel;

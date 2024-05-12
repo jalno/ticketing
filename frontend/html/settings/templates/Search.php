@@ -1,8 +1,9 @@
 <?php
 
 use packages\ticketing\Template;
-use function packages\userpanel\url;
 use themes\clipone\Utility;
+
+use function packages\userpanel\url;
 
 $this->the_header();
 
@@ -30,8 +31,8 @@ if ($this->canAdd) {
 	<div class="panel-body">
 	<?php
     $templates = $this->getDataList();
-    if ($templates) {
-        ?>
+if ($templates) {
+    ?>
 		<div class="table-responsive">
 			<table class="table table-hover">
 			<?php $hasButtons = $this->hasButtons(); ?>
@@ -50,25 +51,25 @@ if ($this->canAdd) {
 				</thead>
 				<tbody>
 				<?php
-                foreach ($templates as $template) {
-                    $this->setButtonParam('edit', 'link', url('settings/ticketing/templates/edit/'.$template->getID()));
-                    $this->setButtonParam('delete', 'link', url('settings/ticketing/templates/delete/'.$template->getID()));
+            foreach ($templates as $template) {
+                $this->setButtonParam('edit', 'link', url('settings/ticketing/templates/edit/'.$template->getID()));
+                $this->setButtonParam('delete', 'link', url('settings/ticketing/templates/delete/'.$template->getID()));
 
-                    $statusClass = Utility::switchcase($template->getStatus(), [
-                        'label label-success' => Template::ACTIVE,
-                        'label label-inverse' => Template::DEACTIVE,
-                    ]);
+                $statusClass = Utility::switchcase($template->getStatus(), [
+                    'label label-success' => Template::ACTIVE,
+                    'label label-inverse' => Template::DEACTIVE,
+                ]);
 
-                    $statusTranslate = Utility::switchcase($template->getStatus(), [
-                        'titles.ticketing.templates.status.active' => Template::ACTIVE,
-                        'titles.ticketing.templates.status.deactive' => Template::DEACTIVE,
-                    ]);
+                $statusTranslate = Utility::switchcase($template->getStatus(), [
+                    'titles.ticketing.templates.status.active' => Template::ACTIVE,
+                    'titles.ticketing.templates.status.deactive' => Template::DEACTIVE,
+                ]);
 
-                    $messageType = Utility::switchcase($template->getMessageType(), [
-                        'titles.ticketing.all' => null,
-                        'titles.ticketing.templates.message_type.add' => Template::ADD,
-                        'titles.ticketing.templates.message_type.reply' => Template::REPLY,
-                    ]); ?>
+                $messageType = Utility::switchcase($template->getMessageType(), [
+                    'titles.ticketing.all' => null,
+                    'titles.ticketing.templates.message_type.add' => Template::ADD,
+                    'titles.ticketing.templates.message_type.reply' => Template::REPLY,
+                ]); ?>
 					<tr>
 						<td class="center"><?php echo $template->getID(); ?></td>
 						<td><?php echo $template->getTitle(); ?></td>
@@ -83,14 +84,14 @@ if ($this->canAdd) {
 					<?php } ?>
 					</tr>
 				<?php
-                } ?>
+            } ?>
 				</tbody>
 			</table>
 		</div>
 	<?php
         $this->paginator();
-    } else {
-        ?>
+} else {
+    ?>
 		<div class="alert alert-block alert-warning">
 			<p>
 				<i class="fa fa-exclamation-triangle"></i>
@@ -98,7 +99,7 @@ if ($this->canAdd) {
 			</p>
 		</div>
 	<?php
-    } ?>
+} ?>
 	</div>
 </div>
 
@@ -110,61 +111,61 @@ if ($this->canAdd) {
 	<div class="modal-body">
 		<form id="search-templates-form" class="form-horizontal" action="<?php echo url('settings/ticketing/templates'); ?>" method="GET">
 		<?php
-        $this->setHorizontalForm('sm-3', 'sm-9');
+    $this->setHorizontalForm('sm-3', 'sm-9');
 
-        $feilds = [
-            [
-                'name' => 'id',
-                'type' => 'number',
-                'label' => t('ticket.id'),
-            ],
-            [
-                'name' => 'title',
-                'label' => t('titles.ticketing.templates.title'),
-            ],
-            [
-                'name' => 'subject',
-                'label' => t('titles.ticketing.templates.subject'),
-            ],
-            [
-                'name' => 'message_type',
-                'label' => t('titles.ticketing.templates.message_type'),
-                'type' => 'select',
-                'options' => $this->getMessageTypesForSelect(),
-            ],
-            [
-                'name' => 'message_format',
-                'label' => t('titles.ticketing.message_format'),
-                'type' => 'select',
-                'options' => $this->getMessageFormatsForSelect(true),
-            ],
-            [
-                'name' => 'status',
-                'label' => t('titles.ticketing.templates.status'),
-                'type' => 'select',
-                'options' => $this->getStatusesForSelect(),
-            ],
-            [
-                'name' => 'department',
-                'label' => t('ticket.department'),
-                'type' => 'select',
-                'options' => $this->getDepartmentsForSelect(),
-            ],
-            [
-                'name' => 'word',
-                'label' => t('ticketing.ticket.keyword'),
-            ],
-            [
-                'type' => 'select',
-                'label' => t('search.comparison'),
-                'name' => 'comparison',
-                'options' => $this->getComparisonsForSelect(),
-            ],
-        ];
-        foreach ($feilds as $input) {
-            $this->createField($input);
-        }
-        ?>
+$feilds = [
+    [
+        'name' => 'id',
+        'type' => 'number',
+        'label' => t('ticket.id'),
+    ],
+    [
+        'name' => 'title',
+        'label' => t('titles.ticketing.templates.title'),
+    ],
+    [
+        'name' => 'subject',
+        'label' => t('titles.ticketing.templates.subject'),
+    ],
+    [
+        'name' => 'message_type',
+        'label' => t('titles.ticketing.templates.message_type'),
+        'type' => 'select',
+        'options' => $this->getMessageTypesForSelect(),
+    ],
+    [
+        'name' => 'message_format',
+        'label' => t('titles.ticketing.message_format'),
+        'type' => 'select',
+        'options' => $this->getMessageFormatsForSelect(true),
+    ],
+    [
+        'name' => 'status',
+        'label' => t('titles.ticketing.templates.status'),
+        'type' => 'select',
+        'options' => $this->getStatusesForSelect(),
+    ],
+    [
+        'name' => 'department',
+        'label' => t('ticket.department'),
+        'type' => 'select',
+        'options' => $this->getDepartmentsForSelect(),
+    ],
+    [
+        'name' => 'word',
+        'label' => t('ticketing.ticket.keyword'),
+    ],
+    [
+        'type' => 'select',
+        'label' => t('search.comparison'),
+        'name' => 'comparison',
+        'options' => $this->getComparisonsForSelect(),
+    ],
+];
+foreach ($feilds as $input) {
+    $this->createField($input);
+}
+?>
 		</form>
 	</div>
 	<div class="modal-footer">

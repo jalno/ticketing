@@ -1,8 +1,9 @@
 <?php
 
 use packages\ticketing\Label;
-use function packages\userpanel\url;
 use themes\clipone\Utility;
+
+use function packages\userpanel\url;
 
 $this->the_header();
 
@@ -30,8 +31,8 @@ if ($this->canAdd) {
 	<div class="panel-body">
 	<?php
     $labels = $this->getDataList();
-    if ($labels) {
-        ?>
+if ($labels) {
+    ?>
 		<div class="table-responsive">
 			<table class="table table-hover">
 			<?php $hasButtons = $this->hasButtons(); ?>
@@ -47,20 +48,20 @@ if ($this->canAdd) {
 				</thead>
 				<tbody>
 				<?php
-                foreach ($labels as $label) {
-                    $this->setButtonParam('edit', 'link', url('settings/ticketing/labels/edit/'.$label->getID()));
-                    $this->setButtonParam('delete', 'link', url('settings/ticketing/labels/delete/'.$label->getID()));
+            foreach ($labels as $label) {
+                $this->setButtonParam('edit', 'link', url('settings/ticketing/labels/edit/'.$label->getID()));
+                $this->setButtonParam('delete', 'link', url('settings/ticketing/labels/delete/'.$label->getID()));
 
-                    $statusClass = Utility::switchcase($label->getStatus(), [
-                        'label label-success' => Label::ACTIVE,
-                        'label label-inverse' => Label::DEACTIVE,
-                    ]);
+                $statusClass = Utility::switchcase($label->getStatus(), [
+                    'label label-success' => Label::ACTIVE,
+                    'label label-inverse' => Label::DEACTIVE,
+                ]);
 
-                    $statusTranslate = Utility::switchcase($label->getStatus(), [
-                        'titles.ticketing.labels.status.active' => Label::ACTIVE,
-                        'titles.ticketing.labels.status.deactive' => Label::DEACTIVE,
-                    ]);
-                    ?>
+                $statusTranslate = Utility::switchcase($label->getStatus(), [
+                    'titles.ticketing.labels.status.active' => Label::ACTIVE,
+                    'titles.ticketing.labels.status.deactive' => Label::DEACTIVE,
+                ]);
+                ?>
 					<tr>
 						<td class="center"><?php echo $label->getID(); ?></td>
 						<td><?php echo $this->getLabel($label, 'ticketing'); ?></td>
@@ -72,14 +73,14 @@ if ($this->canAdd) {
 					<?php } ?>
 					</tr>
 				<?php
-                } ?>
+            } ?>
 				</tbody>
 			</table>
 		</div>
 	<?php
         $this->paginator();
-    } else {
-        ?>
+} else {
+    ?>
 		<div class="alert alert-block alert-warning">
 			<p>
 				<i class="fa fa-exclamation-triangle"></i>
@@ -87,7 +88,7 @@ if ($this->canAdd) {
 			</p>
 		</div>
 	<?php
-    } ?>
+} ?>
 	</div>
 </div>
 
@@ -99,39 +100,39 @@ if ($this->canAdd) {
 	<div class="modal-body">
 		<form id="search-labels-form" class="form-horizontal" action="<?php echo url('settings/ticketing/labels'); ?>" method="GET">
 		<?php
-        $this->setHorizontalForm('sm-3', 'sm-9');
+    $this->setHorizontalForm('sm-3', 'sm-9');
 
-        $feilds = [
-            [
-                'name' => 'id',
-                'type' => 'number',
-                'label' => t('ticket.id'),
-            ],
-            [
-                'name' => 'title',
-                'label' => t('titles.ticketing.labels.title'),
-            ],
-            [
-                'name' => 'status',
-                'label' => t('titles.ticketing.labels.status'),
-                'type' => 'select',
-                'options' => $this->getStatusForSelect(true),
-            ],
-            [
-                'name' => 'word',
-                'label' => t('ticketing.ticket.keyword'),
-            ],
-            [
-                'type' => 'select',
-                'label' => t('search.comparison'),
-                'name' => 'comparison',
-                'options' => $this->getComparisonsForSelect(),
-            ],
-        ];
-        foreach ($feilds as $input) {
-            $this->createField($input);
-        }
-        ?>
+$feilds = [
+    [
+        'name' => 'id',
+        'type' => 'number',
+        'label' => t('ticket.id'),
+    ],
+    [
+        'name' => 'title',
+        'label' => t('titles.ticketing.labels.title'),
+    ],
+    [
+        'name' => 'status',
+        'label' => t('titles.ticketing.labels.status'),
+        'type' => 'select',
+        'options' => $this->getStatusForSelect(true),
+    ],
+    [
+        'name' => 'word',
+        'label' => t('ticketing.ticket.keyword'),
+    ],
+    [
+        'type' => 'select',
+        'label' => t('search.comparison'),
+        'name' => 'comparison',
+        'options' => $this->getComparisonsForSelect(),
+    ],
+];
+foreach ($feilds as $input) {
+    $this->createField($input);
+}
+?>
 		</form>
 	</div>
 	<div class="modal-footer">

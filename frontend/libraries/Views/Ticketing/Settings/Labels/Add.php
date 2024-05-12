@@ -2,8 +2,6 @@
 
 namespace themes\clipone\Views\Ticketing\Settings\Labels;
 
-use packages\ticketing\TicketMessage as Message;
-use packages\userpanel\Authentication;
 use packages\userpanel\Views\Form;
 use themes\clipone\Navigation;
 use themes\clipone\Views\FormTrait;

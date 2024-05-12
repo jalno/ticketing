@@ -1,31 +1,38 @@
 <?php
+
 namespace themes\clipone\Listeners\Ticketing;
 
 use packages\base\View;
-use packages\userpanel;
-use packages\userpanel\Authentication;
 use packages\ticketing;
 use packages\ticketing\Authorization;
-use themes\clipone\{Events, Views, Tab};
+use packages\userpanel;
+use packages\userpanel\Authentication;
+use themes\clipone\Events;
+use themes\clipone\Tab;
+use themes\clipone\Views;
 
-class UserProfileTabs {
-	public function handle(Events\InitTabsEvent $event) {
-		$view = $event->getView();
-		if ($view instanceof Views\Users\View) {
-			$userID = $view->getData('user')->id;
-			if (Authorization::is_accessed("list") and $userID != Authentication::getID()) {
-				$this->addTicketsToUserProfile($view);
-			}
-		}
-	}
-	private function addTicketsToUserProfile(View $view) {
-		$userID = $view->getData('user')->id;
-		$tabView = View::byName(ticketing\Views\TicketList::class);
-		$tabView->setNewTicketClientID($userID);
-		$tabView->isTab(true);
-		$tab = new Tab("ticket", $tabView);
-		$tab->setTitle(t("tickets"));
-		$tab->setLink(userpanel\url("users/tickets/" . $userID));
-		$view->addTab($tab);
-	}
+class UserProfileTabs
+{
+    public function handle(Events\InitTabsEvent $event)
+    {
+        $view = $event->getView();
+        if ($view instanceof Views\Users\View) {
+            $userID = $view->getData('user')->id;
+            if (Authorization::is_accessed('list') and $userID != Authentication::getID()) {
+                $this->addTicketsToUserProfile($view);
+            }
+        }
+    }
+
+    private function addTicketsToUserProfile(View $view)
+    {
+        $userID = $view->getData('user')->id;
+        $tabView = View::byName(ticketing\Views\TicketList::class);
+        $tabView->setNewTicketClientID($userID);
+        $tabView->isTab(true);
+        $tab = new Tab('ticket', $tabView);
+        $tab->setTitle(t('tickets'));
+        $tab->setLink(userpanel\url('users/tickets/'.$userID));
+        $view->addTab($tab);
+    }
 }

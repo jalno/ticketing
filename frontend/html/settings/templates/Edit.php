@@ -2,6 +2,7 @@
 
 use packages\base\Translator;
 use packages\ticketing\Template;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -25,40 +26,40 @@ $this->the_header();
                     'label' => t('titles.ticketing.templates.title'),
                     'required' => true,
                 ]);
-                $this->createField([
-                    'name' => 'subject',
-                    'label' => t('titles.ticketing.templates.subject'),
-                    'disabled' => Template::REPLY == $this->template->getMessageType(),
-                ]);
-                $this->createField([
-                    'name' => 'message_format',
-                    'label' => t('titles.ticketing.message_format'),
-                    'type' => 'select',
-                    'options' => $this->getMessageFormatsForSelect(),
-                ]);
-                ?>
+$this->createField([
+    'name' => 'subject',
+    'label' => t('titles.ticketing.templates.subject'),
+    'disabled' => Template::REPLY == $this->template->getMessageType(),
+]);
+$this->createField([
+    'name' => 'message_format',
+    'label' => t('titles.ticketing.message_format'),
+    'type' => 'select',
+    'options' => $this->getMessageFormatsForSelect(),
+]);
+?>
 				</div>
 				<div class="col-sm-6">
 				<?php
-                $this->createField([
-                    'name' => 'message_type',
-                    'label' => t('titles.ticketing.templates.message_type'),
-                    'type' => 'select',
-                    'options' => $this->getMessageTypesForSelect(),
-                ]);
-                $this->createField([
-                    'name' => 'department',
-                    'label' => t('ticket.department'),
-                    'type' => 'select',
-                    'options' => $this->getDepartmentsForSelect(),
-                ]);
-                $this->createField([
-                    'name' => 'status',
-                    'label' => t('titles.ticketing.templates.status'),
-                    'type' => 'select',
-                    'options' => $this->getStatusesForSelect(),
-                ]);
-                ?>
+$this->createField([
+    'name' => 'message_type',
+    'label' => t('titles.ticketing.templates.message_type'),
+    'type' => 'select',
+    'options' => $this->getMessageTypesForSelect(),
+]);
+$this->createField([
+    'name' => 'department',
+    'label' => t('ticket.department'),
+    'type' => 'select',
+    'options' => $this->getDepartmentsForSelect(),
+]);
+$this->createField([
+    'name' => 'status',
+    'label' => t('titles.ticketing.templates.status'),
+    'type' => 'select',
+    'options' => $this->getStatusesForSelect(),
+]);
+?>
 				</div>
 			</div>
 		<?php $this->loadContentEditor(); ?>

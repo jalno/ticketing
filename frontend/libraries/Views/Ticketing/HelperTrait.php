@@ -14,7 +14,7 @@ use themes\clipone\Navigation\MenuItem;
 trait HelperTrait
 {
     /**
-     *  @var \packages\ticketing\Department[]
+     * @var \packages\ticketing\Department[]
      */
     public array $accessedDepartments = [];
 

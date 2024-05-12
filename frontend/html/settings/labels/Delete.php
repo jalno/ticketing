@@ -1,6 +1,7 @@
 <?php
 
 use packages\base\Translator;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -17,26 +18,26 @@ $this->the_header();
 		<div class="row">
 			<div class="col-sm-6">
 			<?php
-			$this->createField([
-				'name' => 'title',
-				'label' => t('titles.ticketing.labels.title'),
-				'disabled' => true,
-			]);
-			$this->createField([
-				'name' => 'color',
-				'label' => t('titles.ticketing.labels.color'),
-				'type' => 'color',
-				'disabled' => true,
-			]);
-			?>
+            $this->createField([
+                'name' => 'title',
+                'label' => t('titles.ticketing.labels.title'),
+                'disabled' => true,
+            ]);
+$this->createField([
+    'name' => 'color',
+    'label' => t('titles.ticketing.labels.color'),
+    'type' => 'color',
+    'disabled' => true,
+]);
+?>
 			</div>
 			<div class="col-sm-6">
 			<?php $this->createField([
-				'name' => 'description',
-				'label' => t('titles.ticketing.labels.description'),
-				'type' => 'textarea',
-				'rows' => 5,
-				'disabled' => true,
+			    'name' => 'description',
+			    'label' => t('titles.ticketing.labels.description'),
+			    'type' => 'textarea',
+			    'rows' => 5,
+			    'disabled' => true,
 			]); ?>
 			</div>
 		</div>
@@ -45,9 +46,9 @@ $this->the_header();
 			<h4 class="alert-heading"><?php echo t('error.warning.title'); ?></h4>
 			<p>
 			<?php
-			$ticketsCount = $this->getTicketsCount();
-			echo $ticketsCount ? t('ticketing.label.delete.with_tickets', ['tickets' => $ticketsCount, 'url' => url('ticketing', ['labels' => $this->label->getID()])]) : t('ticketing.label.delete');
-			?>
+$ticketsCount = $this->getTicketsCount();
+echo $ticketsCount ? t('ticketing.label.delete.with_tickets', ['tickets' => $ticketsCount, 'url' => url('ticketing', ['labels' => $this->label->getID()])]) : t('ticketing.label.delete');
+?>
 			</p>
 		</div>
 	</div>

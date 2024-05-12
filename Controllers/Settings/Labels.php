@@ -13,8 +13,9 @@ use packages\ticketing\Logs\Labels as Logs;
 use packages\ticketing\ServiceProvider;
 use packages\userpanel\Authentication;
 use packages\userpanel\Controller;
-use function packages\userpanel\url;
 use themes\clipone\Views\Ticketing\Settings\Labels as Views;
+
+use function packages\userpanel\url;
 
 class Labels extends Controller
 {

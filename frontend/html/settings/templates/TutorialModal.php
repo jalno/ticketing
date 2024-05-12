@@ -59,17 +59,17 @@ use packages\base\Frontend\Theme;
 				<h4 class="list-group-item-heading"><?php echo t('titles.ticketing.templates.variables'); ?></h4>
 				<div class="list-group-item-text">
 					<p><?php echo t('ticketing.templates.variables', [
-                        'content' => t('titles.ticketing.templates.content'),
-                        'subject' => t('titles.ticketing.templates.subject'),
-                    ]); ?></p>
+					    'content' => t('titles.ticketing.templates.content'),
+					    'subject' => t('titles.ticketing.templates.subject'),
+					]); ?></p>
 					<div class="list-group">
 						<div class="list-group-item">
 							<h5 class="list-group-item-heading"><?php echo t('titles.ticketing.templates.variables.add'); ?></h5>
 							<p class="list-group-item-text"><?php echo t('ticketing.templates.variables.add', [
-                                'content' => t('titles.ticketing.templates.content'),
-                                'subject' => t('titles.ticketing.templates.subject'),
-                                'variable_name' => t('titles.ticketing.templates.variable'),
-                            ]); ?></p>
+							    'content' => t('titles.ticketing.templates.content'),
+							    'subject' => t('titles.ticketing.templates.subject'),
+							    'variable_name' => t('titles.ticketing.templates.variable'),
+							]); ?></p>
 						</div>
 						<div class="list-group-item">
 							<h5 class="list-group-item-heading"><?php echo t('titles.ticketing.templates.variables.pre_defined'); ?></h5>

@@ -1,12 +1,6 @@
 <?php
-use \packages\base;
-use \packages\base\Frontend\Theme;
-use \packages\base\Translator;
-use \packages\base\HTTP;
-
-use \packages\userpanel;
-
-use \themes\clipone\Utility;
+use packages\base\Translator;
+use packages\userpanel;
 
 $this->the_header();
 ?>
@@ -17,11 +11,11 @@ $this->the_header();
 			<div class="alert alert-block alert-info fade in">
 				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo Translator::trans('ticket.unlock.notice.title'); ?>!</h4>
 				<p>
-					<?php echo Translator::trans("ticket.unlock.notice", array('ticket.id' => $this->getTicketData()->id)); ?>
+					<?php echo Translator::trans('ticket.unlock.notice', ['ticket.id' => $this->getTicketData()->id]); ?>
 				</p>
 				<p>
-					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getTicketData()->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo Translator::trans('return'); ?></a>
-					<button type="submit" class="btn btn-yellow"><i class="fa fa-unlock tip"></i> <?php echo Translator::trans("ticketing.unlock") ?></button>
+					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getTicketData()->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? 'right' : 'left'; ?>"></i> <?php echo Translator::trans('return'); ?></a>
+					<button type="submit" class="btn btn-yellow"><i class="fa fa-unlock tip"></i> <?php echo Translator::trans('ticketing.unlock'); ?></button>
 				</p>
 			</div>
 		</form>

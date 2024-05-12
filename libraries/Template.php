@@ -8,6 +8,7 @@ use packages\ticketing\TicketMessage as Message;
 
 /**
  * @phpstan-import-type IChangesType from ITemplate
+ *
  * @phpstan-type DataType array{id?:int,title?:string,department_id?:int,content?:string,message_type?:Template::ADD|Template::REPLY|null,message_format?:Message::html|Message::markdown,status?:Template::ACTIVE|Template::REPLY}
  *
  * @property int         $id

@@ -6,7 +6,6 @@ use packages\base\Views\Traits\Form;
 use packages\ticketing\Authorization;
 use packages\ticketing\Department;
 use packages\ticketing\Template;
-use function packages\userpanel\url;
 use packages\userpanel\Views\ListView;
 use themes\clipone\Navigation;
 use themes\clipone\Navigation\MenuItem;
@@ -15,10 +14,12 @@ use themes\clipone\Views\ListTrait;
 use themes\clipone\Views\Ticketing\HelperTrait;
 use themes\clipone\ViewTrait;
 
+use function packages\userpanel\url;
+
 /**
  * @phpstan-import-type SelectOptionType from HelperTrait
  */
-class Search extends Listview
+class Search extends ListView
 {
     use Form;
     use FormTrait;

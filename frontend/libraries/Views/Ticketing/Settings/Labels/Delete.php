@@ -37,6 +37,7 @@ class Delete extends Form
     public function getTicketsCount(): int
     {
         $query = DB::where('label_id', $this->label->getID());
+
         return $query->getValue('ticketing_tickets_labels', 'COUNT(*)');
     }
 }

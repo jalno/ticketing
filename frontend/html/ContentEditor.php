@@ -12,14 +12,14 @@
 	<div class="tab-content">
 		<div class="tab-pane in active" id="editor-tab">
 		<?php $this->createField([
-			'name' => 'content',
-			'type' => 'textarea',
-			'rows' => 4,
-			'required' => true,
-			'disabled' => $this->getData('ticketing_editor_disabled'),
-			'data' => [
-				'message_format' => $this->getDataForm('message_format'),
-			]
+		    'name' => 'content',
+		    'type' => 'textarea',
+		    'rows' => 4,
+		    'required' => true,
+		    'disabled' => $this->getData('ticketing_editor_disabled'),
+		    'data' => [
+		        'message_format' => $this->getDataForm('message_format'),
+		    ],
 		]); ?>
 		</div>
 		<div class="tab-pane" id="preview-tab">

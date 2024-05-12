@@ -1,7 +1,7 @@
 <?php
 
 use packages\base\Translator;
-use packages\ticketing\Template;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -23,26 +23,26 @@ $this->the_header();
                     'name' => 'title',
                     'label' => t('titles.ticketing.labels.title'),
                 ]);
-                $this->createField([
-                    'name' => 'color',
-                    'label' => t('titles.ticketing.labels.color'),
-                    'type' => 'color',
-                ]);
-                $this->createField([
-                    'name' => 'status',
-                    'label' => t('titles.ticketing.labels.status'),
-                    'type' => 'select',
-					'options' => $this->getStatusForSelect(),
-                ]);
-                ?>
+$this->createField([
+    'name' => 'color',
+    'label' => t('titles.ticketing.labels.color'),
+    'type' => 'color',
+]);
+$this->createField([
+    'name' => 'status',
+    'label' => t('titles.ticketing.labels.status'),
+    'type' => 'select',
+    'options' => $this->getStatusForSelect(),
+]);
+?>
 				</div>
 				<div class="col-sm-6">
 				<?php $this->createField([
-                    'name' => 'description',
-                    'label' => t('titles.ticketing.labels.description'),
-					'type' => 'textarea',
-					'rows' => 8,
-                ]); ?>
+				    'name' => 'description',
+				    'label' => t('titles.ticketing.labels.description'),
+				    'type' => 'textarea',
+				    'rows' => 8,
+				]); ?>
 				</div>
 			</div>
 		</form>

@@ -59,16 +59,16 @@ class Edit extends Logs
                     }
 
                     $html .= '<div class="form-group">';
-                        $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.'.$field).': </label>';
-                        $html .= '<div class="col-xs-8">'.($parameters[$item][$field] ?: '-').'</div>';
-                    $html .= "</div>";
+                    $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.'.$field).': </label>';
+                    $html .= '<div class="col-xs-8">'.($parameters[$item][$field] ?: '-').'</div>';
+                    $html .= '</div>';
                 }
 
                 if (isset($parameters[$item]['color'])) {
                     $html .= '<div class="form-group">';
-                        $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.color').': </label>';
-                        $html .= '<div class="col-xs-8 ltr"><span class="badge" style="background-color: '.$parameters[$item]['color'].'">‌</span> '.$parameters[$item]['color'].'</div>';
-                    $html .= "</div>";
+                    $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.color').': </label>';
+                    $html .= '<div class="col-xs-8 ltr"><span class="badge" style="background-color: '.$parameters[$item]['color'].'">‌</span> '.$parameters[$item]['color'].'</div>';
+                    $html .= '</div>';
                 }
 
                 if (isset($parameters[$item]['status'])) {
@@ -83,12 +83,11 @@ class Edit extends Logs
                     ]);
 
                     $html .= '<div class="form-group">';
-                        $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.status').': </label>';
-                        $html .= '<div class="col-xs-8"><span class="'.$statusClass.'">'.t($statusTranslate).'</span></div>';
-                    $html .= "</div>";
+                    $html .= '<label class="col-xs-4 control-label">'.t('titles.ticketing.labels.status').': </label>';
+                    $html .= '<div class="col-xs-8"><span class="'.$statusClass.'">'.t($statusTranslate).'</span></div>';
+                    $html .= '</div>';
                 }
-    
-    
+
                 $panel->setHTML($html);
                 $this->addPanel($panel);
             }

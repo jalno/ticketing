@@ -1,6 +1,7 @@
 <?php
 
 use packages\base\Translator;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -23,21 +24,21 @@ $this->the_header();
                     'label' => t('titles.ticketing.labels.title'),
                     'required' => true,
                 ]);
-                $this->createField([
-                    'name' => 'color',
-                    'label' => t('titles.ticketing.labels.color'),
-                    'type' => 'color',
-                    'required' => true,
-                ]);
-                ?>
+$this->createField([
+    'name' => 'color',
+    'label' => t('titles.ticketing.labels.color'),
+    'type' => 'color',
+    'required' => true,
+]);
+?>
 				</div>
 				<div class="col-sm-6">
 				<?php $this->createField([
-                    'name' => 'description',
-                    'label' => t('titles.ticketing.labels.description'),
-					'type' => 'textarea',
-					'rows' => 5,
-                ]); ?>
+				    'name' => 'description',
+				    'label' => t('titles.ticketing.labels.description'),
+				    'type' => 'textarea',
+				    'rows' => 5,
+				]); ?>
 				</div>
 			</div>
 		</form>

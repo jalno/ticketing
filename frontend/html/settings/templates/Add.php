@@ -1,6 +1,7 @@
 <?php
 
 use packages\base\Translator;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -24,33 +25,33 @@ $this->the_header();
                     'label' => t('titles.ticketing.templates.title'),
                     'required' => true,
                 ]);
-                $this->createField([
-                    'name' => 'subject',
-                    'label' => t('titles.ticketing.templates.subject'),
-                ]);
-                $this->createField([
-                    'name' => 'message_format',
-                    'label' => t('titles.ticketing.message_format'),
-                    'type' => 'select',
-                    'options' => $this->getMessageFormatsForSelect(),
-                ]);
-                ?>
+$this->createField([
+    'name' => 'subject',
+    'label' => t('titles.ticketing.templates.subject'),
+]);
+$this->createField([
+    'name' => 'message_format',
+    'label' => t('titles.ticketing.message_format'),
+    'type' => 'select',
+    'options' => $this->getMessageFormatsForSelect(),
+]);
+?>
 				</div>
 				<div class="col-sm-6">
 				<?php
-                $this->createField([
-                    'name' => 'message_type',
-                    'label' => t('titles.ticketing.templates.message_type'),
-                    'type' => 'select',
-                    'options' => $this->getMessageTypesForSelect(),
-                ]);
-                $this->createField([
-                    'name' => 'department',
-                    'label' => t('ticket.department'),
-                    'type' => 'select',
-                    'options' => $this->getDepartmentsForSelect(),
-                ]);
-                ?>
+$this->createField([
+    'name' => 'message_type',
+    'label' => t('titles.ticketing.templates.message_type'),
+    'type' => 'select',
+    'options' => $this->getMessageTypesForSelect(),
+]);
+$this->createField([
+    'name' => 'department',
+    'label' => t('ticket.department'),
+    'type' => 'select',
+    'options' => $this->getDepartmentsForSelect(),
+]);
+?>
 				</div>
 			</div>
 		<?php $this->loadContentEditor(); ?>

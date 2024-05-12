@@ -1,6 +1,7 @@
 <?php
 
 use packages\base\Translator;
+
 use function packages\userpanel\url;
 
 $this->the_header();
@@ -22,50 +23,50 @@ $this->the_header();
                 'label' => t('titles.ticketing.templates.title'),
                 'disabled' => true,
             ]);
-            $this->createField([
-                'name' => 'subject',
-                'label' => t('titles.ticketing.templates.subject'),
-                'disabled' => true,
-            ]);
-            $this->createField([
-                'name' => 'message_format',
-                'label' => t('titles.ticketing.message_format'),
-                'type' => 'select',
-                'options' => $this->getMessageFormatsForSelect(),
-                'disabled' => true,
-            ]);
-            ?>
+$this->createField([
+    'name' => 'subject',
+    'label' => t('titles.ticketing.templates.subject'),
+    'disabled' => true,
+]);
+$this->createField([
+    'name' => 'message_format',
+    'label' => t('titles.ticketing.message_format'),
+    'type' => 'select',
+    'options' => $this->getMessageFormatsForSelect(),
+    'disabled' => true,
+]);
+?>
 			</div>
 			<div class="col-sm-6">
 			<?php
-            $this->createField([
-                'name' => 'message_type',
-                'label' => t('titles.ticketing.templates.message_type'),
-                'type' => 'select',
-                'options' => $this->getMessageTypesForSelect(),
-                'disabled' => true,
-            ]);
-            $this->createField([
-                'name' => 'department',
-                'label' => t('ticket.department'),
-                'type' => 'select',
-                'options' => [
-                    [
-                        'title' => $this->template->getDepartment() ? $this->template->getDepartment()->title : t('ticketing.all'),
-                        'value' => '',
-                    ],
-                ],
-                'disabled' => true,
-            ]);
-            ?>
+$this->createField([
+    'name' => 'message_type',
+    'label' => t('titles.ticketing.templates.message_type'),
+    'type' => 'select',
+    'options' => $this->getMessageTypesForSelect(),
+    'disabled' => true,
+]);
+$this->createField([
+    'name' => 'department',
+    'label' => t('ticket.department'),
+    'type' => 'select',
+    'options' => [
+        [
+            'title' => $this->template->getDepartment() ? $this->template->getDepartment()->title : t('ticketing.all'),
+            'value' => '',
+        ],
+    ],
+    'disabled' => true,
+]);
+?>
 			</div>
 		</div>
 	<?php $this->createField([
-        'type' => 'textarea',
-        'label' => t('titles.ticketing.templates.content'),
-        'value' => $this->template->getContent(),
-        'disabled' => true,
-    ]); ?>
+	    'type' => 'textarea',
+	    'label' => t('titles.ticketing.templates.content'),
+	    'value' => $this->template->getContent(),
+	    'disabled' => true,
+	]); ?>
 
 		<div class="alert alert-danger alert-block">
 			<h4 class="alert-heading"><?php echo t('error.warning.title'); ?></h4>

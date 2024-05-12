@@ -63,8 +63,8 @@ class TemplateManager implements ITemplateManager
         $template = $this->getByID($id);
 
         if (
-            (isset($data['message_type']) and Template::REPLY == $data['message_type']) or
-            Template::REPLY == $template->getMessageType()
+            (isset($data['message_type']) and Template::REPLY == $data['message_type'])
+            or Template::REPLY == $template->getMessageType()
         ) {
             $data['subject'] = '';
         }

@@ -3,7 +3,6 @@
 namespace themes\clipone\Views\Ticketing\Settings\Labels;
 
 use packages\ticketing\Contracts\ILabel;
-use packages\ticketing\Label;
 use packages\userpanel\Views\Form;
 use themes\clipone\Navigation;
 use themes\clipone\Views\FormTrait;

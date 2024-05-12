@@ -2,7 +2,6 @@
 
 namespace packages\ticketing;
 
-use InvalidArgumentException;
 use packages\base\View\Error;
 use packages\ticketing\Contracts\ILabel;
 use packages\ticketing\Contracts\ILabelManager;
@@ -38,14 +37,14 @@ class LabelManager implements ILabelManager
     /**
      * @param StoreLabelDataType $data
      *
-     * @throws InvalidArgumentException
-     * @throws Error                    on store failure
+     * @throws \InvalidArgumentException
+     * @throws Error                     on store failure
      */
     public function store(array $data): ILabel
     {
         foreach (['title', 'color'] as $requiredItem) {
             if (!isset($data[$requiredItem])) {
-                throw new InvalidArgumentException($requiredItem);
+                throw new \InvalidArgumentException($requiredItem);
             }
         }
 

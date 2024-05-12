@@ -4,8 +4,6 @@ namespace themes\clipone\Views\Ticketing\Settings\Labels;
 
 use packages\base\Views\Traits\Form;
 use packages\ticketing\Authorization;
-use packages\ticketing\Department;
-use function packages\userpanel\Url;
 use packages\userpanel\Views\ListView;
 use themes\clipone\Navigation;
 use themes\clipone\Navigation\MenuItem;
@@ -15,10 +13,12 @@ use themes\clipone\Views\Ticketing\HelperTrait;
 use themes\clipone\Views\Ticketing\LabelTrait;
 use themes\clipone\ViewTrait;
 
+use function packages\userpanel\Url;
+
 /**
  * @phpstan-import-type SelectOptionType from HelperTrait
  */
-class Search extends Listview
+class Search extends ListView
 {
     use Form;
     use FormTrait;
