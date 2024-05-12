@@ -1,14 +1,14 @@
 <?php
 
-use packages\base\translator;
+use packages\base\Translator;
 use packages\ticketing\Department;
 use packages\ticketing\Template;
 use packages\ticketing\Label;
 use packages\userpanel;
 use packages\userpanel\Date;
-use packages\ticketing\{Authentication, Authorization, Ticket, Ticket_Message};
+use packages\ticketing\{Authentication, Authorization, Ticket, TicketMessage};
 use themes\clipone\Utility;
-use function packages\base\json\encode;
+use function packages\base\Json\encode;
 
 $product = $this->getProductService();
 $childrenType = (bool)authorization::childrenTypes();
@@ -137,13 +137,13 @@ $this->the_header();
 							<?php if ($this->canSend) { ?>
 								<div class="row">
 									<?php
-									if(ticket_message::html == $this->messageFormat){
+									if(TicketMessage::html == $this->messageFormat){
 									?>
 									<div class="col-sm-7">
-										<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
+										<p><?php echo Translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 									</div>
 									<?php } ?>
-									<div class="col-sm-5 text-center <?php echo $this->messageFormat != ticket_message::html ? 'col-sm-offset-7' : ''; ?>">
+									<div class="col-sm-5 text-center <?php echo $this->messageFormat != TicketMessage::html ? 'col-sm-offset-7' : ''; ?>">
 										<div class="row btn-group btn-group-lg" role="group">
 										<?php if ($this->canEnableDisableNotification) { ?>
 											<div class="btn-group btn-group-lg btn-group-notification-behavior" role="group">
@@ -177,7 +177,7 @@ $this->the_header();
 										<?php } ?>
 											<span class="btn btn-file2 <?php echo !$this->canSend ? 'disabled' : ''; ?>">
 												<div class="btn-icons"><i class="fa fa-upload"></i></div>
-											<?php echo translator::trans("upload") ?>
+											<?php echo Translator::trans("upload") ?>
 												<input type="file" id="uploadFiles" name="_file" multiple="" <?php echo !$this->canSend ? 'disabled' : ''; ?>>
 											</span>
 										</div>
@@ -206,23 +206,23 @@ $this->the_header();
 				<div class="panel-tools hidden-print">
 					<?php $client = $this->ticket->client; ?>
 					<?php if ($this->canEdit) { ?>
-						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-cog"></i></a>
-						<?php if($this->ticket->status != ticket::in_progress){ ?>
+						<a id="ticket-edit" class="btn btn-xs btn-link tooltips" title="<?php echo Translator::trans("ticket.setting"); ?>" href="<?php echo userpanel\url('ticketing/edit/'.$this->ticket->id); ?>"><i class="fa fa-cog"></i></a>
+						<?php if($this->ticket->status != Ticket::in_progress){ ?>
 							<a id="ticket-inProgress" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("in_progress"); ?>" href="<?php echo userpanel\url('ticketing/inprogress/'.$this->ticket->id); ?>"><i class="fa fa-tasks" ></i></a>
 						<?php } ?>
 
 						<?php if (!$this->isLocked) { ?>
-							<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
+							<a class="btn btn-xs btn-link tooltips" title="<?php echo Translator::trans("ticket.lock"); ?>" href="<?php echo userpanel\url('ticketing/lock/'.$this->ticket->id); ?>"><i class="fa fa-ban tip tooltips"></i></a>
 						<?php } else { ?>
-							<a class="btn btn-xs btn-link tooltips"  title="<?php echo translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
+							<a class="btn btn-xs btn-link tooltips"  title="<?php echo Translator::trans("ticket.unlock"); ?>" href="<?php echo userpanel\url('ticketing/unlock/'.$this->ticket->id); ?>"><i class="fa fa-unlock tip tooltips"></i></a>
 						<?php } ?>
 					<?php } ?>
 
 					<?php if ($this->canDel) { ?>
-						<a class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
+						<a class="btn btn-xs btn-link tooltips" title="<?php echo Translator::trans("ticket.delete.warning.title"); ?>" href="<?php echo userpanel\url('ticketing/delete/'.$this->ticket->id); ?>"><i class="fa fa-trash-o tip"></i></a>
 					<?php } ?>
 
-					<?php if ($this->ticket->status != ticket::closed and $this->canClose) { ?>
+					<?php if ($this->ticket->status != Ticket::closed and $this->canClose) { ?>
 						<a id="ticket-close" data-ticket="<?php echo $this->ticket->id; ?>" class="btn btn-xs btn-link tooltips" title="<?php echo translator::trans("ticket.close"); ?>" href="<?php echo userpanel\url('ticketing/close/'.$this->ticket->id); ?>"><i class="fa fa-times" ></i></a>
 					<?php } ?>
 				</div>
@@ -362,7 +362,7 @@ $this->the_header();
 <div class="modal fade" id="settings" tabindex="-1" data-show="true" role="dialog">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h4 class="modal-title"><?php echo translator::trans('ticket.edit.notice.title'); ?></h4>
+		<h4 class="modal-title"><?php echo Translator::trans('ticket.edit.notice.title'); ?></h4>
 	</div>
 	<div class="modal-body ticket_edit">
 		<form  data-department="<?php echo $this->ticket->department->id; ?>" id="editForm" class="form-horizontal create_form" action="<?php echo userpanel\url("ticketing/edit/".$this->ticket->id); ?>" method="POST">
@@ -371,7 +371,7 @@ $this->the_header();
 			$feilds = [
 				[
 					'name' => 'title',
-					'label' => translator::trans("ticket.title")
+					'label' => Translator::trans("ticket.title")
 				],
 				[
 					'type' => 'hidden',
@@ -379,24 +379,24 @@ $this->the_header();
 				],
 				[
 					'name' => 'client_name',
-					'label' => translator::trans("ticket.client")
+					'label' => Translator::trans("ticket.client")
 				],
 				[
 					'name' => 'priority',
 					'type' => 'select',
-					'label' => translator::trans("ticket.priority"),
+					'label' => Translator::trans("ticket.priority"),
 					'options' => $this->getPriortyForSelect()
 				],
 				[
 					'name' => 'status',
 					'type' => 'select',
-					'label' => translator::trans("ticket.status"),
+					'label' => Translator::trans("ticket.status"),
 					'options' => $this->getStatusForSelect()
 				],
 				[
 					'name' => 'department',
 					'type' => 'select',
-					'label' => translator::trans("ticket.department"),
+					'label' => Translator::trans("ticket.department"),
 					'options' => $this->getDepartmentForSelect()
 				],
 				array(
@@ -415,8 +415,8 @@ $this->the_header();
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button type="submit" form="editForm" class="btn btn-success"><?php echo translator::trans("update"); ?></button>
-		<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo translator::trans('cancel'); ?></button>
+		<button type="submit" form="editForm" class="btn btn-success"><?php echo Translator::trans("update"); ?></button>
+		<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?php echo Translator::trans('cancel'); ?></button>
 	</div>
 </div>
 <?php

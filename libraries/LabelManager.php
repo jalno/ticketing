@@ -3,10 +3,10 @@
 namespace packages\ticketing;
 
 use InvalidArgumentException;
-use packages\base\view\Error;
-use packages\ticketing\contracts\ILabel;
-use packages\ticketing\contracts\ILabelManager;
-use packages\ticketing\contracts\IServiceProvider;
+use packages\base\View\Error;
+use packages\ticketing\Contracts\ILabel;
+use packages\ticketing\Contracts\ILabelManager;
+use packages\ticketing\Contracts\IServiceProvider;
 
 /**
  * @phpstan-import-type StoreLabelDataType from ILabelManager

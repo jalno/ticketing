@@ -1,5 +1,5 @@
 <?php
-use packages\base\frontend\Theme;
+use packages\base\Frontend\Theme;
 
 ?>
 

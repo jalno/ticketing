@@ -1,5 +1,5 @@
 <?php
-use \packages\base\translator;
+use \packages\base\Translator;
 use \packages\userpanel;
 $this->the_header();
 ?>
@@ -14,8 +14,8 @@ $this->the_header();
 			<?php $this->loadContentEditor(); ?>
 				<div class="row">
 					<div class="col-sm-3">
-						<a href="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('ticket.return'); ?></a>
-						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo translator::trans("ticket.update") ?></button>
+						<a href="<?php echo userpanel\url('ticketing/view/'.$this->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo Translator::trans('ticket.return'); ?></a>
+						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo Translator::trans("ticket.update") ?></button>
 					</div>
 				</div>
 			</form>

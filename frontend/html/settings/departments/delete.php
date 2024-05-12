@@ -1,12 +1,12 @@
 <?php
 use \packages\base;
-use \packages\base\frontend\theme;
-use \packages\base\translator;
-use \packages\base\http;
+use \packages\base\Frontend\Theme;
+use \packages\base\Translator;
+use \packages\base\HTTP;
 
 use \packages\userpanel;
 
-use \themes\clipone\utility;
+use \themes\clipone\Utility;
 
 $this->the_header();
 ?>
@@ -15,13 +15,13 @@ $this->the_header();
 		<!-- start: Delete Department -->
 		<form action="<?php echo userpanel\url('settings/departments/delete/'.$this->getDepartmentData()->id); ?>" method="POST" role="form" class="form-horizontal">
 			<div class="alert alert-block alert-warning fade in">
-				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo translator::trans('attention'); ?>!</h4>
+				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo Translator::trans('attention'); ?>!</h4>
 				<p>
-					<?php echo translator::trans("department.delete.warning", array('department_id' => $this->getDepartmentData()->id)); ?>
+					<?php echo Translator::trans("department.delete.warning", array('department_id' => $this->getDepartmentData()->id)); ?>
 				</p>
 				<p>
 					<a href="<?php echo userpanel\url('settings/departments'); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('return'); ?></a>
-					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o tip"></i> <?php echo translator::trans("department.delete") ?></button>
+					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o tip"></i> <?php echo Translator::trans("department.delete") ?></button>
 				</p>
 			</div>
 		</form>

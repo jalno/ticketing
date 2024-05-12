@@ -3,8 +3,8 @@
 namespace packages\ticketing;
 
 use packages\base\DB\DBObject;
-use packages\ticketing\contracts\ITemplate;
-use packages\ticketing\ticket_message as Message;
+use packages\ticketing\Contracts\ITemplate;
+use packages\ticketing\TicketMessage as Message;
 
 /**
  * @phpstan-import-type IChangesType from ITemplate

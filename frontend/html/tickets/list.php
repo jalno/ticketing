@@ -1,9 +1,9 @@
 <?php
 use packages\userpanel;
-use themes\clipone\utility;
-use packages\userpanel\date;
-use packages\base\translator;
-use packages\ticketing\ticket;
+use themes\clipone\Utility;
+use packages\userpanel\Date;
+use packages\base\Translator;
+use packages\ticketing\Ticket;
 use packages\ticketing\Label;
 if (!$this->isActiveTab()) {
 	$this->the_header();
@@ -23,28 +23,28 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 						<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="dropdown-tab-active">
-							<li><a href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::read, ticket::answered, ticket::unread, ticket::in_progress)))); ?>"><i class="fa fa-check"></i> <?php echo t("ticketing.ticket.status.active.all"); ?></a></li>
-							<li><a href="<?php echo $this->getPath(array("status" => ticket::read)); ?>"><i class="fa fa-eye"></i> <?php echo t("read"); ?></a></li>
-							<li><a href="<?php echo $this->getPath(array("status" => ticket::answered)); ?>"><i class="fa fa-reply"></i> <?php echo t("answered"); ?></a></li>
-							<li><a href="<?php echo $this->getPath(array("status" => ticket::unread)); ?>"><i class="fa fa-eye-slash"></i> <?php echo t("unread"); ?></a></li>
-							<li><a href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><i class="fa fa-spinner fa-spin"></i> <?php echo t("in_progress"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => implode(",", array(Ticket::read, Ticket::answered, Ticket::unread, Ticket::in_progress)))); ?>"><i class="fa fa-check"></i> <?php echo t("ticketing.ticket.status.active.all"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => Ticket::read)); ?>"><i class="fa fa-eye"></i> <?php echo t("read"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => Ticket::answered)); ?>"><i class="fa fa-reply"></i> <?php echo t("answered"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => Ticket::unread)); ?>"><i class="fa fa-eye-slash"></i> <?php echo t("unread"); ?></a></li>
+							<li><a href="<?php echo $this->getPath(array("status" => Ticket::in_progress)); ?>"><i class="fa fa-spinner fa-spin"></i> <?php echo t("in_progress"); ?></a></li>
 						</ul>
 					</div>
 				</li>
 				<li class="status-tab <?php echo $this->isActive("inProgress") ? "active" : ""; ?>">
-					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => ticket::in_progress)); ?>"><?php echo t("ticket.inprogress"); ?></a>
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => Ticket::in_progress)); ?>"><?php echo t("ticket.inprogress"); ?></a>
 				</li>
 				<li class="status-tab <?php echo $this->isActive("closed") ? "active" : ""; ?>">
-					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => ticket::closed)); ?>"><?php echo t("closed"); ?></a>
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => Ticket::closed)); ?>"><?php echo t("closed"); ?></a>
 				</li>
 				<li class="status-tab <?php echo $this->isActive() ? "active" : ""; ?>">
-					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => implode(",", array(ticket::unread, ticket::read, ticket::in_progress, ticket::answered, ticket::closed)))); ?>"><?php echo t("ticketing.ticket.all"); ?></a>
+					<a class="status-tab-link" href="<?php echo $this->getPath(array("status" => implode(",", array(Ticket::unread, Ticket::read, Ticket::in_progress, Ticket::answered, Ticket::closed)))); ?>"><?php echo t("ticketing.ticket.all"); ?></a>
 				</li>
 			</ul>
 		</div>
 		<?php if ($this->canAdd) { ?>
 			<div class="col-sm-4  col-xs-12">
-				<a href="<?php echo $this->getNewTicketURL(); ?>" class="btn btn-success pull-<?php echo ((bool)translator::getLang()->isRTL()) ? "left" : "right"; ?>">
+				<a href="<?php echo $this->getNewTicketURL(); ?>" class="btn btn-success pull-<?php echo ((bool)Translator::getLang()->isRTL()) ? "left" : "right"; ?>">
 					<div class="btn-icons"> <i class="fa fa-message"></i> </div>
 					<?php echo t("ticketing.add"); ?>
 				</a>
@@ -179,19 +179,19 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 			<?php $hasUnreadMessage = $ticket->hasUnreadMessage(); ?>
 				<p>
 				<?php
-				$statusClass = utility::switchcase($ticket->status, [
-					"fa fa-info-circle text-primary" => ticket::unread,
-					"fa fa-eye text-info" => ticket::read,
-					"fa fa-check-square-o text-success" => ticket::answered,
-					"fa fa-spinner fa-spin text-warning" => ticket::in_progress,
-					"fa fa-window-close text-inverse" => ticket::closed
+				$statusClass = Utility::switchcase($ticket->status, [
+					"fa fa-info-circle text-primary" => Ticket::unread,
+					"fa fa-eye text-info" => Ticket::read,
+					"fa fa-check-square-o text-success" => Ticket::answered,
+					"fa fa-spinner fa-spin text-warning" => Ticket::in_progress,
+					"fa fa-window-close text-inverse" => Ticket::closed
 				]);
-				$statusTxt = utility::switchcase($ticket->status, [
-					"unread" => ticket::unread,
-					"read" => ticket::read,
-					"answered" => ticket::answered,
-					"in_progress" => ticket::in_progress,
-					"closed" => ticket::closed
+				$statusTxt = Utility::switchcase($ticket->status, [
+					"unread" => Ticket::unread,
+					"read" => Ticket::read,
+					"answered" => Ticket::answered,
+					"in_progress" => Ticket::in_progress,
+					"closed" => Ticket::closed
 				]);
 				?>
 					<i class="<?php echo $statusClass; ?> tooltips" title="<?php echo t($statusTxt); ?>"></i>
@@ -201,7 +201,7 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 				</p>
 				<p>
 					<span>#<?php echo $ticket->id; ?></span>
-					<span><span class="tooltips" title="<?php echo date::format("Y/m/d H:i", $ticket->create_at); ?>"><?php echo date::relativeTime($ticket->create_at); ?></span></span>
+					<span><span class="tooltips" title="<?php echo Date::format("Y/m/d H:i", $ticket->create_at); ?>"><?php echo Date::relativeTime($ticket->create_at); ?></span></span>
 				<?php if ($this->multiuser) { ?>
 					<span>
 						<?php echo t("ticketing.ticket.list.info.create.create_by"); ?>
@@ -221,15 +221,15 @@ $status = $this->getDataForm("status") ? $this->getDataForm("status") : array();
 					</span>
 				<?php
 				}
-				$priorityClass = utility::switchcase($ticket->priority, array(
-					"label label-warning" => ticket::instantaneous,
-					"label label-primary" => ticket::important,
-					"label label-info" => ticket::ordinary,
+				$priorityClass = Utility::switchcase($ticket->priority, array(
+					"label label-warning" => Ticket::instantaneous,
+					"label label-primary" => Ticket::important,
+					"label label-info" => Ticket::ordinary,
 				));
-				$priorityTxt = utility::switchcase($ticket->priority, array(
-					"instantaneous" => ticket::instantaneous,
-					"important" => ticket::important,
-					"ordinary" => ticket::ordinary,
+				$priorityTxt = Utility::switchcase($ticket->priority, array(
+					"instantaneous" => Ticket::instantaneous,
+					"important" => Ticket::important,
+					"ordinary" => Ticket::ordinary,
 				));
 				?>
 					<span class="<?php echo $priorityClass; ?>"><?php echo t($priorityTxt); ?></span>

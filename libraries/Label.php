@@ -3,8 +3,8 @@
 namespace packages\ticketing;
 
 use packages\base\DB\DBObject;
-use packages\ticketing\contracts\ILabel;
-use packages\ticketing\contracts\ILabelManager;
+use packages\ticketing\Contracts\ILabel;
+use packages\ticketing\Contracts\ILabelManager;
 
 /**
  * @phpstan-import-type StoreLabelDataType from ILabelManager

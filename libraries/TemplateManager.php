@@ -3,10 +3,10 @@
 namespace packages\ticketing;
 
 use packages\base\Exception;
-use packages\ticketing\contracts\IServiceProvider;
-use packages\ticketing\contracts\ITemplate;
-use packages\ticketing\contracts\ITemplateManager;
-use packages\ticketing\ticket_message as Message;
+use packages\ticketing\Contracts\IServiceProvider;
+use packages\ticketing\Contracts\ITemplate;
+use packages\ticketing\Contracts\ITemplateManager;
+use packages\ticketing\TicketMessage as Message;
 
 class TemplateManager implements ITemplateManager
 {

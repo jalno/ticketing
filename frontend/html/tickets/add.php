@@ -2,7 +2,7 @@
 use packages\base\{json, Translator};
 use packages\ticketing\Template;
 use packages\userpanel;
-use packages\ticketing\{Ticket, ticket_message};
+use packages\ticketing\{Ticket, TicketMessage};
 use packages\ticketing\Authentication;
 
 $this->the_header();
@@ -45,7 +45,7 @@ $this->the_header();
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<i class="fa fa-plus"></i>
-					<span><?php echo translator::trans("newticket")?></span>
+					<span><?php echo Translator::trans("newticket")?></span>
 				</div>
 				<div class="panel-body">
 					<div class="row">
@@ -54,20 +54,20 @@ $this->the_header();
 						$fields = array(
 							array(
 								'name' => 'title',
-								'label' => translator::trans("newticket.title"),
+								'label' => Translator::trans("newticket.title"),
 								'required' => true,
 							),
 							array(
 								'name' => 'department',
 								'type' => 'select',
-								'label' => translator::trans("newticket.department"),
+								'label' => Translator::trans("newticket.department"),
 								'options' => $this->getDepartmentsForSelect(),
 								'required' => true,
 							),
 							array(
 								'name' => 'product',
 								'type' => 'select',
-								'label' => translator::trans("newticket.typeservice"),
+								'label' => Translator::trans("newticket.typeservice"),
 								'options' => array(
 									array(
 										'title' => t('none'),
@@ -99,14 +99,14 @@ $this->the_header();
 								array(
 									'name' => 'priority',
 									'type' => 'select',
-									'label' => translator::trans("newticket.priority"),
+									'label' => Translator::trans("newticket.priority"),
 									'options' => $this->getpriortyForSelect(),
 									'required' => true,
 								),
 								array(
 									'name' => 'service',
 									'type' => 'select',
-									'label' => translator::trans("newticket.service"),
+									'label' => Translator::trans("newticket.service"),
 									'options' => array()
 								),
 							);
@@ -167,11 +167,11 @@ $this->the_header();
 					</div>
 					<div class="row">
 					<?php
-					$hasAlert = (ticket_message::html == $this->messageFormat);
+					$hasAlert = (TicketMessage::html == $this->messageFormat);
 					if ($hasAlert) {
 					?>
 						<div class="col-sm-5 col-xs-12">
-							<p><?php echo translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
+							<p><?php echo Translator::trans('markdown.description', ['settings.url'=>userpanel\url('profile/settings')]); ?></p>
 						</div>
 					<?php } ?>
 						<div class="col-sm-7 col-xs-12 text-left<?php echo !$hasAlert ? ' col-sm-offset-5' : ''; ?>">
@@ -208,7 +208,7 @@ $this->the_header();
 								<?php } ?>
 								<span class="btn btn-file2">
 									<div class="btn-icons"><i class="fa fa-upload"></i></div>
-								<?php echo translator::trans("upload") ?>
+								<?php echo Translator::trans("upload") ?>
 									<input type="file" id="uploadFiles" name="_file" multiple="">
 								</span>
 							</div>

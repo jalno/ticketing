@@ -1,16 +1,16 @@
 <?php
 use \packages\base;
-use \packages\base\frontend\theme;
-use \packages\base\translator;
-use \packages\base\http;
+use \packages\base\Frontend\Theme;
+use \packages\base\Translator;
+use \packages\base\HTTP;
 
 use \packages\userpanel;
-use \packages\userpanel\user;
-use \packages\userpanel\date;
+use \packages\userpanel\User;
+use \packages\userpanel\Date;
 
-use \themes\clipone\utility;
+use \themes\clipone\Utility;
 
-use \packages\ticketing\ticket;
+use \packages\ticketing\Ticket;
 
 use \packages\ticketing\Parsedown;
 
@@ -21,13 +21,13 @@ $this->the_header();
 		<!-- start: BASIC DELETE MESSAGE -->
 		<form action="<?php echo userpanel\url('ticketing/delete/message/'.$this->getMessageData()->id); ?>" method="POST" role="form" id="delete_form" class="form-horizontal">
 			<div class="alert alert-block alert-warning fade in">
-				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo translator::trans('message.delete.warning.title'); ?>!</h4>
+				<h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> <?php echo Translator::trans('message.delete.warning.title'); ?>!</h4>
 				<p>
-					<?php echo translator::trans("message.delete.warning", array('message.id' => $this->getMessageData()->id)); ?>
+					<?php echo Translator::trans("message.delete.warning", array('message.id' => $this->getMessageData()->id)); ?>
 				</p>
 				<p>
-					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getMessageData()->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo translator::trans('return'); ?></a>
-					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i> <?php echo translator::trans("ticketing.delete") ?></button>
+					<a href="<?php echo userpanel\url('ticketing/view/'.$this->getMessageData()->ticket->id); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? "right" : "left"; ?>"></i> <?php echo Translator::trans('return'); ?></a>
+					<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i> <?php echo Translator::trans("ticketing.delete") ?></button>
 				</p>
 			</div>
 		</form>

@@ -1,7 +1,7 @@
 <?php
 namespace packages\ticketing;
 
-use packages\base\db;
+use packages\base\DB;
 
 trait Paramable{
 	protected $tempParams = [];
@@ -21,7 +21,7 @@ trait Paramable{
 			return true;
 		}
 		if (!$this->isNew and $this->id) {
-			return db::where($this->getObjectName(), $this->id)->where("name", $name)->has($this->getParamsTable());
+			return DB::where($this->getObjectName(), $this->id)->where("name", $name)->has($this->getParamsTable());
 		}
 		return false;
 	}
@@ -30,7 +30,7 @@ trait Paramable{
 			return $this->tempParams[$name];
 		}
 		if (!$this->isNew and $this->id) {
-			$param = db::where($this->getObjectName(), $this->id)->where("name", $name)->getOne($this->getParamsTable());
+			$param = DB::where($this->getObjectName(), $this->id)->where("name", $name)->getOne($this->getParamsTable());
 			if ($param) {
 				return $this->unserializeValue($param['value']);
 			}
@@ -39,7 +39,7 @@ trait Paramable{
 	}
 	public function getParams():array {
 		$result = [];
-		$params = db::where($this->getObjectName(), $this->id)->get($this->getParamsTable(), null, array('name', 'value'));
+		$params = DB::where($this->getObjectName(), $this->id)->get($this->getParamsTable(), null, array('name', 'value'));
 		foreach ($params as $param) {
 			$result[$param['name']] = $this->unserializeValue($param['value']);
 		}
@@ -60,19 +60,19 @@ trait Paramable{
 		}
 	}
 	protected function insertParam(string $name, $value) {
-		return db::insert($this->getParamsTable(), array(
+		return DB::insert($this->getParamsTable(), array(
 			$this->getObjectName() => $this->id,
 			'name' => $name,
 			'value' => $this->serializeValue($value)
 		));
 	}
 	protected function updateParam(string $name, $value) {
-		return db::where($this->getObjectName(), $this->id)->where("name", $name)->update($this->getParamsTable(), array(
+		return DB::where($this->getObjectName(), $this->id)->where("name", $name)->update($this->getParamsTable(), array(
 			'value' => $this->serializeValue($value)
 		));
 	}
 	protected function deleteParam(string $name) {
-		return db::where($this->getObjectName(), $this->id)->where("name", $name)->delete($this->getParamsTable());
+		return DB::where($this->getObjectName(), $this->id)->where("name", $name)->delete($this->getParamsTable());
 	}
 	protected function getParamsTable():string {
 		return $this->dbTable . '_params';

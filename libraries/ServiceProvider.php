@@ -2,9 +2,9 @@
 
 namespace packages\ticketing;
 
-use packages\ticketing\contracts\ILabelManager;
-use packages\ticketing\contracts\IServiceProvider;
-use packages\ticketing\contracts\ITemplateManager;
+use packages\ticketing\Contracts\ILabelManager;
+use packages\ticketing\Contracts\IServiceProvider;
+use packages\ticketing\Contracts\ITemplateManager;
 
 class ServiceProvider implements IServiceProvider
 {
