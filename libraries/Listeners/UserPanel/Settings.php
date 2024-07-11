@@ -1,6 +1,6 @@
 <?php
 
-namespace packages\ticketing\listeners\UserPanel;
+namespace packages\ticketing\Listeners\UserPanel;
 
 use packages\base\Translator;
 use packages\ticketing\Controllers\UserPanel\Settings as Controller;

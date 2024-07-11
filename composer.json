@@ -1,0 +1,17 @@
+{
+    "name": "jalno/ticketing",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "jalno/base": "@dev",
+        "jalno/userpanel": "@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "packages\\ticketing\\": ["libraries/"],
+            "themes\\clipone\\" : ["frontend/libraries/"]
+        }
+    }
+}

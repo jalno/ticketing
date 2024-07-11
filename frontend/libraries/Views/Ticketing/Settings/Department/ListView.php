@@ -13,7 +13,7 @@ use themes\clipone\Views\ListTrait;
 use themes\clipone\Views\Ticketing\HelperTrait;
 use themes\clipone\ViewTrait;
 
-class listview extends DepartmentList
+class ListView extends DepartmentList
 {
     use DepartmentTrait;
     use FormTrait;

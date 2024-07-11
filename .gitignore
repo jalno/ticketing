@@ -1,3 +1,4 @@
 /storage/private/*
 !/storage/private/.gitkeep
 .php-cs-fixer.cache
+/vendor/
