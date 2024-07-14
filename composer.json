@@ -8,6 +8,11 @@
         "jalno/base": "@dev",
         "jalno/userpanel": "@dev"
     },
+    "extra": {
+        "jalno": {
+            "manifest": "package.json"
+        }
+    },
     "autoload": {
         "psr-4": {
             "packages\\ticketing\\": ["libraries/"],

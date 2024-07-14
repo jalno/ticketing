@@ -1,209 +1,209 @@
 [
 	{
-		"path": ["userpanel","ticketing"],
-		"controller": "controllers\\ticketing@index",
+		"path": "userpanel/ticketing",
+		"controller": "packages/ticketing/Controllers/Ticketing@index",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/users/tickets/:id",
-		"controller": "controllers/ticketing@index",
+		"controller": "packages/ticketing/Controllers/Ticketing@index",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/ticketing/new",
-		"controller": "controllers/ticketing@add",
+		"controller": "packages/ticketing/Controllers/Ticketing@add",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/ticketing/new",
-		"controller": "controllers/ticketing@store",
+		"controller": "packages/ticketing/Controllers/Ticketing@store",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "new", "department", {"type":"dynamic","name":"department", "regex":"/^\\d+$/"}],
-		"controller": "controllers\\ticketing@department",
+		"controller": "packages/ticketing/Controllers/Ticketing@department",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@view",
+		"controller": "packages/ticketing/Controllers/Ticketing@view",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","ticketing", "view", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@reply",
+		"controller": "packages/ticketing/Controllers/Ticketing@reply",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "delete", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@delete"
+		"controller": "packages/ticketing/Controllers/Ticketing@delete"
 	},
 	{
 		"path": ["userpanel","ticketing", "delete", "message", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@message_delete"
+		"controller": "packages/ticketing/Controllers/Ticketing@message_delete"
 	},
 	{
 		"path": ["userpanel","ticketing", "edit", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers/ticketing@edit",
+		"controller": "packages/ticketing/Controllers/Ticketing@edit",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","ticketing", "edit", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers/ticketing@update",
+		"controller": "packages/ticketing/Controllers/Ticketing@update",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "edit", "message", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@message_edit"
+		"controller": "packages/ticketing/Controllers/Ticketing@message_edit"
 	},
 	{
 		"path": ["userpanel","ticketing", "lock", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@lock"
+		"controller": "packages/ticketing/Controllers/Ticketing@lock"
 	},
 	{
 		"path": ["userpanel","ticketing", "unlock", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@unlock"
+		"controller": "packages/ticketing/Controllers/Ticketing@unlock"
 	},
 	{
 		"path": ["userpanel","ticketing", "download", {"type":"dynamic","name":"file", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@download"
+		"controller": "packages/ticketing/Controllers/Ticketing@download"
 	},
 	{
-		"path": ["userpanel","ticketing", "getservices"],
-		"controller": "controllers\\ticketing@getServices",
+		"path": "userpanel/ticketing/getservices",
+		"controller": "packages/ticketing/Controllers/Ticketing@getServices",
 		"method":"get"
 	},
 	{
-		"path": ["userpanel","settings", "departments"],
-		"controller": "controllers\\settings\\departments@listview"
+		"path": "userpanel/settings/departments",
+		"controller": "packages/ticketing/Controllers/Settings/Departments@listview"
 	},
 	{
 		"path": ["userpanel","settings", "departments", "delete", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\settings\\departments@delete"
+		"controller": "packages/ticketing/Controllers/Settings/Departments@delete"
 	},
 	{
-		"path": ["userpanel","settings", "departments", "add"],
-		"controller": "controllers\\settings\\departments@add",
+		"path": "userpanel/settings/departments/add",
+		"controller": "packages/ticketing/Controllers/Settings/Departments@add",
 		"method": "get"
 	},
 	{
-		"path": ["userpanel","settings", "departments", "add"],
-		"controller": "controllers\\settings\\departments@store",
+		"path": "userpanel/settings/departments/add",
+		"controller": "packages/ticketing/Controllers/Settings/Departments@store",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\settings\\departments@edit",
+		"controller": "packages/ticketing/Controllers/Settings/Departments@edit",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","settings", "departments", "edit", {"type":"dynamic","name":"id", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\settings\\departments@update",
+		"controller": "packages/ticketing/Controllers/Settings/Departments@update",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@confirmClose",
+		"controller": "packages/ticketing/Controllers/Ticketing@confirmClose",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","ticketing", "close", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@close",
+		"controller": "packages/ticketing/Controllers/Ticketing@close",
 		"method": "post"
 	},
 	{
 		"path": ["userpanel","ticketing", "inprogress", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@confirmInProgress",
+		"controller": "packages/ticketing/Controllers/Ticketing@confirmInProgress",
 		"method": "get"
 	},
 	{
 		"path": ["userpanel","ticketing", "inprogress", {"type":"dynamic","name":"ticket", "regex":"/^(\\d+)$/"}],
-		"controller": "controllers\\ticketing@inProgress",
+		"controller": "packages/ticketing/Controllers/Ticketing@inProgress",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/ticketing/:department/operators",
-		"controller": "controllers/Userpanel@operators",
+		"controller": "packages/ticketing/Controllers/Userpanel@operators",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates",
-		"controller": "controllers/settings/Templates@search",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@search",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/add",
-		"controller": "controllers/settings/Templates@add",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@add",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/ticketing/editor/preview",
-		"controller": "controllers/Ticketing@previewMessage",
+		"controller": "packages/ticketing/Controllers/Ticketing@previewMessage",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/add",
-		"controller": "controllers/settings/Templates@store",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@store",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/edit/:id",
-		"controller": "controllers/settings/Templates@edit",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@edit",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/edit/:id",
-		"controller": "controllers/settings/Templates@update",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@update",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/delete/:id",
-		"controller": "controllers/settings/Templates@delete",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@delete",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/templates/delete/:id",
-		"controller": "controllers/settings/Templates@terminate",
+		"controller": "packages/ticketing/Controllers/Settings/Templates@terminate",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/ticketing/templates/:id",
-		"controller": "controllers/ticketing@getTemplate",
+		"controller": "packages/ticketing/Controllers/Ticketing@getTemplate",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels",
-		"controller": "controllers/settings/Labels@search",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@search",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/add",
-		"controller": "controllers/settings/Labels@add",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@add",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/add",
-		"controller": "controllers/settings/Labels@store",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@store",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/edit/:id",
-		"controller": "controllers/settings/Labels@edit",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@edit",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/edit/:id",
-		"controller": "controllers/settings/Labels@update",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@update",
 		"method": "post"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/delete/:id",
-		"controller": "controllers/settings/Labels@delete",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@delete",
 		"method": "get"
 	},
 	{
 		"path": "userpanel/settings/ticketing/labels/delete/:id",
-		"controller": "controllers/settings/Labels@terminate",
+		"controller": "packages/ticketing/Controllers/Settings/Labels@terminate",
 		"method": "post"
 	}
 ]
