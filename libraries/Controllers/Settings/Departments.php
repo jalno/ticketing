@@ -21,7 +21,7 @@ use packages\ticketing\Logs;
 use packages\ticketing\Products;
 use packages\ticketing\Ticket;
 use packages\ticketing\View;
-use packages\ticketing\Views;
+use themes\clipone\Views\Ticketing as Views;
 use packages\userpanel;
 use packages\userpanel\Log;
 use packages\userpanel\User;

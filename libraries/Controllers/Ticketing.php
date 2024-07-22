@@ -31,7 +31,7 @@ use packages\ticketing\TicketFile;
 use packages\ticketing\TicketMessage;
 use packages\ticketing\TicketParam;
 use packages\ticketing\View;
-use packages\ticketing\Views;
+use themes\clipone\Views\Ticketing as Views;
 use packages\Userpanel;
 use packages\userpanel\AuthorizationException;
 use packages\userpanel\Date;
