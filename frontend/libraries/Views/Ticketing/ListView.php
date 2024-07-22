@@ -2,7 +2,7 @@
 
 namespace themes\clipone\Views\Ticketing;
 
-use packages\base\HTTP;
+use packages\base\Http;
 use packages\base\Translator;
 use packages\base\View\Error;
 use packages\base\Views\Traits\Form;

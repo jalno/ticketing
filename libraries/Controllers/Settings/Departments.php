@@ -4,7 +4,7 @@ namespace packages\ticketing\Controllers\Settings;
 
 use packages\base\DB;
 use packages\base\DB\Parenthesis;
-use packages\base\HTTP;
+use packages\base\Http;
 use packages\base\InputValidation;
 use packages\base\InputValidationException;
 use packages\base\NotFound;

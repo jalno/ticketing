@@ -123,7 +123,7 @@
 	},
 	{
 		"path": "userpanel/ticketing/:department/operators",
-		"controller": "packages/ticketing/Controllers/Userpanel@operators",
+		"controller": "packages/ticketing/Controllers/UserPanel@operators",
 		"method": "get"
 	},
 	{

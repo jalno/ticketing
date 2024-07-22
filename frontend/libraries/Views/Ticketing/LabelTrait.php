@@ -2,7 +2,7 @@
 
 namespace themes\clipone\Views\Ticketing;
 
-use packages\base\HTTP;
+use packages\base\Http;
 use packages\ticketing\Contracts\ILabel;
 use packages\ticketing\Label;
 
