@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import 'bootstrap';
 import "@jalno/translator";
 import { AjaxRequest, Router } from "webuilder";

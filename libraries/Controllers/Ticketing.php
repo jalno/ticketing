@@ -1129,7 +1129,7 @@ class Ticketing extends Controller
 
     public function lock($data)
     {
-        $view = View::byName('\\packages\\ticketing\\views\\lock');
+        $view = View::byName(Views\Lock::class);
         Authorization::haveOrFail('lock');
 
         $ticket = $this->getTicket($data['ticket']);

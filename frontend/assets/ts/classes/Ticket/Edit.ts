@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import "../jquery.ticketingUserAutoComplete";
 
 export default class Edit {

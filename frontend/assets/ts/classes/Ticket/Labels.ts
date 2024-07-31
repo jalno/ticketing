@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import 'bootstrap';
 import 'webuilder';
 import { AjaxRequest, Router } from "webuilder";

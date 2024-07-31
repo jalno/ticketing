@@ -1,7 +1,6 @@
 // tslint:disable-next-line: no-reference
 /// <reference path="jquery.ticketingUserAutoComplete.d.ts"/>
 
-import * as $ from "jquery";
 import "jquery-ui/ui/widgets/autocomplete.js";
 import { Router , webuilder } from "webuilder";
 

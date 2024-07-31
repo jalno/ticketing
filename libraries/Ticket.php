@@ -7,6 +7,9 @@ use packages\base\DB\DBObject;
 use packages\base\Options;
 use packages\userpanel\Authentication;
 use packages\userpanel\User;
+use packages\ticketing\TicketMessage;
+use packages\ticketing\TicketParam;
+use packages\ticketing\Department;
 
 class Ticket extends DBObject
 {
@@ -100,10 +103,10 @@ class Ticket extends DBObject
         'status' => ['type' => 'int', 'required' => true],
     ];
     protected $relations = [
-        'message' => ['hasMany', 'packages\\ticketing\\ticket_message', 'ticket'],
-        'params' => ['hasMany', 'packages\\ticketing\\ticket_param', 'ticket'],
+        'message' => ['hasMany', TicketMessage::class, 'ticket'],
+        'params' => ['hasMany', TicketParam::class, 'ticket'],
         'client' => ['hasOne', User::class, 'client'],
-        'department' => ['hasOne', 'packages\\ticketing\\department', 'department'],
+        'department' => ['hasOne', Department::class, 'department'],
         'operator' => ['hasOne', User::class, 'operator_id'],
     ];
 

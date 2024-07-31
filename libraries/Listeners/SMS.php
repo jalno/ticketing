@@ -3,6 +3,8 @@
 namespace packages\ticketing\Listeners;
 
 use packages\sms\Events\Templates;
+use packages\ticketing\TicketMessage;
+use packages\ticketing\Events\Tickets;
 
 class SMS
 {
@@ -16,8 +18,8 @@ class SMS
     {
         $template = new Templates();
         $template->name = 'ticketing_ticket_add';
-        $template->event = 'packages\ticketing\events\tickets\add';
-        $template->addVariable('\\packages\\ticketing\\ticket_message');
+        $template->event = Tickets\Add::class;
+        $template->addVariable(TicketMessage::class);
 
         return $template;
     }
@@ -26,8 +28,8 @@ class SMS
     {
         $template = new Templates();
         $template->name = 'ticketing_ticket_reply';
-        $template->event = 'packages\ticketing\events\tickets\reply';
-        $template->addVariable('\\packages\\ticketing\\ticket_message');
+        $template->event = Tickets\Reply::class;
+        $template->addVariable(TicketMessage::class);
 
         return $template;
     }

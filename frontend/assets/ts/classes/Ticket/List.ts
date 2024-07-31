@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import "select2";
 import "../jquery.ticketingUserAutoComplete";
 

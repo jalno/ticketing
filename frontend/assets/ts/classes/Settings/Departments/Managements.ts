@@ -1,7 +1,6 @@
 import "@jalno/translator";
 import "bootstrap-inputmsg";
 import "ion-rangeslider";
-import * as $ from "jquery";
 import "jquery.growl";
 import "select2";
 import { AjaxRequest, Router , webuilder } from "webuilder";

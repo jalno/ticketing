@@ -6,6 +6,8 @@ use packages\base\DB\DBObject;
 use packages\base\Exception;
 use packages\userpanel\Date;
 use packages\userpanel\User;
+use packages\ticketing\Ticket;
+use packages\ticketing\TicketFile;
 
 class TicketMessage extends DBObject
 {
@@ -40,9 +42,9 @@ class TicketMessage extends DBObject
         'status' => ['type' => 'int', 'required' => true],
     ];
     protected $relations = [
-        'ticket' => ['hasOne', 'packages\\ticketing\\ticket', 'ticket'],
-        'user' => ['hasOne', 'packages\\userpanel\\user', 'user'],
-        'files' => ['hasMany', 'packages\\ticketing\\ticket_file', 'message'],
+        'ticket' => ['hasOne', Ticket::class, 'ticket'],
+        'user' => ['hasOne', User::class, 'user'],
+        'files' => ['hasMany', TicketFile::class, 'message'],
     ];
 
     public function getContent(): string

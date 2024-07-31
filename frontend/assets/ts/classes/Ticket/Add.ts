@@ -1,6 +1,5 @@
 import "@jalno/translator";
 import "bootstrap-inputmsg";
-import * as $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router, webuilder } from "webuilder";
 import "webuilder/formAjax";
