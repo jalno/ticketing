@@ -3,6 +3,7 @@
 namespace packages\ticketing\Department;
 
 use packages\base\DB\DBObject;
+use packages\ticketing\Department;
 
 class WorkTime extends DBObject
 {
@@ -28,6 +29,6 @@ class WorkTime extends DBObject
         'message' => ['type' => 'text'],
     ];
     protected $relations = [
-        'department' => ['hasOne', 'packages\\ticketing\\department', 'department'],
+        'department' => ['hasOne', Department::class, 'department'],
     ];
 }

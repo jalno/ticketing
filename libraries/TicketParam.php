@@ -3,6 +3,7 @@
 namespace packages\ticketing;
 
 use packages\base\DB\DBObject;
+use packages\ticketing\Ticket;
 
 class TicketParam extends DBObject
 {
@@ -14,6 +15,6 @@ class TicketParam extends DBObject
         'value' => ['type' => 'text', 'required' => true],
     ];
     protected $relations = [
-        'ticket' => ['hasOne', 'packages\\ticketing\\ticket', 'ticket'],
+        'ticket' => ['hasOne', Ticket::class, 'ticket'],
     ];
 }

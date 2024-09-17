@@ -35,12 +35,12 @@
 	],
 	"events":[
 		{
-			"name":"\\themes\\clipone\\events\\initializeDashboard",
-			"listener": "listeners\\ticketing\\dashboard@initialize"
+			"name":"themes/clipone/Events/InitializeDashboard",
+			"listener": "themes/clipone/Listeners/Ticketing/Dashboard@initialize"
 		},
 		{
-			"name":"themes/clipone/events/InitTabsEvent",
-			"listener": "listeners/ticketing/UserProfileTabs@handle"
+			"name":"themes/clipone/Events/InitTabsEvent",
+			"listener": "themes/clipone/Listeners/Ticketing/UserProfileTabs@handle"
 		}
 	]
 }

@@ -1,4 +1,3 @@
-import * as autosize from "autosize";
 import "@jalno/translator";
 import "bootstrap/js/modal";
 import $ from "jquery";

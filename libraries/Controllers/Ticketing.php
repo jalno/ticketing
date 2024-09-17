@@ -31,7 +31,7 @@ use packages\ticketing\TicketFile;
 use packages\ticketing\TicketMessage;
 use packages\ticketing\TicketParam;
 use packages\ticketing\View;
-use packages\ticketing\Views;
+use themes\clipone\Views\Ticketing as Views;
 use packages\Userpanel;
 use packages\userpanel\AuthorizationException;
 use packages\userpanel\Date;
@@ -1129,7 +1129,7 @@ class Ticketing extends Controller
 
     public function lock($data)
     {
-        $view = View::byName('\\packages\\ticketing\\views\\lock');
+        $view = View::byName(Views\Lock::class);
         Authorization::haveOrFail('lock');
 
         $ticket = $this->getTicket($data['ticket']);
