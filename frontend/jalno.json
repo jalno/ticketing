@@ -41,6 +41,10 @@
 		{
 			"name":"themes/clipone/Events/InitTabsEvent",
 			"listener": "themes/clipone/Listeners/Ticketing/UserProfileTabs@handle"
+		},
+		{
+			"name": "themes/clipone/Events/Navigation/Initial",
+			"listener": "themes/clipone/Listeners/Ticketing/NavigationListener@initial"
 		}
 	]
 }

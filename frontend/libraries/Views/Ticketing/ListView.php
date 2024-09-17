@@ -31,26 +31,12 @@ class ListView extends TicketListView
     protected $multiuser;
     protected $hasAccessToUsers = false;
 
-    public static function onSourceLoad()
-    {
-        parent::onSourceLoad();
-        if (parent::$navigation) {
-            $item = new MenuItem('ticketing');
-            $item->setTitle(t('ticketing'));
-            $item->setURL(userpanel\url('ticketing'));
-            $item->setIcon('clip-user-6');
-            $item->setPriority(280);
-            Navigation::addItem($item);
-        }
-    }
-
     public function __beforeLoad()
     {
         $this->setTitle([
             t('tickets'),
         ]);
         $this->setButtons();
-        $this->onSourceLoad();
         if ($this->isTab) {
             Navigation::active('users');
         } else {

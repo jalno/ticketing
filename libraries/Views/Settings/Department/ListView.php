@@ -11,7 +11,6 @@ class ListView extends \packages\ticketing\Views\ListView
     protected $canAdd;
     protected $canEdit;
     protected $canDel;
-    protected static $navigation;
 
     public function __construct()
     {
@@ -23,10 +22,5 @@ class ListView extends \packages\ticketing\Views\ListView
     public function getDepartments()
     {
         return $this->dataList;
-    }
-
-    public static function onSourceLoad()
-    {
-        self::$navigation = Authorization::is_accessed('settings_departments_list');
     }
 }

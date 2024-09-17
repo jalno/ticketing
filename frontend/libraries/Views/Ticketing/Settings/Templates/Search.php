@@ -27,18 +27,6 @@ class Search extends ListView
     use ViewTrait;
     use HelperTrait;
 
-    public static function onSourceLoad(): void
-    {
-        if (Authorization::is_accessed('settings_templates_search')) {
-            $templates = new MenuItem('ticketing_settings_templates');
-            $templates->setTitle(t('titles.ticketing.templates'));
-            $templates->setURL(url('settings/ticketing/templates'));
-            $templates->setIcon('fa fa-file-text-o');
-
-            self::getTicketingSettingsMenu()->addItem($templates);
-        }
-    }
-
     public bool $canAdd = false;
     public bool $canEdit = false;
     public bool $canDelete = false;

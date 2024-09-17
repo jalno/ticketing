@@ -19,7 +19,6 @@ class TicketList extends ListView
     protected $canDel;
     protected $multiuser;
     protected $isTab = false;
-    protected static $navigation;
 
     public function __construct()
     {
@@ -53,11 +52,6 @@ class TicketList extends ListView
     public function getDepartment()
     {
         return $this->getData('department');
-    }
-
-    public static function onSourceLoad()
-    {
-        self::$navigation = Authorization::is_accessed('list');
     }
 
     public function isTab(bool $isTab = true): void

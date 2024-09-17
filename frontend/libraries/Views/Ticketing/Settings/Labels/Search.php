@@ -6,14 +6,11 @@ use packages\base\Views\Traits\Form;
 use packages\ticketing\Authorization;
 use packages\userpanel\Views\ListView;
 use themes\clipone\Navigation;
-use themes\clipone\Navigation\MenuItem;
 use themes\clipone\Views\FormTrait;
 use themes\clipone\Views\ListTrait;
 use themes\clipone\Views\Ticketing\HelperTrait;
 use themes\clipone\Views\Ticketing\LabelTrait;
 use themes\clipone\ViewTrait;
-
-use function packages\userpanel\Url;
 
 /**
  * @phpstan-import-type SelectOptionType from HelperTrait
@@ -26,18 +23,6 @@ class Search extends ListView
     use ViewTrait;
     use LabelTrait;
     use HelperTrait;
-
-    public static function onSourceLoad(): void
-    {
-        if (Authorization::is_accessed('settings_labels_search')) {
-            $labels = new MenuItem('ticketing_settings_labels');
-            $labels->setTitle(t('titles.ticketing.labels'));
-            $labels->setURL(url('settings/ticketing/labels'));
-            $labels->setIcon('fa fa-tag');
-
-            self::getTicketingSettingsMenu()->addItem($labels);
-        }
-    }
 
     public bool $canAdd = false;
     public bool $canEdit = false;

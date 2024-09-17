@@ -18,28 +18,14 @@ trait HelperTrait
      */
     public array $accessedDepartments = [];
 
-    public static function getTicketingSettingsMenu(): MenuItem
-    {
-        $settingsMenu = Navigation::getByName('settings/settings_ticketing');
-        if (!$settingsMenu) {
-            $settingsMenu = new MenuItem('settings_ticketing');
-            $settingsMenu->setTitle(t('titles.settings_ticketing'));
-            $settingsMenu->setIcon('clip-user-6');
-
-            Navigation::getByName('settings')->addItem($settingsMenu);
-        }
-
-        return $settingsMenu;
-    }
-
     public function getTicketingSettingsMenuItemName(string $name)
     {
-        return 'settings/settings_ticketing/'.$name;
+        return 'settings/ticketing/'.$name;
     }
 
     public function loadContentEditor(): void
     {
-        require_once __DIR__.'/../../html/ContentEditor.php';
+        require __DIR__.'/../../html/ContentEditor.php';
     }
 
     /**

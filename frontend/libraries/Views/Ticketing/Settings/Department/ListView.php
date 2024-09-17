@@ -6,7 +6,6 @@ use packages\base\View\Error;
 use packages\ticketing\Views\Settings\Department\ListView as DepartmentList;
 use packages\userpanel;
 use themes\clipone\Navigation;
-use themes\clipone\Navigation\MenuItem;
 use themes\clipone\Views\DepartmentTrait;
 use themes\clipone\Views\FormTrait;
 use themes\clipone\Views\ListTrait;
@@ -25,7 +24,6 @@ class ListView extends DepartmentList
     {
         $this->setTitle(t('departments'));
         $this->setButtons();
-        $this->onSourceLoad();
         Navigation::active($this->getTicketingSettingsMenuItemName('departments'));
         if (empty($this->getDepartments())) {
             $this->addNotFoundError();
@@ -80,17 +78,5 @@ class ListView extends DepartmentList
                 'value' => 'startswith',
             ],
         ];
-    }
-
-    public static function onSourceLoad()
-    {
-        parent::onSourceLoad();
-        if (parent::$navigation) {
-            $departments = new MenuItem('departments');
-            $departments->setTitle(t('departments'));
-            $departments->setURL(userpanel\url('settings/departments'));
-            $departments->setIcon('fa fa-university');
-            self::getTicketingSettingsMenu()->addItem($departments);
-        }
     }
 }
