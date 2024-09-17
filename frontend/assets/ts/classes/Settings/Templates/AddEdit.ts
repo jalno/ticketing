@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Templates from "../Templates";
 import 'lightgallery.js';
 import * as ClipboardJS from 'clipboard';

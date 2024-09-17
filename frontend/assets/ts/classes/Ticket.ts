@@ -1,7 +1,7 @@
 import * as autosize from "autosize";
 import "@jalno/translator";
 import "bootstrap/js/modal";
-import * as $ from "jquery";
+import $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 import "./jquery.ticketOperatorAutoComplete";

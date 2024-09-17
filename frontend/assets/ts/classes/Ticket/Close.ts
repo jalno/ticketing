@@ -1,5 +1,5 @@
 import "@jalno/translator";
-import * as $ from "jquery";
+import $ from "jquery";
 import {webuilder} from "webuilder";
 
 export default class Close {

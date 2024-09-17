@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Ticket from "./Ticket";
 import { AjaxRequest, Router } from "webuilder";
 import Templates from "./Settings/Templates";

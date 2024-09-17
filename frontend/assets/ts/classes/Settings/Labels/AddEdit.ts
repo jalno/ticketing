@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "bootstrap-inputmsg";
 import "jquery.growl";
 import "webuilder/formAjax";
