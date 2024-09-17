@@ -69,7 +69,7 @@ $this->createField([
 					</div>
 					<div class="col-sm-6 col-xs-12">
 						<a href="<?php echo url('settings/ticketing/templates'); ?>" class="btn btn-block btn-default">
-							<div class="btn-icons"><i class="fa fa-angle-<?php echo Translator::getLang()->isRTL() ? 'right' : 'left'; ?>"></i></div>
+							<div class="btn-icons"><i class="fa fa-angle-<?php echo Translator::isRTL() ? 'right' : 'left'; ?>"></i></div>
 						<?php echo t('return'); ?>
 						</a>
 					</div>

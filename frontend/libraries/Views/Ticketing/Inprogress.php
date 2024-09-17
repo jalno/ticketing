@@ -18,7 +18,7 @@ class Inprogress extends TicketInProgress
     {
         $this->ticket = $this->getTicket();
         $this->setTitle([
-            Translator::trans('ticket.inprogress'),
+            t('ticket.inprogress'),
         ]);
         $this->addBodyClass('ticket-inprogress');
         $this->setNavigation();

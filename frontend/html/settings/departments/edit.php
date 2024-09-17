@@ -8,7 +8,7 @@ $this->the_header();
 	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-university"></i><?php echo Translator::trans('department_edit'); ?>
+				<i class="fa fa-university"></i><?php echo t('department_edit'); ?>
 				<div class="panel-tools">
 					<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 				</div>
@@ -57,7 +57,7 @@ $this->createField([
 								<div class="col-xs-12">
 									<div class="panel panel-white panel-users">
 										<div class="panel-heading">
-											<i class="fa fa-users"></i><?php echo Translator::trans('ticketing.department.users'); ?>
+											<i class="fa fa-users"></i><?php echo t('ticketing.department.users'); ?>
 											<div class="panel-tools">
 												<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 											</div>
@@ -101,7 +101,7 @@ $this->createField([
 						<div class="col-xs-12">
 							<div class="panel panel-white panel-day-works">
 								<div class="panel-heading">
-									<i class="fa fa-calendar"></i><?php echo Translator::trans('ticketing.department.day.works'); ?>
+									<i class="fa fa-calendar"></i><?php echo t('ticketing.department.day.works'); ?>
 									<div class="panel-tools">
 										<a class="btn btn-xs btn-link panel-collapse collapses" href="#"></a>
 									</div>
@@ -112,9 +112,9 @@ $this->createField([
 											<thead>
 												<tr>
 													<th></th>
-													<th><?php echo Translator::trans('days'); ?></th>
-													<th><?php echo Translator::trans('worktimes'); ?></th>
-													<th><?php echo Translator::trans('un_worktimes.message'); ?></th>
+													<th><?php echo t('days'); ?></th>
+													<th><?php echo t('worktimes'); ?></th>
+													<th><?php echo t('un_worktimes.message'); ?></th>
 												</tr>
 											</thead>
 											<tbody>
@@ -162,8 +162,8 @@ $this->createField([
 						</div>
 					</div>
 					<p>
-						<a href="<?php echo userpanel\url('settings/departments'); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo (bool) Translator::getLang()->isRTL() ? 'right' : 'left'; ?>"></i> <?php echo Translator::trans('return'); ?></a>
-						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo Translator::trans('edit'); ?></button>
+						<a href="<?php echo userpanel\url('settings/departments'); ?>" class="btn btn-light-grey"><i class="fa fa-chevron-circle-<?php echo Translator::isRTL() ? 'right' : 'left'; ?>"></i> <?php echo t('return'); ?></a>
+						<button type="submit" class="btn btn-teal"><i class="fa fa-check-square-o"></i> <?php echo t('edit'); ?></button>
 					</p>
 				</form>
 			</div>

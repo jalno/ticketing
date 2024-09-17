@@ -64,12 +64,12 @@ class ListView extends TicketListView
     public function setButtons()
     {
         $this->setButton('view', $this->canView, [
-            'title' => Translator::trans('ticketing.view'),
+            'title' => t('ticketing.view'),
             'icon' => 'fa fa-credit-card',
             'classes' => ['btn', 'btn-xs', 'btn-green'],
         ]);
         $this->setButton('delete', $this->canDel, [
-            'title' => Translator::trans('ticketing.delete'),
+            'title' => t('ticketing.delete'),
             'icon' => 'fa fa-times',
             'classes' => ['btn', 'btn-xs', 'btn-bricky'],
         ]);
@@ -151,7 +151,7 @@ class ListView extends TicketListView
     {
         $departments = [];
         $departments[0] = [
-            'title' => Translator::trans('choose'),
+            'title' => t('choose'),
             'value' => '',
         ];
         foreach ($this->getDepartment() as $department) {
@@ -168,19 +168,19 @@ class ListView extends TicketListView
     {
         return [
             [
-                'title' => Translator::trans('choose'),
+                'title' => t('choose'),
                 'value' => '',
             ],
             [
-                'title' => Translator::trans('instantaneous'),
+                'title' => t('instantaneous'),
                 'value' => Ticket::instantaneous,
             ],
             [
-                'title' => Translator::trans('important'),
+                'title' => t('important'),
                 'value' => Ticket::important,
             ],
             [
-                'title' => Translator::trans('ordinary'),
+                'title' => t('ordinary'),
                 'value' => Ticket::ordinary,
             ],
         ];
@@ -190,15 +190,15 @@ class ListView extends TicketListView
     {
         return [
             [
-                'title' => Translator::trans('search.comparison.contains'),
+                'title' => t('search.comparison.contains'),
                 'value' => 'contains',
             ],
             [
-                'title' => Translator::trans('search.comparison.equals'),
+                'title' => t('search.comparison.equals'),
                 'value' => 'equals',
             ],
             [
-                'title' => Translator::trans('search.comparison.startswith'),
+                'title' => t('search.comparison.startswith'),
                 'value' => 'startswith',
             ],
         ];
@@ -326,7 +326,7 @@ class ListView extends TicketListView
         $error->setData([
             [
                 'type' => 'btn-teal',
-                'txt' => Translator::trans('ticketing.add'),
+                'txt' => t('ticketing.add'),
                 'link' => userpanel\url('ticketing/new'),
             ],
         ], 'btns');

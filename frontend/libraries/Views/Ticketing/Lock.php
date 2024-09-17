@@ -21,23 +21,23 @@ class Lock extends TicketLock
     public function __beforeLoad()
     {
         $this->setTitle([
-            Translator::trans('ticket.lock'),
+            t('ticket.lock'),
             '#'.$this->getTicketData()->id,
         ]);
-        $this->setShortDescription(Translator::trans('ticket.lock'));
+        $this->setShortDescription(t('ticket.lock'));
         $this->setNavigation();
     }
 
     private function setNavigation()
     {
         $item = new MenuItem('ticketing');
-        $item->setTitle(Translator::trans('ticketing'));
+        $item->setTitle(t('ticketing'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('clip-user-6');
         Breadcrumb::addItem($item);
 
         $item = new MenuItem('ticketing.lock');
-        $item->setTitle(Translator::trans('ticket.lock'));
+        $item->setTitle(t('ticket.lock'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('fa fa-ban tip');
         Breadcrumb::addItem($item);

@@ -22,11 +22,11 @@ class Edit extends TicketEdit
     {
         $this->ticket = $this->getTicket();
         $this->setTitle([
-            Translator::trans('ticketing.edit'),
-            Translator::trans('ticket'),
+            t('ticketing.edit'),
+            t('ticket'),
             '#'.$this->ticket->id,
         ]);
-        $this->setShortDescription(Translator::trans('ticketing.edit').' '.Translator::trans('ticket'));
+        $this->setShortDescription(t('ticketing.edit').' '.t('ticket'));
         $this->setNavigation();
         $this->setFormData();
     }
@@ -96,23 +96,23 @@ class Edit extends TicketEdit
     {
         return [
             [
-                'title' => Translator::trans('unread'),
+                'title' => t('unread'),
                 'value' => Ticket::unread,
             ],
             [
-                'title' => Translator::trans('read'),
+                'title' => t('read'),
                 'value' => Ticket::read,
             ],
             [
-                'title' => Translator::trans('answered'),
+                'title' => t('answered'),
                 'value' => Ticket::answered,
             ],
             [
-                'title' => Translator::trans('in_progress'),
+                'title' => t('in_progress'),
                 'value' => Ticket::in_progress,
             ],
             [
-                'title' => Translator::trans('closed'),
+                'title' => t('closed'),
                 'value' => Ticket::closed,
             ],
         ];
@@ -122,15 +122,15 @@ class Edit extends TicketEdit
     {
         return [
             [
-                'title' => Translator::trans('instantaneous'),
+                'title' => t('instantaneous'),
                 'value' => Ticket::instantaneous,
             ],
             [
-                'title' => Translator::trans('important'),
+                'title' => t('important'),
                 'value' => Ticket::important,
             ],
             [
-                'title' => Translator::trans('ordinary'),
+                'title' => t('ordinary'),
                 'value' => Ticket::ordinary,
             ],
         ];

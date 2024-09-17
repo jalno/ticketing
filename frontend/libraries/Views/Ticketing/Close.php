@@ -18,7 +18,7 @@ class Close extends TicketClose
     {
         $this->ticket = $this->getTicket();
         $this->setTitle([
-            Translator::trans('ticket.close'),
+            t('ticket.close'),
         ]);
         $this->addBodyClass('ticket-close');
         $this->setNavigation();

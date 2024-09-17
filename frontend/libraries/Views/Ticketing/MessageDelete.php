@@ -21,24 +21,24 @@ class MessageDelete extends \packages\ticketing\Views\MessageDelete
     public function __beforeLoad()
     {
         $this->setTitle([
-            Translator::trans('ticketing.delete'),
-            Translator::trans('ticket'),
+            t('ticketing.delete'),
+            t('ticket'),
             '#'.$this->getMessageData()->id,
         ]);
-        $this->setShortDescription(Translator::trans('message.delete.warning.title'));
+        $this->setShortDescription(t('message.delete.warning.title'));
         $this->setNavigation();
     }
 
     private function setNavigation()
     {
         $item = new MenuItem('ticketing');
-        $item->setTitle(Translator::trans('ticketing'));
+        $item->setTitle(t('ticketing'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('clip-user-6');
         Breadcrumb::addItem($item);
 
         $item = new MenuItem('ticketing.delete');
-        $item->setTitle(Translator::trans('message.delete.warning.title'));
+        $item->setTitle(t('message.delete.warning.title'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('fa fa-trash-o');
         Breadcrumb::addItem($item);

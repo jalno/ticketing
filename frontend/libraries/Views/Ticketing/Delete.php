@@ -20,23 +20,23 @@ class Delete extends TicketDelete
     public function __beforeLoad()
     {
         $this->setTitle([
-            Translator::trans('ticket.delete.warning.title'),
+            t('ticket.delete.warning.title'),
             '#'.$this->getTicketData()->id,
         ]);
-        $this->setShortDescription(Translator::trans('ticket.delete.warning.title'));
+        $this->setShortDescription(t('ticket.delete.warning.title'));
         $this->setNavigation();
     }
 
     private function setNavigation()
     {
         $item = new MenuItem('ticketing');
-        $item->setTitle(Translator::trans('ticketing'));
+        $item->setTitle(t('ticketing'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('clip-user-6');
         Breadcrumb::addItem($item);
 
         $item = new MenuItem('ticketing.unlock');
-        $item->setTitle(Translator::trans('ticket.delete.warning.title'));
+        $item->setTitle(t('ticket.delete.warning.title'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('fa fa-trash-o tip');
         Breadcrumb::addItem($item);

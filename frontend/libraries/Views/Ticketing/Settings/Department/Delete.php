@@ -30,7 +30,7 @@ class Delete extends DepartmentDelete
     {
         $item = Navigation::getByName('settings');
         $departments = new MenuItem('departments');
-        $departments->setTitle(Translator::trans('departments'));
+        $departments->setTitle(t('departments'));
         $departments->setURL(userpanel\url('settings/departments'));
         $departments->setIcon('fa fa-university');
         $item->addItem($departments);

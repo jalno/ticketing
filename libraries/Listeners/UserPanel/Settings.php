@@ -21,14 +21,14 @@ class Settings
         $tuning->addField([
             'name' => 'ticketing_editor',
             'type' => 'radio',
-            'label' => Translator::trans('ticketing.usersettings.message.editor.type'),
+            'label' => t('ticketing.usersettings.message.editor.type'),
             'options' => [
                 [
-                    'label' => Translator::trans('ticketing.usersettings.message.editor.type.'.TicketMessage::html),
+                    'label' => t('ticketing.usersettings.message.editor.type.'.TicketMessage::html),
                     'value' => TicketMessage::html,
                 ],
                 [
-                    'label' => Translator::trans('ticketing.usersettings.message.editor.type.'.TicketMessage::markdown),
+                    'label' => t('ticketing.usersettings.message.editor.type.'.TicketMessage::markdown),
                     'value' => TicketMessage::markdown,
                 ],
             ],

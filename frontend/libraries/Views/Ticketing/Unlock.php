@@ -20,23 +20,23 @@ class Unlock extends TicketUnlock
     public function __beforeLoad()
     {
         $this->setTitle([
-            Translator::trans('ticket.unlock'),
+            t('ticket.unlock'),
             '#'.$this->getTicketData()->id,
         ]);
-        $this->setShortDescription(Translator::trans('ticket.unlock'));
+        $this->setShortDescription(t('ticket.unlock'));
         $this->setNavigation();
     }
 
     private function setNavigation()
     {
         $item = new MenuItem('ticketing');
-        $item->setTitle(Translator::trans('ticketing'));
+        $item->setTitle(t('ticketing'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('clip-user-6');
         Breadcrumb::addItem($item);
 
         $item = new MenuItem('ticketing.unlock');
-        $item->setTitle(Translator::trans('ticket.unlock'));
+        $item->setTitle(t('ticket.unlock'));
         $item->setURL(userpanel\url('ticketing'));
         $item->setIcon('fa fa-unlock tip');
         Breadcrumb::addItem($item);

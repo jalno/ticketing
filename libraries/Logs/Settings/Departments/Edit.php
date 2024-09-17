@@ -21,7 +21,7 @@ class Edit extends Logs
 
     private function timeFormat(int $time): string
     {
-        return Translator::trans('ticketing.logs.settings.departments.edit.time.'.($time < 12 ? 'am' : 'pm'), ['time' => $time]);
+        return t('ticketing.logs.settings.departments.edit.time.'.($time < 12 ? 'am' : 'pm'), ['time' => $time]);
     }
 
     public function buildFrontend(View $view)
@@ -35,9 +35,9 @@ class Edit extends Logs
             $panel = new Panel('ticketing.logs.settings.departments.edit');
             $panel->icon = 'fa fa-external-link-square';
             $panel->size = 6;
-            $panel->title = Translator::trans('ticketing.logs.settings.departments.information');
+            $panel->title = t('ticketing.logs.settings.departments.information');
             $html = '<div class="form-group">';
-            $html .= '<label class="col-xs-4 control-label">'.Translator::trans('department.title').': </label>';
+            $html .= '<label class="col-xs-4 control-label">'.t('department.title').': </label>';
             $html .= '<div class="col-xs-8">'.$oldData['title'].'</div>';
             $html .= '</div>';
 
@@ -49,7 +49,7 @@ class Edit extends Logs
             $panel = new Panel('ticketing.logs.settings.departments.edit.worktimes');
             $panel->icon = 'fa fa-external-link-square';
             $panel->size = 6;
-            $panel->title = Translator::trans('ticketing.logs.settings.departments.worktimes');
+            $panel->title = t('ticketing.logs.settings.departments.worktimes');
             $html = '';
             $html = '<div class="table-responsive">';
             $html .= '<table class="table table-striped">';

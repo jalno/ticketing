@@ -18,7 +18,7 @@ class Settings implements Controller
             $oldValue = TicketMessage::html;
         }
         if (isset($inputs['ticketing_editor']) and $oldValue != $inputs['ticketing_editor']) {
-            $logs[] = new Log('ticketing_editor', $this->getEditorTitleById($oldValue), $this->getEditorTitleById($inputs['ticketing_editor']), Translator::trans('ticketing.usersettings.message.editor.type'));
+            $logs[] = new Log('ticketing_editor', $this->getEditorTitleById($oldValue), $this->getEditorTitleById($inputs['ticketing_editor']), t('ticketing.usersettings.message.editor.type'));
             $user->setOption('ticketing_editor', $inputs['ticketing_editor']);
         }
 
@@ -27,6 +27,6 @@ class Settings implements Controller
 
     private function getEditorTitleById(string $name)
     {
-        return Translator::trans('ticketing.usersettings.message.editor.type.'.$name);
+        return t('ticketing.usersettings.message.editor.type.'.$name);
     }
 }

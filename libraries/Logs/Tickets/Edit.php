@@ -28,15 +28,15 @@ class Edit extends Logs
     {
         switch ($status) {
             case Ticket::unread:
-                return Translator::trans('unread');
+                return t('unread');
             case Ticket::read:
-                return Translator::trans('read');
+                return t('read');
             case Ticket::answered:
-                return Translator::trans('answered');
+                return t('answered');
             case Ticket::in_progress:
-                return Translator::trans('in_progress');
+                return t('in_progress');
             case Ticket::closed:
-                return Translator::trans('closed');
+                return t('closed');
             default:
                 throw new \Exception('Status is invalid');
         }
@@ -46,13 +46,13 @@ class Edit extends Logs
     {
         switch ($priority) {
             case Ticket::instantaneous:
-                return Translator::trans('instantaneous');
+                return t('instantaneous');
             case Ticket::important:
-                return Translator::trans('important');
+                return t('important');
             case Ticket::answered:
-                return Translator::trans('answered');
+                return t('answered');
             case Ticket::ordinary:
-                return Translator::trans('ordinary');
+                return t('ordinary');
             default:
                 throw new \Exception('Priority is invalid');
         }
@@ -66,39 +66,39 @@ class Edit extends Logs
             $panel = new Panel('ticketing.logs.ticket.edit');
             $panel->icon = 'fa fa-external-link-square';
             $panel->size = 6;
-            $panel->title = Translator::trans('ticketing.logs.ticket.information');
+            $panel->title = t('ticketing.logs.ticket.information');
             $html = '';
             if (isset($oldData['client'])) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans('ticket.client').': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t('ticket.client').': </label>';
                 $html .= '<div class="col-xs-8">'.$oldData['client']->getFullName().'</div>';
                 $html .= '</div>';
                 unset($oldData['client']);
             }
             if (isset($oldData['department'])) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans('ticket.department').': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t('ticket.department').': </label>';
                 $html .= '<div class="col-xs-8">'.$oldData['department']->title.'</div>';
                 $html .= '</div>';
                 unset($oldData['department']);
             }
             if (isset($oldData['status'])) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans('ticket.status').': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t('ticket.status').': </label>';
                 $html .= '<div class="col-xs-8">'.$this->getStatusTranslate($oldData['status']).'</div>';
                 $html .= '</div>';
                 unset($oldData['status']);
             }
             if (isset($oldData['priority'])) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans('ticket.priority').': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t('ticket.priority').': </label>';
                 $html .= '<div class="col-xs-8">'.$this->getPriorityTranslate($oldData['priority']).'</div>';
                 $html .= '</div>';
                 unset($oldData['priority']);
             }
             if (isset($oldData['message'])) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans('message').': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t('message').': </label>';
                 $html .= '<div class="col-xs-8 ltr">#'.$oldData['message']->id.'</div>';
                 $html .= '</div>';
                 unset($oldData['message']);
@@ -119,7 +119,7 @@ class Edit extends Logs
 
             foreach ($oldData as $field => $val) {
                 $html .= '<div class="form-group">';
-                $html .= '<label class="col-xs-4 control-label">'.Translator::trans("ticket.{$field}").': </label>';
+                $html .= '<label class="col-xs-4 control-label">'.t("ticket.{$field}").': </label>';
                 $html .= '<div class="col-xs-8">'.$val.'</div>';
                 $html .= '</div>';
             }

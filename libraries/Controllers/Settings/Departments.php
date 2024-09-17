@@ -114,7 +114,7 @@ class Departments extends Controller
                 $log = new Log();
                 $log->user = Authentication::getID();
                 $log->type = Logs\Settings\Departments\Delete::class;
-                $log->title = Translator::trans('ticketing.logs.settings.departments.delete', ['department_id' => $department->id, 'department_title' => $department->title]);
+                $log->title = t('ticketing.logs.settings.departments.delete', ['department_id' => $department->id, 'department_title' => $department->title]);
                 $log->parameters = ['department' => $department];
                 $log->save();
 
@@ -126,7 +126,7 @@ class Departments extends Controller
             } catch (TicketDependencies $e) {
                 $error = new Error();
                 $error->setCode('ticketDependencies');
-                $error->setMessage(Translator::trans('error.ticketDependencies', ['ticket_search_link' => userpanel\url('ticketing', ['department' => $department->id])]));
+                $error->setMessage(t('error.ticketDependencies', ['ticket_search_link' => userpanel\url('ticketing', ['department' => $department->id])]));
                 $view->addError($error);
             }
         } else {

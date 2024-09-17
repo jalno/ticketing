@@ -45,7 +45,7 @@ $this->the_header();
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<i class="fa fa-plus"></i>
-					<span><?php echo Translator::trans('newticket'); ?></span>
+					<span><?php echo t('newticket'); ?></span>
 				</div>
 				<div class="panel-body">
 					<div class="row">
@@ -54,20 +54,20 @@ $this->the_header();
 	            $fields = [
 	                [
 	                    'name' => 'title',
-	                    'label' => Translator::trans('newticket.title'),
+	                    'label' => t('newticket.title'),
 	                    'required' => true,
 	                ],
 	                [
 	                    'name' => 'department',
 	                    'type' => 'select',
-	                    'label' => Translator::trans('newticket.department'),
+	                    'label' => t('newticket.department'),
 	                    'options' => $this->getDepartmentsForSelect(),
 	                    'required' => true,
 	                ],
 	                [
 	                    'name' => 'product',
 	                    'type' => 'select',
-	                    'label' => Translator::trans('newticket.typeservice'),
+	                    'label' => t('newticket.typeservice'),
 	                    'options' => [
 	                        [
 	                            'title' => t('none'),
@@ -99,14 +99,14 @@ if ($this->canUseTemplates) {
         [
             'name' => 'priority',
             'type' => 'select',
-            'label' => Translator::trans('newticket.priority'),
+            'label' => t('newticket.priority'),
             'options' => $this->getpriortyForSelect(),
             'required' => true,
         ],
         [
             'name' => 'service',
             'type' => 'select',
-            'label' => Translator::trans('newticket.service'),
+            'label' => t('newticket.service'),
             'options' => [],
         ],
     ];
@@ -171,7 +171,7 @@ foreach ($fields as $field) {
 if ($hasAlert) {
     ?>
 						<div class="col-sm-5 col-xs-12">
-							<p><?php echo Translator::trans('markdown.description', ['settings.url' => userpanel\url('profile/settings')]); ?></p>
+							<p><?php echo t('markdown.description', ['settings.url' => userpanel\url('profile/settings')]); ?></p>
 						</div>
 					<?php } ?>
 						<div class="col-sm-7 col-xs-12 text-left<?php echo !$hasAlert ? ' col-sm-offset-5' : ''; ?>">
@@ -208,7 +208,7 @@ if ($hasAlert) {
 								<?php } ?>
 								<span class="btn btn-file2">
 									<div class="btn-icons"><i class="fa fa-upload"></i></div>
-								<?php echo Translator::trans('upload'); ?>
+								<?php echo t('upload'); ?>
 									<input type="file" id="uploadFiles" name="_file" multiple="">
 								</span>
 							</div>

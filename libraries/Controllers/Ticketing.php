@@ -893,7 +893,7 @@ class Ticketing extends Controller
 
                 $log = new Log();
                 $log->user = Authentication::getID();
-                $log->title = Translator::trans('ticketing.logs.edit', ['ticket_id' => $ticket_message->ticket->id]);
+                $log->title = t('ticketing.logs.edit', ['ticket_id' => $ticket_message->ticket->id]);
                 $log->type = Logs\Tickets\Edit::class;
                 $log->parameters = $parameters;
                 $log->save();
@@ -1141,7 +1141,7 @@ class Ticketing extends Controller
             if ($ticket->setParam('ticket_lock', 1)) {
                 $log = new Log();
                 $log->user = Authentication::getID();
-                $log->title = Translator::trans('ticketing.logs.lock', ['ticket_id' => $ticket->id]);
+                $log->title = t('ticketing.logs.lock', ['ticket_id' => $ticket->id]);
                 $log->type = Logs\Tickets\Lock::class;
                 $log->save();
 
@@ -1172,7 +1172,7 @@ class Ticketing extends Controller
 
             $log = new Log();
             $log->user = Authentication::getID();
-            $log->title = Translator::trans('ticketing.logs.unlock', ['ticket_id' => $ticket->id]);
+            $log->title = t('ticketing.logs.unlock', ['ticket_id' => $ticket->id]);
             $log->type = Logs\Tickets\Unlock::class;
             $log->save();
 
@@ -1198,7 +1198,7 @@ class Ticketing extends Controller
         if (HTTP::is_post()) {
             $log = new Log();
             $log->user = Authentication::getID();
-            $log->title = Translator::trans('ticketing.logs.delete', ['ticket_id' => $ticket->id]);
+            $log->title = t('ticketing.logs.delete', ['ticket_id' => $ticket->id]);
             $log->type = Logs\Tickets\Delete::class;
             $log->parameters = ['ticket' => $ticket];
             $log->save();
@@ -1317,7 +1317,7 @@ class Ticketing extends Controller
 
         $log = new Log();
         $log->user = Authentication::getID();
-        $log->title = Translator::trans('ticketing.logs.edit', ['ticket_id' => $ticket->id]);
+        $log->title = t('ticketing.logs.edit', ['ticket_id' => $ticket->id]);
         $log->type = Logs\Tickets\Edit::class;
         $log->parameters = $parameters;
         $log->save();
@@ -1366,7 +1366,7 @@ class Ticketing extends Controller
 
         $log = new Log();
         $log->user = Authentication::getID();
-        $log->title = Translator::trans('ticketing.logs.edit', ['ticket_id' => $ticket->id]);
+        $log->title = t('ticketing.logs.edit', ['ticket_id' => $ticket->id]);
         $log->type = Logs\Tickets\Edit::class;
         $log->parameters = $parameters;
         $log->save();
