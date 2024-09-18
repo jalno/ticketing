@@ -1,7 +1,7 @@
 <?php
 namespace themes\clipone\Listeners\Ticketing;
 
-use packages\Ticketing\Authorization;
+use packages\ticketing\Authorization;
 use themes\clipone\Navigation;
 use themes\clipone\Navigation\MenuItem;
 use themes\clipone\Views\Dashboard;
