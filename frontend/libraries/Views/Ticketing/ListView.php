@@ -66,12 +66,12 @@ class ListView extends TicketListView
      *
      * @return void
      */
-    public function output()
+    public function output():string
     {
         if ($this->isTab) {
-            $this->outputTab();
+           return $this->outputTab();
         } else {
-            parent::output();
+            return parent::output();
         }
     }
 

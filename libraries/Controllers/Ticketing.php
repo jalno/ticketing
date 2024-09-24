@@ -182,7 +182,7 @@ class Ticketing extends Controller
             $view->triggerTabs();
             $view->activeTab('ticket');
         } else {
-            $view = View::byName(Views\TicketList::class);
+            $view = View::byName(Views\ListView::class);
         }
 
         $departments = (new Department())->where('status', Department::ACTIVE)->get();

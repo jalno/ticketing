@@ -25,7 +25,7 @@ trait HelperTrait
 
     public function loadContentEditor(): void
     {
-        require __DIR__.'/../../html/ContentEditor.php';
+        require __DIR__.'/../../../html/ContentEditor.php';
     }
 
     /**

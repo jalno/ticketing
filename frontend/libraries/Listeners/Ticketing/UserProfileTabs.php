@@ -27,7 +27,7 @@ class UserProfileTabs
     private function addTicketsToUserProfile(View $view)
     {
         $userID = $view->getData('user')->id;
-        $tabView = View::byName(ticketing\Views\TicketList::class);
+        $tabView = View::byName(Views\Ticketing\ListView::class);
         $tabView->setNewTicketClientID($userID);
         $tabView->isTab(true);
         $tab = new Tab('ticket', $tabView);
