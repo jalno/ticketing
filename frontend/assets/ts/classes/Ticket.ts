@@ -1,5 +1,6 @@
 import "@jalno/translator";
 import "bootstrap/js/modal";
+import autosize from "autosize";
 import $ from "jquery";
 import "jquery.growl";
 import { AjaxRequest, Router , webuilder } from "webuilder";
