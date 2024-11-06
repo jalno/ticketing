@@ -1,6 +1,9 @@
 import $ from "jquery";
 import "select2";
 import "../jquery.ticketingUserAutoComplete";
+import "select2/dist/js/i18n/en.js";
+import "select2/dist/js/i18n/fa.js";
+import "select2/dist/js/i18n/ar.js";
 
 export default class List {
 	public static init() {
@@ -29,9 +32,6 @@ export default class List {
 		});
 	}
 	private static initSelect2() {
-		if ($.fn.hasOwnProperty("select2") && Translator.getActiveShortLang() !== "en") {
-			require(`select2/dist/js/i18n/${Translator.getActiveShortLang()}.js`);
-		}
 
 		$("select[name=status_select]", List.$form).select2({
 			multiple: true,

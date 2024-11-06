@@ -4,6 +4,9 @@ import "ion-rangeslider";
 import $ from "jquery";
 import "jquery.growl";
 import "select2";
+import "select2/dist/js/i18n/en.js";
+import "select2/dist/js/i18n/fa.js";
+import "select2/dist/js/i18n/ar.js";
 import { AjaxRequest, Router , webuilder } from "webuilder";
 
 export default class Managements {
@@ -36,7 +39,6 @@ export default class Managements {
 	private static $form = $("#settings-departmetns-management");
 
 	private static initSelect2() {
-		Managements.importSelect2Translator();
 		$("select[name=products-select]", Managements.$form).select2({
 			multiple: true,
 			allowClear: true,
@@ -53,11 +55,6 @@ export default class Managements {
 			dir: Translator.isRTL() ? "rtl" : "ltr",
 			language: Translator.getActiveShortLang(),
 		});
-	}
-	private static importSelect2Translator() {
-		if ($.fn.hasOwnProperty("select2") && Translator.getActiveShortLang() !== "en") {
-			require(`select2/dist/js/i18n/${Translator.getActiveShortLang()}.js`);
-		}
 	}
 	private static runInputMsgHelpers() {
 		$("select[name=products-select]", Managements.$form).inputMsg({
